@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack">
+
+    <Button android:id="@+id/btnBai"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="白色"/>
+
+    <Button android:id="@+id/btnLan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="蓝色"
+        android:layout_below="@+id/btnBai"/>
+
+    <Button android:id="@+id/btnZi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="紫色"
+        android:layout_below="@+id/btnLan"/>
+
+    <Button android:id="@+id/btnData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="数据"
+        android:layout_below="@+id/btnZi"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/img_seat"
+        android:layout_centerInParent="true"
+        android:visibility="visible"/>
+
+    <com.smartCarSeatProject.isometric.IsometricView
+        android:id="@+id/isometricView"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:foregroundGravity="center"
+        android:background="#a099"
+        android:layout_centerInParent="true"/>
+
+
+</RelativeLayout>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorBlack">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Profile"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Gender:"
+        android:textColor="@color/colorWhite"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"/>
+
+    <RadioGroup android:id="@+id/rgSex"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
+
+        <RadioButton android:id="@+id/rbMan"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="M"
+            android:textColor="@color/colorWhite"
+            android:gravity="center_vertical"/>
+
+        <RadioButton android:id="@+id/rbWoman"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textColor="@color/colorWhite"
+            android:text="F"
+            android:gravity="center_vertical"/>
+
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Race:"
+        android:textColor="@color/colorWhite"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"/>
+
+    <RadioGroup android:id="@+id/rgRace"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
+
+        <RadioButton android:id="@+id/rbCN"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="CN"
+            android:textColor="@color/colorWhite"
+            android:gravity="center_vertical"/>
+
+        <RadioButton android:id="@+id/rbGE"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textColor="@color/colorWhite"
+            android:text="EU"
+            android:gravity="center_vertical"/>
+
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Weight(kg)"
+        android:textColor="@color/colorWhite"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"/>
+
+    <EditText android:id="@+id/edWeight"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/colorWhite"
+        android:layout_marginTop="5dp"
+        android:hint=""
+        android:paddingLeft="5dp"
+        android:singleLine="true"
+        android:inputType="number|numberDecimal"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Height(cm)"
+        android:textColor="@color/colorWhite"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"/>
+
+    <EditText android:id="@+id/edHeight"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/colorWhite"
+        android:layout_marginTop="5dp"
+        android:hint=""
+        android:singleLine="true"
+        android:inputType="number|numberDecimal"
+        android:paddingLeft="5dp"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Comments:"
+        android:textColor="@color/colorWhite"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"/>
+
+    <EditText android:id="@+id/edPS"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/colorWhite"
+        android:layout_marginTop="5dp"
+        android:hint=""
+        android:paddingLeft="5dp"
+        android:singleLine="true"
+        android:gravity="center_vertical"/>
+
+
+
+</LinearLayout>

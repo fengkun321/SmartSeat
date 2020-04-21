@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorHui">#949494</color>
+    <color name="colorOth">#b219ff</color>
+    <color name="colorTransparency">#00000000</color>
+    <color name="half_transparent">#ff000000</color>
+    <color name="ban_transparent">#88000000</color>
+    <color name="black1">#3d3d3d</color>
+    <color name="gray_white">#10000000</color>
+    <color name="device_red">#e3f74652</color>
+    <color name="colorGreen">#e300ff08</color>
+
+
+
+</resources>

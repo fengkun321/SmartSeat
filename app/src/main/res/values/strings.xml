@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">SmartSeat</string>
+    <string name="she_zhi">Set</string>
+    <string name="bang_zhu">The required permissions are missing. Go to permissions to open the required permissions.</string>
+    <string name="cancel">Cancel</string>
+    <string name="system_hint">System</string>
+    <string name="title_activity_history_data_show">HistoryDataShowActivity</string>
+
+
+</resources>

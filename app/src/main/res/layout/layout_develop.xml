@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorBlack"
+    android:id="@+id/llParent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+
+        <ImageView android:id="@+id/imgBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_top_back"
+            android:layout_alignParentLeft="true"
+            android:visibility="visible"
+            android:layout_alignParentBottom="true"/>
+
+        <ImageView android:id="@+id/imgTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_development_title"
+            android:layout_toRightOf="@+id/imgBack"
+            android:layout_centerVertical="true"/>
+
+        <TextView android:id="@+id/tvNowWifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/colorWhite"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imgTitle"
+            android:layout_marginLeft="10dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentRight="true">
+
+            <TextView android:id="@+id/tvReCanConnect"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:text="Can Reconnect"
+                android:textSize="20sp"
+                android:textColor="@color/colorWhite"
+                android:layout_toLeftOf="@+id/imgWIFI"
+                android:visibility="visible"
+                android:gravity="center"/>
+
+            <TextView android:id="@+id/tvReDeviceConnect"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:text="Device Reconnect"
+                android:textSize="20sp"
+                android:textColor="@color/colorWhite"
+                android:layout_toLeftOf="@+id/imgWIFI"
+                android:visibility="visible"
+                android:gravity="center"
+                android:layout_marginLeft="10dp"/>
+
+            <Button android:id="@+id/btnHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HistoryData"
+                android:textColor="@color/colorWhite"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:textAllCaps="false"
+                android:background="@color/colorTransparency"
+                android:visibility="visible"
+                android:layout_marginLeft="10dp"/>
+
+        </LinearLayout>
+
+
+
+
+        <View android:id="@+id/viewLine"
+            android:layout_width="match_parent"
+            android:layout_height="0.3dp"
+            android:background="@color/colorWhite"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_toRightOf="@+id/imgBack"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        // 顶部初始值
+        <LinearLayout android:id="@+id/llTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_alignParentTop="true">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sensor Initial Value:"
+                    android:textColor="@color/colorWhite"/>
+
+                <EditText android:id="@+id/edAInitValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorWhite"
+                    android:padding="5dp"
+                    android:hint=""
+                    android:singleLine="true"
+                    android:inputType="number"
+                    android:gravity="center_vertical"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cushion Initial Value:"
+                    android:textColor="@color/colorWhite"/>
+
+                <EditText android:id="@+id/edSeatInitValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorWhite"
+                    android:padding="5dp"
+                    android:hint=""
+                    android:singleLine="true"
+                    android:inputType="number"
+                    android:gravity="center_vertical"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Adjust Initial Value:"
+                    android:textColor="@color/colorWhite"/>
+
+                <EditText android:id="@+id/edBInitValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorWhite"
+                    android:padding="5dp"
+                    android:hint=""
+                    android:singleLine="true"
+                    android:inputType="number"
+                    android:gravity="center_vertical"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        // 中间控件
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/llBottom"
+            android:layout_below="@+id/llTop"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <include android:id="@+id/includeA"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    layout="@layout/layout_a_pmcm"/>
+
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorWhite"
+                    android:layout_margin="10dp"/>
+
+                <include
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    layout="@layout/layout_people_info"/>
+
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorWhite"
+                    android:layout_margin="10dp"/>
+
+                <include android:id="@+id/includeB"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    layout="@layout/layout_b_dmcm"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        // 底部按钮
+        <LinearLayout android:id="@+id/llBottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_alignParentBottom="true">
+
+            <Button android:id="@+id/btnInitValue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_on_press_bg"
+                android:text="Start Initialization"
+                android:textAllCaps="false"
+                android:textColor="@color/colorWhite"/>
+
+            <Button android:id="@+id/btnSaveA"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_on_press_bg"
+                android:text="Save Recog Data"
+                android:textAllCaps="false"
+                android:textColor="@color/black1"
+                android:layout_marginLeft="10dp"
+                android:enabled="false"/>
+
+            <Button android:id="@+id/btnSaveAllData"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_on_press_bg"
+                android:text="Save Adjust Data"
+                android:textAllCaps="false"
+                android:textColor="@color/black1"
+                android:layout_marginLeft="10dp"
+                android:enabled="false"/>
+
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+
+</LinearLayout>

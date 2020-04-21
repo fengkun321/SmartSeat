@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+
+        <ImageView android:id="@+id/imgBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_top_back"
+            android:layout_alignParentLeft="true"
+            android:visibility="visible"
+            android:layout_alignParentBottom="true"/>
+
+
+        <ImageView android:id="@+id/imgTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_automatic_title"
+            android:layout_toRightOf="@+id/imgBack"
+            android:layout_centerVertical="true"/>
+
+        <TextView android:id="@+id/tvNowWifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/colorWhite"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imgTitle"
+            android:layout_marginLeft="10dp"/>
+
+        <View android:id="@+id/viewLine"
+            android:layout_width="match_parent"
+            android:layout_height="0.3dp"
+            android:background="@color/colorWhite"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_toRightOf="@id/imgBack"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView android:id="@+id/imgRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_auto_value"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="30dp"/>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/imgRight">
+
+            <include android:id="@+id/autoSeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                layout="@layout/layout_auto_seat"
+                android:layout_centerInParent="true"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="30dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="3dp"
+                    android:background="@drawable/btn_press_no">
+
+                    <Button android:id="@+id/btnNan"
+                        android:layout_width="70dp"
+                        android:layout_height="30dp"
+                        android:text="Male"
+                        android:gravity="center"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorWhite"
+                        android:background="#000"/>
+
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="30dp"
+                        android:background="@color/colorWhite"/>
+
+                    <Button android:id="@+id/btnNv"
+                        android:layout_width="70dp"
+                        android:layout_height="30dp"
+                        android:text="Female"
+                        android:gravity="center"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black1"
+                        android:background="#000"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="15dp"
+                    android:padding="3dp"
+                    android:background="@drawable/btn_press_no">
+
+                    <Button android:id="@+id/btnDongF"
+                        android:layout_width="70dp"
+                        android:layout_height="30dp"
+                        android:text="CN"
+                        android:gravity="center"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorWhite"
+                        android:background="#000"/>
+
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="30dp"
+                        android:background="@color/colorWhite"/>
+
+                    <Button android:id="@+id/btnXiF"
+                        android:layout_width="70dp"
+                        android:layout_height="30dp"
+                        android:text="GE"
+                        android:gravity="center"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black1"
+                        android:background="#000"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <com.smartCarSeatProject.isometric.IsometricView
+                android:id="@+id/isometricView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone"/>
+
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+</LinearLayout>

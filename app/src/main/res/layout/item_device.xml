@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+	android:background="@drawable/item_on_press_bg">
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+		android:layout_toLeftOf="@+id/tvState"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			android:layout_marginTop="5dp"
+			android:gravity="bottom">
+
+			<TextView android:id="@+id/tvDeviceName"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="香氛之旅"
+				android:textColor="@color/colorWhite"
+				android:textSize="18sp"/>
+
+		</LinearLayout>
+
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
+
+            <TextView android:id="@+id/tvDeviceType"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:text="MAC:112233445566"
+	            android:textColor="@color/colorWhite"
+	            android:textSize="14sp"
+				android:singleLine="true"
+				android:ellipsize="middle"
+				android:visibility="gone"/>
+            
+        </LinearLayout>
+        
+    </LinearLayout>
+
+    <TextView android:id="@+id/tvState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+		android:text="Connected"
+		android:textSize="18sp"
+		android:textColor="@color/colorWhite"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:visibility="gone"/>
+
+	<ImageView android:id="@+id/imgRight"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:src="@drawable/img_right"
+		android:layout_alignParentRight="true"
+		android:layout_centerVertical="true"
+		android:layout_marginRight="20dp"/>
+    
+    
+
+</RelativeLayout>

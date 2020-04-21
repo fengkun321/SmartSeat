@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+
+        <ImageView android:id="@+id/imgBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_top_back"
+            android:layout_alignParentLeft="true"
+            android:visibility="visible"
+            android:layout_alignParentBottom="true"/>
+
+        <ImageView android:id="@+id/imgTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_manual_title"
+            android:layout_toRightOf="@+id/imgBack"
+            android:visibility="gone"
+            android:layout_centerVertical="true"/>
+
+        <TextView android:id="@+id/tvNowWifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HistoryData"
+            android:textColor="@color/colorWhite"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imgTitle"
+            android:layout_marginLeft="10dp"/>
+
+
+
+        <View android:id="@+id/viewLine"
+            android:layout_width="match_parent"
+            android:layout_height="0.3dp"
+            android:background="@color/colorWhite"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_toRightOf="@+id/imgBack"/>
+
+    </RelativeLayout>
+
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:scrollbars="horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <include
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                layout="@layout/layout_his_heard"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/colorWhite"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="visible">
+                <ListView
+                    android:id="@+id/his_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:divider="#ccc"
+                    android:listSelector="@android:color/transparent"
+                    android:dividerHeight="0.5dp">
+                </ListView>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </HorizontalScrollView>
+
+
+
+
+</LinearLayout>

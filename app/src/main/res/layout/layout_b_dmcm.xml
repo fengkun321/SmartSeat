@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Adjust Side Value:"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"/>
+
+    <include android:id="@+id/includeB4"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        layout="@layout/layout_development_value"
+        android:layout_marginTop="5dp"/>
+
+    <include android:id="@+id/includeB5"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        layout="@layout/layout_development_value"
+        android:layout_marginTop="5dp"/>
+
+    <include android:id="@+id/includeB6"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        layout="@layout/layout_development_value"
+        android:layout_marginTop="5dp"/>
+
+    <include android:id="@+id/includeB7"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        layout="@layout/layout_development_value"
+        android:layout_marginTop="5dp"/>
+
+    <include android:id="@+id/includeB8"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        layout="@layout/layout_development_value"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cushion (1,2,3)"
+        android:textColor="@color/colorWhite"
+        android:gravity="center"
+        android:layout_marginTop="5dp"/>
+
+    <include android:id="@+id/includeB1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        layout="@layout/layout_development_value"
+        android:layout_marginTop="5dp"/>
+
+    <include android:id="@+id/includeB2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        layout="@layout/layout_development_value"
+        android:layout_marginTop="5dp"/>
+
+    <include android:id="@+id/includeB3"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        layout="@layout/layout_development_value"
+        android:layout_marginTop="5dp"/>
+
+
+
+
+
+
+
+</LinearLayout>

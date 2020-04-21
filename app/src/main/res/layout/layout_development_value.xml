@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack">
+
+        <TextView android:id="@+id/tvNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1："
+            android:textColor="@color/colorHui"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"/>
+
+        <Button android:id="@+id/btnJian"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="—"
+            android:textColor="@color/colorWhite"
+            android:gravity="center"
+            android:background="@drawable/btn_on_press_bg"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tvNumber"
+            android:layout_marginLeft="2dp"/>
+
+        <SeekBar android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:maxHeight="2.0dip"
+            android:minHeight="2.0dip"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:max="4000"
+            android:progress="1000"
+            android:layout_centerVertical="true"
+            android:progressDrawable="@drawable/while_seekbar_bg"
+            android:thumb="@drawable/seekbar_thumb"
+            android:layout_toRightOf="@+id/btnJian"
+            android:layout_toLeftOf="@+id/btnJia"/>
+
+        <Button android:id="@+id/btnJia"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="+"
+            android:textSize="25sp"
+            android:textColor="@color/colorWhite"
+            android:gravity="center"
+            android:background="@drawable/btn_on_press_bg"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/tvValueB"/>
+
+        <TextView android:id="@+id/tvValueB"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:text="50"
+            android:textColor="@color/colorWhite"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+
+
+</RelativeLayout>
