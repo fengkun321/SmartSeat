@@ -48,12 +48,14 @@ class MainControlActivity : BaseActivity(),View.OnClickListener{
         initUI()
         reciverBand()
 
+        switchActivityByNumber(NowShowViewNumber)
+
         // Number = 3，wifi设置界面
-        if (NowShowViewNumber == 3)
-            switchActivityByNumber(NowShowViewNumber)
-        // 如果处于某种模式，则根据座椅状态，显示不同提醒或界面
-        else
-            checkSeatStatus()
+//        if (NowShowViewNumber == 3)
+//            switchActivityByNumber(NowShowViewNumber)
+//        // 如果处于某种模式，则根据座椅状态，显示不同提醒或界面
+//        else
+//            checkSeatStatus()
 
     }
 
@@ -200,7 +202,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener{
         when (number) {
             1 -> {
 
-                llAllLogo.visibility = View.VISIBLE
+                llAllLogo.visibility = View.GONE
 
                 imgLeft1.setImageResource(R.drawable.img_left_1)
                 keyActivity = "AutomaticActivity"
@@ -227,7 +229,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener{
             }
             2 -> {
 
-                llAllLogo.visibility = View.VISIBLE
+                llAllLogo.visibility = View.GONE
 
                 setValueBufferByChannel.clear()
                 imgLeft1.setImageResource(R.drawable.img_left_1_false)

@@ -43,6 +43,11 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener{
         initUI()
         reciverBand()
 
+        btn1.isEnabled = true
+        btn2.isEnabled = true
+        btn3.isEnabled = true
+        btn4.isEnabled = true
+
 //        val memoryInfoDao = MemoryInfoDao(this)
 //        memoryInfoDao.insertSingleData(MemoryDataInfo())
 //        memoryInfoDao.closeDb()
@@ -60,16 +65,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener{
         btn2.setOnClickListener(this)
         btn3.setOnClickListener(this)
         btn4.setOnClickListener(this)
-
-        // 状态未达到自动模式，则让A灰掉，且不能点击
-        if (DataAnalysisHelper.deviceState.seatStatus < press_reserve.iValue) {
-            btn1.setImageResource(R.drawable.img_type_1_false)
-            btn1.isEnabled = false
-        }
-        else {
-            btn1.setImageResource(R.drawable.img_type_1_false)
-            btn1.isEnabled = false
-        }
+        btn1.isEnabled = false
 
     }
 
@@ -96,8 +92,11 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener{
         isGotoDevelop = false
 
         when(p0?.id) {
-            R.id.tvReDeviceConnect ->
+            R.id.tvReDeviceConnect -> {
                 SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createDeviceSocket()
+//                btn1.isEnabled = !btn1.isEnabled
+            }
+
             R.id.imgClose -> {
                 val areaAddWindowHint = AreaAddWindowHint(this,R.style.Dialogstyle,"System",
                         object : AreaAddWindowHint.PeriodListener {
@@ -117,44 +116,52 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener{
                 areaAddWindowHint?.show()
             }
             R.id.btn1 -> {
+
+                gotoMainControlActivity(1)
+
                 // 已经在自动模式下，则直接进入
-                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue ||
-                        DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_reserve.iValue) {
-                    gotoMainControlActivity(1)
-                }
-                else {
-                    // 发送指令，切换到自动模式
-                    isGotoAuto = true
-                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_AUTO)
-                }
+//                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue ||
+//                        DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_reserve.iValue) {
+//                    gotoMainControlActivity(1)
+//                }
+//                else {
+//                    // 发送指令，切换到自动模式
+//                    isGotoAuto = true
+//                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_AUTO)
+//                }
 
             }
             R.id.btn2 -> {
+
+                gotoMainControlActivity(2)
+
                 // 已经在手动模式下，则直接进入
-                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic_manual.iValue) {
-                    gotoMainControlActivity(2)
-                }
-                else {
-                    // 发送指令，切换到手动模式
-                    isGotoManual = true
-                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_MANUAL)
-                }
+//                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic_manual.iValue) {
+//                    gotoMainControlActivity(2)
+//                }
+//                else {
+//                    // 发送指令，切换到手动模式
+//                    isGotoManual = true
+//                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_MANUAL)
+//                }
 
             }
             R.id.btn3 ->
                 gotoMainControlActivity(3)
             R.id.btn4 -> {
+                startActivity(Intent(this@MenuSelectActivity,DevelopmentActivity::class.java))
+
                 // 已经在开发者模式下，则直接进入
-                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.develop.iValue) {
-                    val intent = Intent()
-                    intent.setClass(this@MenuSelectActivity,DevelopmentActivity::class.java)
-                    startActivity(intent)
-                }
-                else {
-                    // 发送指令，切换到开发者模式
-                    isGotoDevelop = true
-                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_DEVELOP)
-                }
+//                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.develop.iValue) {
+//                    val intent = Intent()
+//                    intent.setClass(this@MenuSelectActivity,DevelopmentActivity::class.java)
+//                    startActivity(intent)
+//                }
+//                else {
+//                    // 发送指令，切换到开发者模式
+//                    isGotoDevelop = true
+//                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_DEVELOP)
+//                }
             }
             R.id.tvReCanConnect -> {
                 SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
@@ -315,11 +322,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener{
                         imgRun2.visibility = View.GONE
                         imgRun4.visibility = View.GONE
                         ToastMsg("Initializing...")
-                        btn1.setImageResource(R.drawable.img_type_1_false)
                         btn1.isEnabled = false
-                        btn2.setImageResource(R.drawable.img_type_2_false)
                         btn2.isEnabled = false
-                        btn4.setImageResource(R.drawable.img_type_4)
                         btn4.isEnabled = true
 
                         areaSeatWindowHint?.dismiss()
@@ -343,19 +347,12 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener{
                         imgRun1.visibility = View.VISIBLE
                         imgRun2.visibility = View.GONE
                         imgRun4.visibility = View.GONE
-                        btn1.setImageResource(R.drawable.img_type_1)
                         btn1.isEnabled = true
-                        btn2.setImageResource(R.drawable.img_type_2_false)
                         btn2.isEnabled = false
-                        btn4.setImageResource(R.drawable.img_type_4)
                         btn4.isEnabled = true
                         loadingDialog?.dismiss()
 
                         ToastMsg("Seat initialization is complete！")
-//                        if (!isControlShow) {
-//                            startCheckPeopleWindowHint?.show()
-//                        }
-
                         // 如果菜单界面，触发了进入自动模式
                         if (isGotoAuto) {
                             isGotoAuto = false
@@ -370,11 +367,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener{
                         imgRun1.visibility = View.VISIBLE
                         imgRun2.visibility = View.GONE
                         imgRun4.visibility = View.GONE
-                        btn1.setImageResource(R.drawable.img_type_1)
                         btn1.isEnabled = true
-                        btn2.setImageResource(R.drawable.img_type_2_false)
                         btn2.isEnabled = false
-                        btn4.setImageResource(R.drawable.img_type_4)
                         btn4.isEnabled = true
                         loadingDialog?.dismiss()
                         areaSeatWindowHint?.dismiss()
@@ -395,11 +389,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener{
                         imgRun1.visibility = View.VISIBLE
                         imgRun2.visibility = View.GONE
                         imgRun4.visibility = View.GONE
-                        btn1.setImageResource(R.drawable.img_type_1)
                         btn1.isEnabled = true
-                        btn2.setImageResource(R.drawable.img_type_2)
                         btn2.isEnabled = true
-                        btn4.setImageResource(R.drawable.img_type_4)
                         btn4.isEnabled = true
                         loadingDialog?.dismiss()
                         areaSeatWindowHint?.dismiss()
@@ -421,12 +412,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener{
                         imgRun1.visibility = View.GONE
                         imgRun2.visibility = View.VISIBLE
                         imgRun4.visibility = View.GONE
-                        btn1.setImageResource(R.drawable.img_type_1)
                         btn1.isEnabled = true
-
-                        btn2.setImageResource(R.drawable.img_type_2)
                         btn2.isEnabled = true
-                        btn4.setImageResource(R.drawable.img_type_4)
                         btn4.isEnabled = true
                         loadingDialog?.dismiss()
                         // 是菜单界面触发的手动模式
@@ -438,21 +425,16 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener{
                     }
                     // 开发者模式
                     else if (deviceWorkInfo?.seatStatus == SeatStatus.develop.iValue) {
-                        btn1.setImageResource(R.drawable.img_type_1)
                         btn1.isEnabled = true
-                        btn2.setImageResource(R.drawable.img_type_2_false)
                         btn2.isEnabled = false
-
                         // 已经探测过
                         if (deviceWorkInfo?.isProbe) {
-                            btn2.setImageResource(R.drawable.img_type_2)
                             btn2.isEnabled = true
                         }
 
                         imgRun1.visibility = View.GONE
                         imgRun2.visibility = View.GONE
                         imgRun4.visibility = View.VISIBLE
-                        btn4.setImageResource(R.drawable.img_type_4)
                         btn4.isEnabled = true
                         loadingDialog?.dismiss()
                         // 是菜单界面触发的开发者模式
@@ -515,11 +497,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener{
     fun OnStartLoadData(isConnected: Boolean) {
         if (!isConnected) {
             imgReset.visibility = View.GONE
-            btn1.setImageResource(R.drawable.img_type_1_false)
             btn1.isEnabled = false
-            btn2.setImageResource(R.drawable.img_type_2_false)
             btn2.isEnabled = false
-            btn4.setImageResource(R.drawable.img_type_4_false)
             btn4.isEnabled = false
 
             imgRun1.visibility = View.GONE
@@ -529,11 +508,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener{
         }
         else {
             imgReset.visibility = View.VISIBLE
-            btn1.setImageResource(R.drawable.img_type_1_false)
             btn1.isEnabled = false
-            btn2.setImageResource(R.drawable.img_type_2_false)
             btn2.isEnabled = false
-            btn4.setImageResource(R.drawable.img_type_4)
             btn4.isEnabled = true
 
             loadingDialog?.show()

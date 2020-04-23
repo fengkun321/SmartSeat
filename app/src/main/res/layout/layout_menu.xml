@@ -30,7 +30,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_centerInParent="true">
+            android:layout_centerInParent="true"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -88,12 +89,16 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <ImageView
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/img_main_title"
-            android:layout_gravity="center"
-            android:layout_centerHorizontal="true"/>
+            android:text="智能健康座椅"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorWhite"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -108,7 +113,7 @@
                 <ImageView android:id="@+id/btn1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/img_type_1_false"
+                    android:src="@drawable/menu_type_1_style"
                     android:enabled="false"/>
                 <ImageView android:id="@+id/imgRun1"
                     android:layout_width="wrap_content"
@@ -126,7 +131,7 @@
                 <ImageView android:id="@+id/btn2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/img_type_2_false"
+                    android:background="@drawable/menu_type_2_style"
                     android:enabled="false"/>
                 <ImageView android:id="@+id/imgRun2"
                     android:layout_width="wrap_content"
@@ -151,7 +156,7 @@
                 <ImageView android:id="@+id/btn4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/img_type_4_false"
+                    android:src="@drawable/menu_type_4_style"
                     android:layout_marginLeft="20dp"
                     android:enabled="false"/>
                 <ImageView android:id="@+id/imgRun4"

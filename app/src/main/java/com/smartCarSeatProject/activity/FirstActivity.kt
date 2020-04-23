@@ -24,7 +24,8 @@ class FirstActivity : BaseActivity() {
             startPermissionsActivity()
         } else {
 //            startActivity(Intent(this, WelcomeActivity::class.java))
-            startActivity(Intent(this, TestActivity::class.java))
+//            startActivity(Intent(this, TestActivity::class.java))
+            startActivity(Intent(this, MenuSelectActivity::class.java))
             finish()
         }
 
@@ -41,7 +42,8 @@ class FirstActivity : BaseActivity() {
             finish()
         } else {
 //            startActivity(Intent(this, WelcomeActivity::class.java))
-            startActivity(Intent(this, TestActivity::class.java))
+//            startActivity(Intent(this, TestActivity::class.java))
+            startActivity(Intent(this, MenuSelectActivity::class.java))
             finish()
         }
     }
@@ -61,6 +63,7 @@ class FirstActivity : BaseActivity() {
                 Manifest.permission.ACCESS_WIFI_STATE,
                 Manifest.permission.REQUEST_INSTALL_PACKAGES,
                 Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.CAMERA,
                 Manifest.permission.ACCESS_NETWORK_STATE,
                 Manifest.permission.CHANGE_NETWORK_STATE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,

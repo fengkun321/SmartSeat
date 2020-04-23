@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerInParent="true"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/btn_border_white">
+
+            <LinearLayout android:id="@+id/llTopBtn"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:padding="1dp">
+
+                <TextView android:id="@+id/tvLoc1"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorBlack"
+                    android:text="区域1"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:tag="0"
+                    android:textColor="@color/colorWhite"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorWhite"/>
+
+                <TextView android:id="@+id/tvLoc3"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorBlack"
+                    android:text="区域3"
+                    android:gravity="center"
+                    android:tag="2"
+                    android:textColor="@color/colorWhite"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorWhite"/>
+
+                <TextView android:id="@+id/tvLoc5"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorBlack"
+                    android:text="区域5"
+                    android:gravity="center"
+                    android:tag="4"
+                    android:textColor="@color/colorWhite"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorWhite"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:padding="1dp">
+
+                <TextView android:id="@+id/tvLoc2"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorBlack"
+                    android:text="区域2"
+                    android:gravity="center"
+                    android:tag="1"
+                    android:textColor="@color/colorWhite"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorWhite"/>
+
+                <TextView android:id="@+id/tvLoc4"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorBlack"
+                    android:text="区域4"
+                    android:gravity="center"
+                    android:tag="3"
+                    android:textColor="@color/colorWhite"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorWhite"/>
+
+                <TextView android:id="@+id/tvLoc6"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorBlack"
+                    android:text="区域6"
+                    android:gravity="center"
+                    android:tag="5"
+                    android:textColor="@color/colorWhite"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_dianji_ce"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="-100dp"/>
+
+
+    </LinearLayout>
+
+
+
+
+
+</RelativeLayout>

@@ -20,7 +20,7 @@ class WelcomeActivity  : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_welcome)
 
-        mHander?.sendEmptyMessageDelayed(0,1000 * 2)
+        mHander?.sendEmptyMessageDelayed(0,1500)
 
     }
 

@@ -1,6 +1,7 @@
 package com.smartCarSeatProject.activity
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -35,6 +36,8 @@ open class BaseActivity : AppCompatActivity(){
     var startCheckPeopleWindowHint : AreaAddWindowHint? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        pref = getSharedPreferences(PREF_NAME, 0)
 
         mContext = this
         loadingDialog = LoadingDialog(this, R.style.LoadingDialogStyle)
@@ -93,6 +96,42 @@ open class BaseActivity : AppCompatActivity(){
     public override fun onPause() {
         super.onPause()
         MobclickAgent.onPause(this)
+    }
+
+    // 性别-男
+    val SEX_MAN = "SEX_MAN"
+    // 国别-亚洲
+    val COUNTRY_CN = "COUNTRY_CN"
+    private val PREF_NAME = "SharedPreferencesInfo"
+    private var pref : SharedPreferences? = null
+    fun saveBooleanBySharedPreferences(strKey:String,isOK:Boolean) {
+        val editor = pref?.edit()
+        editor?.putBoolean(strKey, isOK)
+        editor?.commit()
+    }
+
+    fun saveStringBySharedPreferences(strKey:String,strValue:String) {
+        val editor = pref?.edit()
+        editor?.putString(strKey, strValue)
+        editor?.commit()
+    }
+
+    fun saveIntBySharedPreferences(strKey:String,iValue:Int) {
+        val editor = pref?.edit()
+        editor?.putInt(strKey, iValue)
+        editor?.commit()
+    }
+
+    fun getBooleanBySharedPreferences(strKey:String) : Boolean {
+        return pref!!.getBoolean(strKey,true)
+    }
+
+    fun getStringBySharedPreferences(strKey:String):String? {
+        return pref!!.getString(strKey,"")
+    }
+
+    fun getIntBySharedPreferences(strKey:String):Int {
+        return pref!!.getInt(strKey,-1)
     }
 
 }

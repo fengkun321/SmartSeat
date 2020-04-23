@@ -8,7 +8,42 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/img_seat_bg"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/imgSeat"
+        android:src="@drawable/img_fushou"
+        android:layout_centerVertical="true"
+        android:paddingTop="120dp"
+        android:layout_marginRight="25dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/imgSeat"
+        android:src="@drawable/img_fushou"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="100dp"
+        android:paddingTop="70dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imgSeat"
+        android:src="@drawable/img_dizuo_ce2"
+        android:layout_centerHorizontal="true"
+        android:paddingLeft="30dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/imgSeat"
+        android:layout_alignBottom="@+id/imgSeat"
+        android:src="@drawable/img_dizuo_ce1"
+        android:layout_marginBottom="60dp"/>
 
     <LinearLayout
         android:layout_width="50dp"

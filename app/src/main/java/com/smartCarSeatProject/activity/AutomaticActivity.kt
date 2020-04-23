@@ -11,14 +11,16 @@ import com.smartCarSeatProject.data.*
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import kotlinx.android.synthetic.main.layout_automatic.*
 import android.graphics.drawable.GradientDrawable
+import android.widget.CheckBox
+import android.widget.CompoundButton
+import android.widget.RadioGroup
 import android.widget.TextView
+import com.smartCarSeatProject.BuildConfig
 import kotlinx.android.synthetic.main.layout_auto_seat.view.*
 
 
 class AutomaticActivity: BaseActivity(), View.OnClickListener {
 
-    var isNan = false
-    var isCN = false
 
     // 样式的集合
     var drawableList = arrayListOf<GradientDrawable>()
@@ -28,6 +30,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_automatic)
+
 
         initUI()
 
@@ -42,26 +45,41 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener {
             MainControlActivity.getInstance()?.finish()
         }
 
+        cbAutoTiYa.setOnCheckedChangeListener(onChangeListener)
+
         btnNan.setOnClickListener(this)
         btnNv.setOnClickListener(this)
         btnDongF.setOnClickListener(this)
         btnXiF.setOnClickListener(this)
 
-        initShape(autoSeat.view0,false,false)
-        initShape(autoSeat.view1,true,false)
-        initShape(autoSeat.view2,true,true)
-        initShape(autoSeat.viewL3,true,false)
-        initShape(autoSeat.viewR3,true,true)
-        initShape(autoSeat.viewL4,true,false)
-        initShape(autoSeat.viewR4,true,true)
-        initShape(autoSeat.viewL6,true,false)
-        initShape(autoSeat.viewR6,true,true)
-        initShape(autoSeat.viewL8,true,false)
-        initShape(autoSeat.viewR8,true,true)
-        initShape(autoSeat.viewL10,true,false)
-        initShape(autoSeat.viewR10,true,true)
+        initShape(autoSeat.view0)
+        initShape(autoSeat.view1)
+        initShape(autoSeat.view2)
+        initShape(autoSeat.viewL3)
+        initShape(autoSeat.viewR3)
+        initShape(autoSeat.viewL4)
+        initShape(autoSeat.viewR4)
+        initShape(autoSeat.viewL5)
+        initShape(autoSeat.viewR5)
+        initShape(autoSeat.viewL6)
+        initShape(autoSeat.viewR6)
+        initShape(autoSeat.viewL7)
+        initShape(autoSeat.viewR7)
+        initShape(autoSeat.viewL8)
+        initShape(autoSeat.viewR8)
+        initShape(autoSeat.viewL9)
+        initShape(autoSeat.viewR9)
+        initShape(autoSeat.viewL10)
+        initShape(autoSeat.viewR10)
 
         updateSeatView()
+    }
+
+    private val onChangeListener = object:CompoundButton.OnCheckedChangeListener{
+        override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+            onAutoSetPressByStatus()
+        }
+
     }
 
     /**
@@ -69,24 +87,13 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener {
      * 是否是小view
      * 如果是小view,则有左右之分
      */
-    fun initShape(view: TextView,isSmall:Boolean,isRight:Boolean) {
+    fun initShape(view: TextView) {
         // shape
         var drawable = GradientDrawable()
         // 四个角度
         drawable.cornerRadius = 10f
-        // 小view,分左右
-        if (isSmall) {
-            // 左侧圆角
-            val fl = floatArrayOf(10f,10f,0f,0f,0f,0f,10f,10f)
-            drawable.cornerRadii = fl
-            // 右侧圆角
-            if (isRight) {
-                val f2 = floatArrayOf(0f,0f,10f,10f,10f,10f,0f,0f)
-                drawable.cornerRadii = f2
-            }
-        }
         // 边框：宽，颜色
-        drawable.setStroke(2, resources.getColor(R.color.colorWhite))
+        drawable.setStroke(0, resources.getColor(R.color.colorWhite))
         // 填充色
         drawable.setColor(resources.getColor(R.color.colorTransparency))
         view.setBackgroundDrawable(drawable)
@@ -97,17 +104,19 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener {
     }
 
     fun initData() {
-        btnNan.tag = false
-        btnNv.tag = false
-        btnDongF.tag = false
-        btnXiF.tag = false
+        val isMan = getBooleanBySharedPreferences(SEX_MAN)
+        val isCN = getBooleanBySharedPreferences(COUNTRY_CN)
+        btnNan.tag = isMan
+        btnNv.tag = !isMan
+        btnDongF.tag = isCN
+        btnXiF.tag = !isCN
 
         btnNan.setTextColor(getColor(R.color.black1))
         btnNv.setTextColor(getColor(R.color.black1))
         btnDongF.setTextColor(getColor(R.color.black1))
         btnXiF.setTextColor(getColor(R.color.black1))
         // 男
-        if (DataAnalysisHelper.deviceState.nowSex == 1) {
+        if (isMan) {
             btnNan.tag = true
             btnNan.setTextColor(getColor(R.color.colorWhite))
         }
@@ -117,7 +126,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener {
         }
 
         // 东方人
-        if (DataAnalysisHelper.deviceState.nowRace == 1) {
+        if (isCN) {
             btnDongF.tag = true
             btnDongF.setTextColor(getColor(R.color.colorWhite))
         }
@@ -135,6 +144,17 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener {
         myIntentFilter.addAction(BaseVolume.BROADCAST_CTR_CALLBACK)
         // 注册广播
         registerReceiver(myNetReceiver, myIntentFilter)
+    }
+
+    /** 根据选择状态自动调节各个气袋气压
+     *  男女
+     *  国别
+     *  体压自适应
+     *  位置自适应
+     *  健康自适应
+     * */
+    private fun onAutoSetPressByStatus() {
+        ToastMsg("自动调整气压！")
     }
 
     /**
@@ -158,7 +178,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener {
             }
             val iPressV = BaseVolume.getPressByValue(iValue,iChannelNumber)
             viewList[iNumber].text = ""
-//            viewList[iNumber].text = iPressV.toString()
+            viewList[iNumber].text = iPressV.toString()
             // 根据气压值，改变填充色
             val colorValue = BaseVolume.getColorByPressValue(iPressV,iChannelNumber)
             drawable.setColor(colorValue)
@@ -171,33 +191,47 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener {
                 if (btnNan.tag as Boolean) {
                     return
                 }
-                isNan = true
-                isCN = btnDongF.tag as Boolean
+                btnNan.tag = true
+                btnNv.tag = false
+                btnNan.setTextColor(getColor(R.color.colorWhite))
+                btnNv.setTextColor(getColor(R.color.black1))
+                saveBooleanBySharedPreferences(SEX_MAN,true)
             }
             R.id.btnNv ->{
                 if (btnNv.tag as Boolean) {
                     return
                 }
-                isNan = false
-                isCN = btnDongF.tag as Boolean
+                btnNan.tag = false
+                btnNv.tag = true
+                btnNan.setTextColor(getColor(R.color.black1))
+                btnNv.setTextColor(getColor(R.color.colorWhite))
+                saveBooleanBySharedPreferences(SEX_MAN,false)
             }
             R.id.btnDongF ->{
                 if (btnDongF.tag as Boolean) {
                     return
                 }
-                isNan = btnNan.tag as Boolean
-                isCN = true
+                btnDongF.tag = true
+                btnXiF.tag = false
+                btnDongF.setTextColor(getColor(R.color.colorWhite))
+                btnXiF.setTextColor(getColor(R.color.black1))
+                saveBooleanBySharedPreferences(COUNTRY_CN,true)
             }
             R.id.btnXiF ->{
                 if (btnXiF.tag as Boolean) {
                     return
                 }
-                isNan = btnNan.tag as Boolean
-                isCN = false
+                btnDongF.tag = false
+                btnXiF.tag = true
+                btnDongF.setTextColor(getColor(R.color.black1))
+                btnXiF.setTextColor(getColor(R.color.colorWhite))
+                saveBooleanBySharedPreferences(COUNTRY_CN,false)
             }
         }
-        val strSendData = CreateCtrDataHelper.getCtrPeopleInfo(isNan,isCN)
-        SocketThreadManager.sharedInstance(this)?.StartSendData(strSendData)
+
+        onAutoSetPressByStatus()
+//        val strSendData = CreateCtrDataHelper.getCtrPeopleInfo(isNan,isCN)
+//        SocketThreadManager.sharedInstance(this)?.StartSendData(strSendData)
 
     }
 
@@ -230,9 +264,9 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener {
                 val strMsg = intent.getStringExtra(BaseVolume.BROADCAST_MSG)
                 if (strType.equals(BaseVolume.COMMAND_TYPE_SEX,true)) {
                     if (strMsg.equals(BaseVolume.COMMAND_ACK,true)) {
-                        DataAnalysisHelper.deviceState.nowSex = if(isNan) 1 else 2
-                        DataAnalysisHelper.deviceState.nowRace = if(isCN) 1 else 2
-                        initData()
+//                        DataAnalysisHelper.deviceState.nowSex = if(isNan) 1 else 2
+//                        DataAnalysisHelper.deviceState.nowRace = if(isCN) 1 else 2
+//                        initData()
                     }
                 }
             }

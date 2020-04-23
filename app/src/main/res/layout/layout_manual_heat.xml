@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent">
+
+        <include android:id="@+id/autoSeat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            layout="@layout/layout_auto_seat_transparent"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/llBottomAnMo"
+            android:layout_marginBottom="-10dp"
+            android:layout_marginTop="-90dp"/>
+
+
+        <LinearLayout android:id="@+id/llBottomAnMo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true">
+
+            <ImageView android:id="@+id/imgMo1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_anmo_1_false"
+                android:tag="false"/>
+
+            <ImageView android:id="@+id/imgMo2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_anmo_2_false"
+                android:layout_marginLeft="20dp"
+                android:tag="false"/>
+
+            <ImageView android:id="@+id/imgMo3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_anmo_3_false"
+                android:layout_marginLeft="20dp"
+                android:tag="false"/>
+
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_seat_heat"/>
+
+
+
+    </RelativeLayout>
+
+
+
+
+
+</LinearLayout>

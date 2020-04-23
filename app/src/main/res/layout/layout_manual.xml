@@ -64,7 +64,8 @@
             android:orientation="vertical"
             android:layout_alignParentRight="true"
             android:gravity="center"
-            android:layout_marginRight="30dp">
+            android:layout_marginRight="30dp"
+            android:visibility="gone">
 
             <TextView android:id="@+id/tvSeekBarValue"
                 android:layout_width="wrap_content"
@@ -118,36 +119,107 @@
 
             </LinearLayout>
 
-            <Button android:id="@+id/btnSave"
+
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/llTopBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_border_white"
+            android:padding="1dp">
+
+            <TextView android:id="@+id/btnProp"
                 android:layout_width="200dp"
-                android:layout_height="45dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorLightBlue"
+                android:text="支撑调节"
+                android:gravity="center"
+                android:textColor="@color/colorWhite"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorWhite"/>
+
+            <TextView android:id="@+id/btnLocation"
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorBlack"
+                android:text="位置调节"
+                android:gravity="center"
+                android:textColor="@color/colorWhite"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorWhite"/>
+
+            <TextView android:id="@+id/btnHeat"
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorBlack"
+                android:text="通风加热按摩"
+                android:gravity="center"
+                android:textColor="@color/colorWhite"/>
+
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/llBottomBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="20dp">
+
+            <Button android:id="@+id/btnSave"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
                 android:background="@drawable/btn_on_press_bg"
                 android:text="Save"
                 android:textAllCaps="false"
-                android:textColor="@color/colorWhite"
-                android:layout_marginTop="50dp"/>
+                android:textColor="@color/colorWhite"/>
 
             <Button android:id="@+id/btnMemory"
-                android:layout_width="200dp"
-                android:layout_height="45dp"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
                 android:background="@drawable/btn_on_press_bg"
                 android:text="Memory"
                 android:textAllCaps="false"
                 android:textColor="@color/colorWhite"
-                android:layout_marginTop="30dp"/>
+                android:layout_marginLeft="100dp"/>
 
         </LinearLayout>
 
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:layout_toLeftOf="@+id/llRight">
+            android:layout_toLeftOf="@+id/llRight"
+            android:layout_above="@+id/llBottomBtn"
+            android:layout_below="@+id/llTopBtn">
 
             <include android:id="@+id/manualSeat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                layout="@layout/layout_manual_seat"
-                android:layout_centerInParent="true"/>
+                layout="@layout/layout_manual_prop"
+                android:layout_centerInParent="true"
+                android:visibility="visible"/>
+
+            <include android:id="@+id/manualLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                layout="@layout/layout_manual_location"
+                android:layout_centerInParent="true"
+                android:visibility="gone"/>
+
+            <include android:id="@+id/manualHeat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                layout="@layout/layout_manual_heat"
+                android:layout_centerInParent="true"
+                android:visibility="gone"/>
 
 
         </RelativeLayout>

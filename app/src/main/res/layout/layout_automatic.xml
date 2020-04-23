@@ -52,104 +52,196 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/img_auto_value"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="30dp"/>
+            android:layout_marginLeft="30dp"/>
 
-        <RelativeLayout
-            android:layout_width="fill_parent"
+        <include android:id="@+id/autoSeat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            layout="@layout/layout_auto_seat"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@+id/imgRight"
+            android:layout_toLeftOf="@+id/llRightInfo"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+
+        <LinearLayout android:id="@+id/llRightInfo"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_toLeftOf="@+id/imgRight">
+            android:orientation="vertical"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            android:gravity="center">
 
-            <include android:id="@+id/autoSeat"
+            <CheckBox android:id="@+id/cbAutoTiYa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                layout="@layout/layout_auto_seat"
-                android:layout_centerInParent="true"/>
+                android:text="  体压自适应"
+                android:button="@drawable/checkbox_selector"
+                android:textColor="@color/colorWhite"
+                android:gravity="center_vertical"
+                android:layout_marginTop="20dp"
+                android:checked="true"/>
 
+            <CheckBox android:id="@+id/cbAutoWeiZhi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  位置自适应"
+                android:button="@drawable/checkbox_selector"
+                android:textColor="@color/colorWhite"
+                android:gravity="center_vertical"
+                android:layout_marginTop="10dp"/>
+
+            <CheckBox android:id="@+id/cbJianKang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  健康自适应"
+                android:button="@drawable/checkbox_selector"
+                android:textColor="@color/colorWhite"
+                android:gravity="center_vertical"
+                android:layout_marginTop="10dp"/>
+
+            // 男女
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="30dp">
+                android:orientation="horizontal"
+                android:padding="3dp"
+                android:background="@drawable/btn_press_no"
+                android:layout_marginTop="20dp">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="3dp"
-                    android:background="@drawable/btn_press_no">
+                <Button android:id="@+id/btnNan"
+                    android:layout_width="70dp"
+                    android:layout_height="30dp"
+                    android:text="Male"
+                    android:gravity="center"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:background="#000"/>
 
-                    <Button android:id="@+id/btnNan"
-                        android:layout_width="70dp"
-                        android:layout_height="30dp"
-                        android:text="Male"
-                        android:gravity="center"
-                        android:textAllCaps="false"
-                        android:textColor="@color/colorWhite"
-                        android:background="#000"/>
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="30dp"
+                    android:background="@color/colorWhite"/>
 
-                    <View
-                        android:layout_width="0.5dp"
-                        android:layout_height="30dp"
-                        android:background="@color/colorWhite"/>
-
-                    <Button android:id="@+id/btnNv"
-                        android:layout_width="70dp"
-                        android:layout_height="30dp"
-                        android:text="Female"
-                        android:gravity="center"
-                        android:textAllCaps="false"
-                        android:textColor="@color/black1"
-                        android:background="#000"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="15dp"
-                    android:padding="3dp"
-                    android:background="@drawable/btn_press_no">
-
-                    <Button android:id="@+id/btnDongF"
-                        android:layout_width="70dp"
-                        android:layout_height="30dp"
-                        android:text="CN"
-                        android:gravity="center"
-                        android:textAllCaps="false"
-                        android:textColor="@color/colorWhite"
-                        android:background="#000"/>
-
-                    <View
-                        android:layout_width="0.5dp"
-                        android:layout_height="30dp"
-                        android:background="@color/colorWhite"/>
-
-                    <Button android:id="@+id/btnXiF"
-                        android:layout_width="70dp"
-                        android:layout_height="30dp"
-                        android:text="GE"
-                        android:gravity="center"
-                        android:textAllCaps="false"
-                        android:textColor="@color/black1"
-                        android:background="#000"/>
-
-                </LinearLayout>
+                <Button android:id="@+id/btnNv"
+                    android:layout_width="70dp"
+                    android:layout_height="30dp"
+                    android:text="Female"
+                    android:gravity="center"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black1"
+                    android:background="#000"/>
 
             </LinearLayout>
 
-            <com.smartCarSeatProject.isometric.IsometricView
-                android:id="@+id/isometricView"
+            // 国别
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone"/>
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:padding="3dp"
+                android:background="@drawable/btn_press_no">
+
+                <Button android:id="@+id/btnDongF"
+                    android:layout_width="70dp"
+                    android:layout_height="30dp"
+                    android:text="CN"
+                    android:gravity="center"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:background="#000"/>
+
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="30dp"
+                    android:background="@color/colorWhite"/>
+
+                <Button android:id="@+id/btnXiF"
+                    android:layout_width="70dp"
+                    android:layout_height="30dp"
+                    android:text="GE"
+                    android:gravity="center"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black1"
+                    android:background="#000"/>
+
+            </LinearLayout>
+
+            // 心率
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="20dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="left">
+
+                    <TextView android:id="@+id/tvHeight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="身高："
+                        android:textColor="@color/colorGreen"/>
+                    <TextView android:id="@+id/tvWeight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="体重："
+                        android:textColor="@color/colorGreen"
+                        android:layout_marginTop="5dp"/>
+                    <TextView android:id="@+id/tvHeart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="心跳："
+                        android:textColor="@color/colorGreen"
+                        android:layout_marginTop="5dp"/>
+                    <TextView android:id="@+id/tvBPD"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="舒张压："
+                        android:textColor="@color/colorGreen"
+                        android:layout_marginTop="5dp"/>
+                    <TextView android:id="@+id/tvBPS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="收缩压："
+                        android:textColor="@color/colorGreen"
+                        android:layout_marginTop="5dp"/>
+                    <TextView android:id="@+id/tvMSI"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="情绪值："
+                        android:textColor="@color/colorGreen"
+                        android:layout_marginTop="5dp"/>
+                    <TextView android:id="@+id/tvSN"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="信噪值："
+                        android:textColor="@color/colorGreen"
+                        android:layout_marginTop="5dp"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/img_person_status"
+                    android:layout_marginLeft="10dp"/>
 
 
-        </RelativeLayout>
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+
 
 
     </RelativeLayout>

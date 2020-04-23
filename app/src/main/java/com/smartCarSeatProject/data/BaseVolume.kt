@@ -85,6 +85,7 @@ class BaseVolume {
         val BROADCAST_MSG = "BROADCAST_MSG"
         val BROADCAST_TYPE = "BROADCAST_TYPE"
 
+
         /** 读取座椅当前状态 */
         val COMMAND_READ_SEAT_STATUS = "R,1\r\n"
         /** 读取座椅自动模式的男女 */
@@ -98,8 +99,6 @@ class BaseVolume {
         val COMMAND_SET_STATUS_KEEP = "W,1,1\r\n"
         /** 设置座椅的状态-重置 */
         val COMMAND_SET_STATUS_RESET = "W,1,2\r\n"
-
-
 
         /** 设置座椅的模式-自动 */
         val COMMAND_SET_MODE_AUTO = "W,5,1\r\n"
@@ -245,7 +244,7 @@ class BaseVolume {
                 iG = 0
                 iB = 0
             }
-            // 最大值为蓝色
+            // 最小值为蓝色
             else if (iPress <= pressValueMin) {
                 iR = 0
                 iG = 0
