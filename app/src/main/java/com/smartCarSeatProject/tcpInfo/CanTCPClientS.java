@@ -243,7 +243,7 @@ public class CanTCPClientS {
                     }
                     isConnection = TCP_CONNECT_STATE_DISCONNECT;
                     // 局域网离线啦！
-                    context.sendBroadcast(new Intent(BaseVolume.Companion.getBROADCAST_TCP_INFO())
+                    context.sendBroadcast(new Intent(BaseVolume.Companion.getBROADCAST_TCP_INFO_CAN())
                             .putExtra(BaseVolume.Companion.getBROADCAST_TYPE(),BaseVolume.Companion.getBROADCAST_TCP_CONNECT_CALLBACK())
                             .putExtra(BaseVolume.Companion.getBROADCAST_TCP_STATUS(),false)
                             .putExtra(BaseVolume.Companion.getBROADCAST_MSG(),strError));
@@ -311,24 +311,28 @@ public class CanTCPClientS {
             // 包头 080000
             boolean isHead = strOldBuffer.substring(0, 6).equalsIgnoreCase(BaseVolume.Companion.getCOMMAND_HEAD());
             if (isHead) {
-                String strType = strOldBuffer.substring(6,10);
-                // 数据气压数据
-                if (strType.equalsIgnoreCase(BaseVolume.Companion.getCOMMAND_CAN_1_4()) ||
-                        strType.equalsIgnoreCase(BaseVolume.Companion.getCOMMAND_CAN_5_8()) ||
-                        strType.equalsIgnoreCase(BaseVolume.Companion.getCOMMAND_CAN_9_12()) ||
-                        strType.equalsIgnoreCase(BaseVolume.Companion.getCOMMAND_CAN_13_16())) {
-                    String strGood = strOldBuffer.substring(0,26);
-                    Log.e("Can数据", "Can有效数据：$strGood");
-                    DataAnalysisHelper.Companion.getInstance(context).analysisPressValueByCan(strGood);
-                    strOldBuffer = strOldBuffer.substring(26);
-                }
-                // 不是气压数据，则跳过
-                else {
-                    strOldBuffer = strOldBuffer.substring(2);
-                }
+                String strGood = strOldBuffer.substring(0,26);
+                Log.e("Can数据", "Can有效数据：$strGood");
+                analysisData(strGood);
+                strOldBuffer = strOldBuffer.substring(2);
             } else {
                 strOldBuffer = strOldBuffer.substring(2);
             }
+        }
+    }
+
+    private void analysisData(String strData) {
+        String strType = strData.substring(6,10);
+        // 数据气压数据
+        if (strType.equalsIgnoreCase(BaseVolume.Companion.getCOMMAND_CAN_1_4()) ||
+                strType.equalsIgnoreCase(BaseVolume.Companion.getCOMMAND_CAN_5_8()) ||
+                strType.equalsIgnoreCase(BaseVolume.Companion.getCOMMAND_CAN_9_12()) ||
+                strType.equalsIgnoreCase(BaseVolume.Companion.getCOMMAND_CAN_13_16())) {
+            DataAnalysisHelper.Companion.getInstance(context).analysisPressValueByCan(strData);
+        }
+        // 通道状态
+        else if (true) {
+            DataAnalysisHelper.Companion.getInstance(context).analysisPressStatusByCan(strType);
         }
     }
 

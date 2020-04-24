@@ -114,6 +114,25 @@ class BaseVolume {
         val COMMAND_CAN_9_12 = "0221"
         val COMMAND_CAN_13_16 = "0222"
 
+        /** 控制16个通道的数据头 */
+        val COMMAND_CTR_1_4 = "03bb"
+        val COMMAND_CTR_5_8 = "03cc"
+        val COMMAND_CTR_9_12 = "03dd"
+        val COMMAND_CTR_13_16 = "03ee"
+
+        /** 电机位置1-6 */
+        val COMMAND_CAN_LOCATION_1 = "02f51100000000000000"
+        val COMMAND_CAN_LOCATION_2 = "02f51200000000000000"
+        val COMMAND_CAN_LOCATION_3 = "02f51300000000000000"
+        val COMMAND_CAN_LOCATION_4 = "02f51400000000000000"
+        val COMMAND_CAN_LOCATION_5 = "02f51500000000000000"
+        val COMMAND_CAN_LOCATION_6 = "02f51600000000000000"
+        // 每次发完位置后，要再发一条清零指令才会动作
+        val COMMAND_CAN_LOCATION_0 = "02f50000000000000000"
+
+        /** 通道状态 */
+        val CHANNEL_STATUS = "CHANNEL_STATUS"
+
         /** 数据尾 */
         val COMMAND_END = "\r\n"
         /** 命令类型：主动上报 */

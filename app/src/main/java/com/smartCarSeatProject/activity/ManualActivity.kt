@@ -209,6 +209,11 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
 
     /** 减号，监听事件 */
     val onClickDimListener = View.OnClickListener {
+
+        if (!isCanControl()) {
+            return@OnClickListener
+        }
+
         iNowPressValue -= 5
         if (iNowPressValue < ProgressValueMin)
             iNowPressValue = ProgressValueMin
@@ -226,6 +231,9 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
         // 保存控制缓存值
         MainControlActivity.getInstance()?.setValueBufferByChannel?.put(iNowSelectNumber+1,iNowPressValue.toString())
 
+        val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iNowPressValue)
+        SocketThreadManager.sharedInstance(this)?.StartSendDataNoTime(strSendData)
+
 //        val strSendData = CreateCtrDataHelper.getCtrPressBy1((iNowSelectNumber+1).toString(),iNowPressValue)
 //        SocketThreadManager.sharedInstance(this@ManualActivity)?.StartSendData(strSendData)
 
@@ -234,6 +242,11 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
 
     /** 加号，监听事件 */
     val onClickAddListener = View.OnClickListener {
+
+        if (!isCanControl()) {
+            return@OnClickListener
+        }
+
         iNowPressValue += 5
         if (iNowPressValue > ProgressValueMax)
             iNowPressValue = ProgressValueMax
@@ -248,12 +261,11 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
             viewList[9].text = iNowPressValue.toString()
         }
 
-
         // 保存控制缓存值
         MainControlActivity.getInstance()?.setValueBufferByChannel?.put(iNowSelectNumber+1,iNowPressValue.toString())
 
-//        val strSendData = CreateCtrDataHelper.getCtrPressBy1((iNowSelectNumber+1).toString(),iNowPressValue)
-//        SocketThreadManager.sharedInstance(this@ManualActivity)?.StartSendData(strSendData)
+        val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iNowPressValue)
+        SocketThreadManager.sharedInstance(this)?.StartSendDataNoTime(strSendData)
 
     }
 

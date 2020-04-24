@@ -149,6 +149,17 @@ class SocketThreadManager(private val context: Context) {
                 .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_SEND_DATA_END))
     }
 
+    /** 开始发送数据（不带超时机制） */
+    fun StartSendDataNoTime(strData: String) {
+        if (canClient == null || !(canClient!!.isConnect)) {
+            context.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
+                    .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
+                    .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
+            return
+        }
+        canClient!!.sendHexText(strNowSendData)
+    }
+
 
     companion object {
 

@@ -10,6 +10,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import com.smartCarSeatProject.R
 import com.smartCarSeatProject.data.BaseVolume
+import com.smartCarSeatProject.data.DataAnalysisHelper
 import com.smartCarSeatProject.data.DeviceWorkInfo
 import com.smartCarSeatProject.tcpInfo.ConnectAndDataListener
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
@@ -132,6 +133,14 @@ open class BaseActivity : AppCompatActivity(){
 
     fun getIntBySharedPreferences(strKey:String):Int {
         return pref!!.getInt(strKey,-1)
+    }
+
+    /** 判断是否可以控制（前提是，所以气袋都没有在工作） */
+    fun isCanControl():Boolean{
+        val iCanCtr = DataAnalysisHelper.getInstance(this)!!.getAllChannelStatus()
+        if (iCanCtr > 0)
+            ToastMsg("有气袋正在工作，不能控制！")
+        return iCanCtr > 0
     }
 
 }

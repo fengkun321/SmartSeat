@@ -57,12 +57,6 @@ class CreateCtrDataHelper {
             return "W,3,"+strPressInfo+BaseVolume.COMMAND_END
         }
 
-        /** 删除某个手动模式 */
-//        fun getCtrDeleteDataByManual(sqlCtrlInfo: SQLCtrlInfo?):String {
-//            val iKey = sqlCtrlInfo?.iKey
-//            return "W,2,"+iKey+BaseVolume.COMMAND_END
-//        }
-
         /** 开发者模式下，同时调整16个气压值 */
         fun getCtrPressBy16Develop(strA:String,strSeat:String,strB:String) :String {
 //            var iAV = strA.toInt()
@@ -87,7 +81,38 @@ class CreateCtrDataHelper {
             return "W,3,"+strPressInfo+BaseVolume.COMMAND_END
         }
 
+
+        /** 设置某通道的气压值 */
+        fun getCtrPressVaslueByNumber(iNumber:Int,iValue:Int):String {
+            // 包头
+            var strSendData = BaseVolume.COMMAND_HEAD
+            // 数据类型
+            if (iNumber < 4)
+                strSendData += BaseVolume.COMMAND_CTR_1_4
+            else if (iNumber in 4..7)
+                strSendData += BaseVolume.COMMAND_CAN_5_8
+            else if (iNumber in 8..11)
+                strSendData += BaseVolume.COMMAND_CAN_9_12
+            else if (iNumber >= 12)
+                strSendData += BaseVolume.COMMAND_CAN_13_16
+
+            // 要控制的通道位
+            val iLoc = iNumber % 4
+            // 内容8个字节，分别对应4个通道
+            var valueList = arrayListOf<String>("0000","0000","0000","0000")
+            val strV = String.format("%04x",iValue)
+            valueList[iLoc] = strV
+
+            valueList.forEach {
+                strSendData += it
+            }
+            return strSendData
+        }
+
+
     }
+
+
 
 
 }

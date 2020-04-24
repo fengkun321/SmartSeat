@@ -225,4 +225,83 @@ class DataAnalysisHelper{
 
     }
 
+    /**
+     * 根据Can返回的数据，解析当前通道状态
+     */
+    fun analysisPressStatusByCan(strData:String) {
+        val strType= strData.substring(6,10)
+        val strContent= strData.substring(10)
+        // 前4个，其中1-3，既是传感气压也是控制气压
+        if (strType == BaseVolume.COMMAND_CAN_1_4) {
+            for (iIndex in 0..2) {
+                val iStatus = Integer.parseInt(strContent.substring(iIndex*4, (iIndex+1)*4), 16)
+                deviceState.sensePressStatusList[iIndex] = iStatus
+            }
+            for (iIndex in 0..3) {
+                val iStatus = Integer.parseInt(strContent.substring(iIndex*4, (iIndex+1)*4), 16)
+                deviceState.controlPressStatusList.set(iIndex,iStatus)
+            }
+        }
+        // 5-8，控制气压
+        else if (strType == BaseVolume.COMMAND_CAN_5_8) {
+            for (iIndex in 0..3) {
+                val iStatus = Integer.parseInt(strContent.substring(iIndex*4, (iIndex+1)*4), 16)
+                deviceState.controlPressStatusList.set(iIndex+4,iStatus)
+            }
+        }
+        // 9-12，传感气压
+        else if (strType == BaseVolume.COMMAND_CAN_9_12) {
+            for (iIndex in 0..3) {
+                val iStatus = Integer.parseInt(strContent.substring(iIndex*4, (iIndex+1)*4), 16)
+                deviceState.sensePressStatusList.set(iIndex+3,iStatus)
+            }
+        }
+        // 13-16，传感气压
+        else if (strType == BaseVolume.COMMAND_CAN_13_16) {
+            for (iIndex in 0..3) {
+                val iStatus = Integer.parseInt(strContent.substring(iIndex*4, (iIndex+1)*4), 16)
+                deviceState.sensePressStatusList.set(iIndex+7,iStatus)
+            }
+        }
+
+        var strLog = ""
+
+        for (iNumber in 0..7) {
+            strLog += ""+(iNumber+1)+"："+ deviceState.controlPressStatusList[iNumber]+","
+        }
+
+        for (iNumber in 3..10) {
+            strLog += ""+(iNumber+6)+"："+ deviceState.sensePressStatusList[iNumber]+","
+        }
+
+        Log.e("通道状态 ", strLog)
+
+        context?.sendBroadcast(Intent(BaseVolume.BROADCAST_RESULT_DATA_INFO)
+                .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_PRESS)
+                .putExtra(BaseVolume.BROADCAST_MSG,deviceState))
+
+    }
+
+    /** 遍历所有通道状态，只要有一个在充放气，就不能控制 */
+    fun getAllChannelStatus() : Int {
+        for (iNumber in 1 .. deviceState.controlPressStatusList.size) {
+            val it = deviceState.controlPressStatusList[iNumber-1]
+            if (it == DeviceWorkInfo.STATUS_INFLATE || it == DeviceWorkInfo.STATUS_DEFLATE)
+                return iNumber
+        }
+
+        for (iNumber in 1 .. deviceState.sensePressStatusList.size) {
+            val it = deviceState.controlPressStatusList[iNumber-1]
+            if (it == DeviceWorkInfo.STATUS_INFLATE || it == DeviceWorkInfo.STATUS_DEFLATE) {
+                // 传感气压的通道号，其实是1,2,3，9，10,11，12，13,14，15,16
+                var iTag = iNumber
+                if (iNumber > 3) {
+                    iTag += 5
+                }
+                return iNumber
+            }
+        }
+        return -1
+    }
+
 }

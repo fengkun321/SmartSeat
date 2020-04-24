@@ -20,6 +20,25 @@ class DeviceWorkInfo : Serializable{
     // 是否探测过
     var isProbe = false
 
+    companion object{
+
+        // 停止动作
+        val STATUS_STOP = 0
+        // 正在充气
+        val STATUS_INFLATE = 1
+        // 正在放气
+        val STATUS_DEFLATE = 2
+        // 未使用
+        val STATUS_NOT_USED = 3
+
+    }
+
+    // 8个传感气压的状态
+    var controlPressStatusList = arrayListOf<Int>()
+    // 11个传感气压的状态
+    var sensePressStatusList = arrayListOf<Int>()
+
+
     constructor(strID:String) {
         this.strID = strID
         // 初始化数据
@@ -28,9 +47,11 @@ class DeviceWorkInfo : Serializable{
 
         for (i in 1..11) {
             sensePressValueListl.add("255")
+            sensePressStatusList.add(STATUS_STOP)
         }
         for (i in 1..8) {
             controlPressValueList.add("255")
+            controlPressStatusList.add(STATUS_STOP)
         }
 
         nowSex = 1
@@ -47,9 +68,11 @@ class DeviceWorkInfo : Serializable{
         controlPressValueList.clear()
         for (i in 1..11) {
             sensePressValueListl.add("255")
+            sensePressStatusList.add(STATUS_STOP)
         }
         for (i in 1..8) {
             controlPressValueList.add("255")
+            controlPressStatusList.add(STATUS_STOP)
         }
     }
 

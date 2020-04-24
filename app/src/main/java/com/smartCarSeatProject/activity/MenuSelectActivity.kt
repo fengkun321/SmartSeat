@@ -516,7 +516,9 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener{
 
             // 连接成功后，查询顺序：男女国别→座椅状态
             // 查询男女国别
-            SocketThreadManager.sharedInstance(this)?.StartSendData(BaseVolume.COMMAND_READ_SEAT_SEX)
+//            SocketThreadManager.sharedInstance(this)?.StartSendData(BaseVolume.COMMAND_READ_SEAT_SEX)
+            // 查询座椅状态
+            SocketThreadManager.sharedInstance(this)?.StartSendData(BaseVolume.COMMAND_READ_SEAT_STATUS)
         }
     }
 
