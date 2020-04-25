@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.support.annotation.IntegerRes
 import android.util.Log
+import com.smartCarSeatProject.dao.DBManager
+import com.smartCarSeatProject.data.DataAnalysisHelper.Companion.deviceState
 
 class DataAnalysisHelper{
     private var strData: String? = null
@@ -92,8 +94,6 @@ class DataAnalysisHelper{
     /** 性别解析 */
     fun SexAnalySis(strContent:String) {
         val strInfoList = strContent.split(",")
-        deviceState.nowSex = strInfoList[0].toInt()
-        deviceState.nowRace = strInfoList[1].toInt()
         deviceState.isProbe = (strInfoList[2].toInt()  == 1)
         context?.sendBroadcast(Intent(BaseVolume.BROADCAST_RESULT_DATA_INFO)
                 .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_SEX)
@@ -303,5 +303,81 @@ class DataAnalysisHelper{
         }
         return -1
     }
+
+    /** 根据传感气压，计算身高体重 */
+    fun measureHeightWeight() {
+        // 体重
+        deviceState.nowWeight =  -43.107-
+                0.01886*deviceState.sensePressValueListl[0].toInt()+
+                0.053896*deviceState.sensePressValueListl[1].toInt()-
+                0.0030395*deviceState.sensePressValueListl[2].toInt()+
+                0.024802*deviceState.sensePressValueListl[3].toInt()-
+                0.030553*deviceState.sensePressValueListl[4].toInt()+
+                0.064134*deviceState.sensePressValueListl[5].toInt()+
+                0.029931*deviceState.sensePressValueListl[6].toInt()+
+                0.061179*deviceState.sensePressValueListl[7].toInt()-
+                0.034076*deviceState.sensePressValueListl[8].toInt()+
+                0.040492*deviceState.sensePressValueListl[9].toInt()-
+                0.013437*deviceState.sensePressValueListl[10].toInt()
+
+        // 身高
+        deviceState.nowWeight = 113.69-
+                0.045598*deviceState.sensePressValueListl[0].toInt()+
+                0.050396*deviceState.sensePressValueListl[1].toInt()-
+                0.0031454*deviceState.sensePressValueListl[2].toInt()+
+                0.022727*deviceState.sensePressValueListl[3].toInt()+
+                0.0068805*deviceState.sensePressValueListl[4].toInt()+
+                0.062379*deviceState.sensePressValueListl[5].toInt()-
+                0.001087*deviceState.sensePressValueListl[6].toInt()-
+                0.08063*deviceState.sensePressValueListl[7].toInt()+
+                0.021199*deviceState.sensePressValueListl[8].toInt()+
+                0.050612*deviceState.sensePressValueListl[9].toInt()-
+                0.00043809*deviceState.sensePressValueListl[10].toInt()
+
+        deviceState.nowBMI = (deviceState.nowWeight*1000)/ (deviceState.nowHeight*deviceState.nowHeight)
+
+        Log.e("DeviceWorkInfo","身高：${deviceState.nowHeight}，体重：${deviceState.nowWeight},BMI：${deviceState.nowBMI}")
+
+    }
+
+
+    // 人体气压查询表:男女2→国别2→胖瘦3
+    var bodyPressByType = arrayOf(
+            // 男
+            arrayOf(arrayListOf("t_body_1","t_body_2","t_body_3"),// 中国/瘦，匀称，胖
+                    arrayListOf("t_body_4","t_body_5","t_body_6")),// 国外/瘦，匀称，胖,
+            // 女
+            arrayOf(arrayListOf("t_body_7","t_body_8","t_body_9"),// 中国/瘦，匀称，胖
+                    arrayListOf("t_body_10","t_body_11","t_body_12")) // 国外/瘦，匀称，胖
+    )
+    /** 根据男女，身高体重，BMI等获取对应的控制气压值 */
+    fun getAutoCtrPressByPersonStyle(isMan:Boolean,isCN:Boolean): ControlPressInfo?{
+        var iOne = 0
+        var iTwo = 0
+        var iThree = 0
+        val nowBMI = deviceState.nowBMI
+        val nowWeight = deviceState.nowWeight
+
+        iOne = if(isMan) 0 else 1
+        iTwo = if(isCN) 0 else 1
+
+        if (nowBMI <= 18.4 ) // 瘦
+            iThree = 0
+        else if (nowBMI > 18.4 && nowBMI < 28) // 匀称
+            iThree = 1
+        else // 胖
+            iThree = 2
+
+        val strTableName = bodyPressByType[iOne][iTwo][iThree]
+        val dbManager = DBManager(context)
+        val pressInfo = dbManager.queryLikeWeight(strTableName, nowWeight)
+        for (city1 in pressInfo) {
+            Log.e("test2", "test2: cityInof:$city1")
+        }
+        dbManager.closeDb()
+        return if (pressInfo.size > 0) pressInfo[0] else null
+
+    }
+
 
 }

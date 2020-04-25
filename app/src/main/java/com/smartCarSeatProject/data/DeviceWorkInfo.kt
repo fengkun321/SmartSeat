@@ -1,6 +1,9 @@
 package com.smartCarSeatProject.data
 
+import android.content.SharedPreferences
+import android.util.Log
 import java.io.Serializable
+import kotlin.math.log
 
 class DeviceWorkInfo : Serializable{
 
@@ -13,12 +16,16 @@ class DeviceWorkInfo : Serializable{
     var controlPressValueList :ArrayList<String> = arrayListOf("0","0","0","0","0","0","0","0")
     // 传感气压8个
     var sensePressValueListl :ArrayList<String> = arrayListOf("0","0","0","0","0","0","0","0","0","0","0")
-    // 当前性别,1:男，2：女
-    var nowSex = 1
-    // 当前人种,1:东方人，2：西方人
-    var nowRace = 1
+
     // 是否探测过
     var isProbe = false
+
+    // 身高
+    var nowHeight = -1.0
+    // 体重
+    var nowWeight = -1.0
+    // BMI
+    var nowBMI = -1.0
 
     companion object{
 
@@ -54,7 +61,6 @@ class DeviceWorkInfo : Serializable{
             controlPressStatusList.add(STATUS_STOP)
         }
 
-        nowSex = 1
         isProbe = false
         seatStatus = SeatStatus.press_unknown.iValue
 //        seatStatus = SeatStatus.press_automatic.iValue // 自动状态
@@ -75,6 +81,8 @@ class DeviceWorkInfo : Serializable{
             controlPressStatusList.add(STATUS_STOP)
         }
     }
+
+
 
 
 }

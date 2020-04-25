@@ -139,7 +139,7 @@ open class BaseActivity : AppCompatActivity(){
     fun isCanControl():Boolean{
         val iCanCtr = DataAnalysisHelper.getInstance(this)!!.getAllChannelStatus()
         if (iCanCtr > 0)
-            ToastMsg("有气袋正在工作，不能控制！")
+            ToastMsg("气袋$iCanCtr ,正在工作，不能控制！")
         return iCanCtr > 0
     }
 

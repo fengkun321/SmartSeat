@@ -3,8 +3,7 @@ package com.smartCarSeatProject.dao;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
-import com.smartCarSeatProject.data.City;
+import com.smartCarSeatProject.data.ControlPressInfo;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,11 +43,11 @@ public class DBManager {
     String[] columns = new String[]{"weight", "press1", "press2", "press3", "press4", "press5", "press6", "press7", "press8"};
     String selection = "weight >= ?";
     //查询
-    public List<City> queryLikeWeight(String strTableName,int iValue) {
-        List<City> list = new ArrayList<>();
+    public List<ControlPressInfo> queryLikeWeight(String strTableName, double iValue) {
+        List<ControlPressInfo> list = new ArrayList<>();
         String[] selectionArgs = {iValue+""};
         try {
-            Cursor cursor = sqLiteDatabase.query(strTableName, columns, selection, selectionArgs, null, null, null);
+            Cursor cursor = sqLiteDatabase.query(strTableName, columns, selection, selectionArgs, null, null, "weight asc");// 按照身高，升序排列，第一个就是最接近的
             while (cursor != null && cursor.moveToNext()) {
                 int iWeight = cursor.getInt(cursor.getColumnIndex("weight"));
                 int iPress1 = cursor.getInt(cursor.getColumnIndex("press1"));
@@ -59,7 +58,7 @@ public class DBManager {
                 int iPress6 = cursor.getInt(cursor.getColumnIndex("press6"));
                 int iPress7 = cursor.getInt(cursor.getColumnIndex("press7"));
                 int iPress8 = cursor.getInt(cursor.getColumnIndex("press8"));
-                City city = new City(iWeight,iPress1,iPress2,iPress3,iPress4,iPress5,iPress6,iPress7,iPress8);
+                ControlPressInfo city = new ControlPressInfo(iWeight,iPress1,iPress2,iPress3,iPress4,iPress5,iPress6,iPress7,iPress8);
                 list.add(city);
             }
             cursor.close();

@@ -1,13 +1,11 @@
 package com.smartCarSeatProject.activity;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import com.smartCarSeatProject.R;
 import com.smartCarSeatProject.dao.DBManager;
-import com.smartCarSeatProject.data.City;
+import com.smartCarSeatProject.data.ControlPressInfo;
 import com.smartCarSeatProject.isometric.ColorM;
 import com.smartCarSeatProject.isometric.Isometric;
 import com.smartCarSeatProject.isometric.IsometricView;
@@ -176,8 +174,8 @@ public class TestActivity extends BaseActivity {
             public void onClick(View v) {
                 String strTableName = "t_body_10";
                 DBManager dbManager = new DBManager(getMContext());
-                List<City> city = dbManager.queryLikeWeight(strTableName,66);
-                for (City city1 : city) {
+                List<ControlPressInfo> city = dbManager.queryLikeWeight(strTableName,66);
+                for (ControlPressInfo city1 : city) {
                     Log.e("test2", "test2: cityInof:"+city1.toString());
                 }
                 dbManager.closeDb();
