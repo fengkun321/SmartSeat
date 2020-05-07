@@ -10,6 +10,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.2'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.6'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -23,6 +24,7 @@ allprojects {
         jcenter()
         google()
         maven { url 'https://dl.bintray.com/umsdk/release' }
+        maven { url 'https://dl.bintray.com/bookzhan/bzlib' }
     }
 }
 
@@ -43,3 +45,6 @@ compileTestKotlin {
         jvmTarget = "1.8"
     }
 }
+
+
+

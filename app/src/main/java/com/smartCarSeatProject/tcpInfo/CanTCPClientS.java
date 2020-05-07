@@ -331,7 +331,8 @@ public class CanTCPClientS {
             DataAnalysisHelper.Companion.getInstance(context).analysisPressValueByCan(strData);
         }
         // 通道状态
-        else if (true) {
+        else if (strType.equalsIgnoreCase(BaseVolume.Companion.getCOMMAND_CAN_STATUS_1_8()) ||
+                strType.equalsIgnoreCase(BaseVolume.Companion.getCOMMAND_CAN_STATUS_9_16())) {
             DataAnalysisHelper.Companion.getInstance(context).analysisPressStatusByCan(strType);
         }
     }

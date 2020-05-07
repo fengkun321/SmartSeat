@@ -27,7 +27,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme.NoActionBar"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".activity.FirstActivity"
             android:screenOrientation="landscape">
@@ -35,7 +36,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".activity.PermissionsActivity"
@@ -88,7 +88,6 @@
             android:name=".activity.SetMemoryActivity"
             android:screenOrientation="landscape">
 
-
         </activity>
 
         <activity
@@ -100,6 +99,31 @@
         <activity
             android:name=".activity.ListViewActivity"
             android:screenOrientation="landscape">
+        </activity>
+
+        // 人体检测
+        <activity
+            android:name="com.ai.nuralogix.anura.sample.activities.MainActivity"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name="com.ai.nuralogix.anura.sample.activities.ConfigActivity"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name="com.ai.nuralogix.anura.sample.activities.DeviceInfoActivity"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name="com.ai.nuralogix.anura.sample.activities.MeasurementActivity"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name="com.ai.nuralogix.anura.sample.activities.SettingsActivity"
+            android:screenOrientation="landscape">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ai.nuralogix.anura.sample.activities.MeasurementActivity" />
         </activity>
 
 

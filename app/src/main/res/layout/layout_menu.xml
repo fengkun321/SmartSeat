@@ -90,7 +90,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
+        <TextView android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="智能健康座椅"
@@ -99,6 +99,16 @@
             android:textColor="@color/colorWhite"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"/>
+
+        <TextView android:id="@+id/tvPersonInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="人体采集>>"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@+id/tvTitle"/>
 
         <LinearLayout
             android:layout_width="wrap_content"

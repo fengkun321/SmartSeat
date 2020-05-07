@@ -65,6 +65,9 @@ class BaseVolume {
         var strHight = ""
         var strWeight = ""
 
+        /** 检测到的人体数据 */
+        var strPersonDataInfo = "0&0&0&0&0&0"
+
 
         val BROADCAST_UPDATA_WIFI_INFO = "BROADCAST_UPDATA_WIFI_INFO"
         val BROADCAST_FINISH_APPLICATION = "BROADCAST_FINISH_APPLICATION"
@@ -114,6 +117,10 @@ class BaseVolume {
         val COMMAND_CAN_9_12 = "0221"
         val COMMAND_CAN_13_16 = "0222"
 
+        /** Can盒的状态 */
+        val COMMAND_CAN_STATUS_1_8 = "0203"
+        val COMMAND_CAN_STATUS_9_16 = "0223"
+
         /** 控制16个通道的数据头 */
         val COMMAND_CTR_1_4 = "03bb"
         val COMMAND_CTR_5_8 = "03cc"
@@ -156,6 +163,8 @@ class BaseVolume {
         val COMMAND_TYPE_SEX = "4"
         /** 指令：座椅模式 */
         val COMMAND_TYPE_SEX_MODE = "5"
+        /** 指令：通道状态 */
+        val COMMAND_TYPE_CHANNEL_STATUS = "6"
 
         /** 开发者模式下，恢复到了初始气压值 */
         val COMMAND_INIT_VALUE_BY_DEVELOP = "COMMAND_INIT_VALUE_BY_DEVELOP"

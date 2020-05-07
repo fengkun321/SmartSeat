@@ -5,12 +5,10 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.widget.EditText
 import com.smartCarSeatProject.R
-import com.smartCarSeatProject.R.id.*
 import com.smartCarSeatProject.adapter.WifiInfoAdapter
 import com.smartCarSeatProject.wifiInfo.WIFIConnectionManager
-import java.util.ArrayList
-
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.ArrayList
 
 
 class MainActivity : BaseActivity(){
@@ -27,8 +25,10 @@ class MainActivity : BaseActivity(){
         // Lambda写法，一个参数view，且无返回值  直接 view -> 执行语句
         // Lambda写法，多个参数view1，view2，且无返回值  直接 (view1,view2) -> 执行语句
         // Lambda写法，多个参数view1，view2，且有返回值，要用大括号括起来 (view1,view2) -> { 执行语句，，，，且 return 值 }
+
         btnRefresh.setOnClickListener {
             view -> initWifiData()
+
         }
 
         deviceAdapter = WifiInfoAdapter(list, this,"")

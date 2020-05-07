@@ -5,6 +5,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.smartCarSeatProjectNew"
@@ -13,6 +18,40 @@ android {
         versionCode 2
         versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        def SAMPLE_REST_URL = "https://api.deepaffex.cn:9443"
+        def SAMPLE_WS_URL = "wss://api.deepaffex.cn:9080"
+        def LICENSE_KEY = "/SziEHimS+F7UcS0JEnc9jlNouibalkIcOWGtGuq"
+        def PASSWORD = "lhanj1979"
+        def EMAIL = "jun.liu@noboauto.com"
+        def STUDY_ID = "e9db189a-cda7-4ee5-bd72-6bd06b938f66"
+
+        if (file('../../server.properties').exists()) {
+            Properties properties = new Properties()
+            properties.load(file('../../server.properties').newDataInputStream())
+
+            SAMPLE_REST_URL = properties.getProperty("SAMPLE_REST_URL")
+            SAMPLE_WS_URL = properties.getProperty("SAMPLE_WS_URL")
+            LICENSE_KEY = properties.getProperty("LICENSE_KEY")
+            PASSWORD = properties.getProperty("PASSWORD")
+            EMAIL = properties.getProperty("EMAIL")
+            STUDY_ID = properties.getProperty("STUDY_ID")
+
+        }
+
+        buildConfigField 'String', 'SAMPLE_REST_URL', "\"${SAMPLE_REST_URL}\""
+        buildConfigField 'String', 'SAMPLE_WS_URL', "\"${SAMPLE_WS_URL}\""
+        buildConfigField 'String', 'LICENSE_KEY', "\"${LICENSE_KEY}\""
+        buildConfigField 'String', 'PASSWORD', "\"${PASSWORD}\""
+        buildConfigField 'String', 'EMAIL', "\"${EMAIL}\""
+        buildConfigField 'String', 'STUDY_ID', "\"${STUDY_ID}\""
+
+        ndk {
+            // Specifies the ABI configurations of your native
+            // libraries Gradle should build and package with your APK.
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
+        }
+
     }
     buildTypes {
         release {
@@ -21,6 +60,20 @@ android {
         }
     }
     sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/2'] } }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    packagingOptions {
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 allprojects {
@@ -45,6 +98,17 @@ dependencies {
 
     implementation 'com.umeng.umsdk:analytics:8.0.0'
     implementation 'com.umeng.umsdk:common:2.0.0'
-    implementation files('libs\\luaj-jse-3.0.1.jar')
+
+
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation(name: 'anura-core-sdk-2.0.7-2', ext: 'aar')
+    implementation(name: 'opencv-4.1.2-15', ext: 'aar')
+    implementation "com.google.protobuf:protobuf-java:3.6.1"
+    implementation "org.java-websocket:Java-WebSocket:1.3.6"
+    implementation "com.android.support:preference-v7:28.0.0"
+    implementation "com.android.support:support-fragment:28.0.0"
+    implementation 'com.alibaba.android.mnnkit:facedetection:0.0.4'
+
 
 }

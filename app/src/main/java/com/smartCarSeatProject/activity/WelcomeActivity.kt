@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.util.Log
+import com.ai.nuralogix.anura.sample.activities.MainActivity
 import com.smartCarSeatProject.R
 import com.smartCarSeatProject.data.BaseVolume
 import java.text.ParseException
@@ -37,7 +38,8 @@ class WelcomeActivity  : BaseActivity() {
 //                    val intent = Intent(this,MenuSelectActivity::class.java)
 //                    startActivity(intent)
 //                }
-                val intent = Intent(this,MenuSelectActivity::class.java)
+//                val intent = Intent(this,MenuSelectActivity::class.java)
+                val intent = Intent(this,MainActivity::class.java)
                 startActivity(intent)
                 finish()
             }

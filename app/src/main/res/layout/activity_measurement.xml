@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ai.nuralogix.anurasdk.render.opengl.GLSurfaceViewTracker
+        android:id="@+id/tracker_opengl_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/countdown" />
+
+    <ai.nuralogix.anurasdk.views.TrackerView
+        android:id="@+id/tracker_ui_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/countdown" />
+
+    <ImageView
+        android:id="@+id/iv_nura_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="32dp"
+        android:padding="8dp"
+        android:src="@drawable/nura_icon"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="0"
+        android:textAlignment="center"
+        android:textColor="#FFF"
+        android:textSize="60sp"
+        app:layout_constraintBottom_toTopOf="@id/cancelled_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/cancelled_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="20sp"
+        android:textAlignment="center"
+        android:textColor="#FFF"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@id/measurementId_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/measurementId_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Measurement ID: "
+        android:textColor="#FFF"
+        app:layout_constraintBottom_toTopOf="@id/snr_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/snr_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SNR: "
+        android:textColor="#FFF"
+        app:layout_constraintBottom_toTopOf="@id/heartbeat_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/heartbeat_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Heart Beat: "
+        android:textColor="#FFF"
+        app:layout_constraintBottom_toTopOf="@id/msi_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/msi_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="MSI: "
+        android:textColor="#FFF"
+        app:layout_constraintBottom_toTopOf="@id/bpd_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/bpd_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="BPD: "
+        android:textColor="#FFF"
+        app:layout_constraintBottom_toTopOf="@id/bps_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/bps_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="BPS: "
+        android:textColor="#FFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>

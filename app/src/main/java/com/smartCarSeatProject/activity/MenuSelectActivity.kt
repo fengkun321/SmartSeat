@@ -1,5 +1,6 @@
 package com.smartCarSeatProject.activity
 
+import ai.nuralogix.anurasdk.utils.AnuLogUtil
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -7,6 +8,10 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.View
+import com.ai.nuralogix.anura.sample.activities.MainActivity
+import com.ai.nuralogix.anura.sample.activities.MeasurementActivity
+import com.alibaba.android.mnnkit.monitor.MNNMonitor
+import com.smartCarSeatProject.BuildConfig
 import com.smartCarSeatProject.R
 import com.smartCarSeatProject.dao.MemoryDataInfo
 import com.smartCarSeatProject.dao.MemoryInfoDao
@@ -21,8 +26,7 @@ import com.smartCarSeatProject.view.SureOperWindowHint
 import com.smartCarSeatProject.wifiInfo.WIFIConnectionManager
 import kotlinx.android.synthetic.main.layout_menu.*
 import com.umeng.commonsdk.statistics.AnalyticsConstants.LOG_TAG
-
-
+import java.io.*
 
 
 class MenuSelectActivity : BaseActivity(),View.OnClickListener{
@@ -52,6 +56,11 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener{
 //        memoryInfoDao.insertSingleData(MemoryDataInfo())
 //        memoryInfoDao.closeDb()
 
+        // 人体采集相关
+        AnuLogUtil.setShowLog(BuildConfig.DEBUG)
+        MNNMonitor.setMonitorEnable(false)
+        copyFileOrDir("r21r23h-8.dat")
+
     }
 
     fun initUI() {
@@ -65,6 +74,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener{
         btn2.setOnClickListener(this)
         btn3.setOnClickListener(this)
         btn4.setOnClickListener(this)
+        tvPersonInfo.setOnClickListener(this)
         btn1.isEnabled = false
 
     }
@@ -165,6 +175,9 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener{
             }
             R.id.tvReCanConnect -> {
                 SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
+            }
+            R.id.tvPersonInfo -> {
+                startActivity(Intent(mContext,MeasurementActivity().javaClass))
             }
         }
     }
@@ -532,6 +545,56 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener{
                     }
                 },"Are you sure to exit the application?",false)
         areaAddWindowHint?.show()
+    }
+
+    fun copyFileOrDir(path: String) {
+        val assetManager = this.assets
+        val assets: Array<String>?
+        try {
+            assets = assetManager.list(path)
+            if (assets!!.isEmpty()) {
+                copyFile(path)
+            } else {
+                val fullPath = filesDir.absolutePath + File.separator + path
+                val dir = File(fullPath)
+                if (!dir.exists())
+                    dir.mkdir()
+                for (asset in assets) {
+                    copyFileOrDir("$path/$asset")
+                }
+            }
+        } catch (ex: IOException) {
+            AnuLogUtil.e(MainActivity.TAG, "copyFileOrDir exception: ${ex.message}")
+        } catch (e: Exception) {
+            AnuLogUtil.e(MainActivity.TAG, "copyFileOrDir exception: ${e.message}")
+        }
+
+    }
+
+    private fun copyFile(filename: String) {
+        val assetManager = this.assets
+
+        val `in`: InputStream
+        val out: OutputStream
+        try {
+            `in` = assetManager.open(filename)
+            val newFileName = filesDir.absolutePath + File.separator + filename
+
+            out = FileOutputStream(newFileName)
+            val buffer = ByteArray(1024)
+            var read = `in`.read(buffer)
+            while (read != -1) {
+                out.write(buffer, 0, read)
+                read = `in`.read(buffer)
+            }
+            `in`.close()
+            out.flush()
+            out.close()
+
+        } catch (e: Exception) {
+            AnuLogUtil.e(MainActivity.TAG, "copyFile exception: ${e.message}")
+        }
+
     }
 
 

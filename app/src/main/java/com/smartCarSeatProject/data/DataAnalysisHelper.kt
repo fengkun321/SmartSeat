@@ -230,39 +230,56 @@ class DataAnalysisHelper{
      */
     fun analysisPressStatusByCan(strData:String) {
         val strType= strData.substring(6,10)
-        val strContent= strData.substring(10)
-        // 前4个，其中1-3，既是传感气压也是控制气压
-        if (strType == BaseVolume.COMMAND_CAN_1_4) {
-            for (iIndex in 0..2) {
-                val iStatus = Integer.parseInt(strContent.substring(iIndex*4, (iIndex+1)*4), 16)
-                deviceState.sensePressStatusList[iIndex] = iStatus
-            }
-            for (iIndex in 0..3) {
-                val iStatus = Integer.parseInt(strContent.substring(iIndex*4, (iIndex+1)*4), 16)
-                deviceState.controlPressStatusList.set(iIndex,iStatus)
-            }
+        val strContent= strData.substring(10,14)
+        val iChannelStatus1_4 = strContent.substring(0,2).toInt()
+        val iChannelStatus5_8 = strContent.substring(2).toInt()
+        // 通道1-8
+        if (strType == BaseVolume.COMMAND_CAN_STATUS_1_8) {
+
+            val iChannel1 = iChannelStatus1_4 and 0x03
+            val iChannel2 = iChannelStatus1_4 and 0x0c
+            val iChannel3 = iChannelStatus1_4 and 0x30
+            val iChannel4 = iChannelStatus1_4 and 0xc0
+            val iChannel5 = iChannelStatus5_8 and 0x03
+            val iChannel6 = iChannelStatus5_8 and 0x0c
+            val iChannel7 = iChannelStatus5_8 and 0x30
+            val iChannel8 = iChannelStatus5_8 and 0xc0
+
+            deviceState.sensePressStatusList[0] = iChannel1
+            deviceState.sensePressStatusList[1] = iChannel2
+            deviceState.sensePressStatusList[2] = iChannel3
+
+            deviceState.controlPressStatusList[0] = iChannel1
+            deviceState.controlPressStatusList[1] = iChannel2
+            deviceState.controlPressStatusList[2] = iChannel3
+            deviceState.controlPressStatusList[3] = iChannel4
+            deviceState.controlPressStatusList[4] = iChannel5
+            deviceState.controlPressStatusList[5] = iChannel6
+            deviceState.controlPressStatusList[6] = iChannel7
+            deviceState.controlPressStatusList[7] = iChannel8
         }
-        // 5-8，控制气压
-        else if (strType == BaseVolume.COMMAND_CAN_5_8) {
-            for (iIndex in 0..3) {
-                val iStatus = Integer.parseInt(strContent.substring(iIndex*4, (iIndex+1)*4), 16)
-                deviceState.controlPressStatusList.set(iIndex+4,iStatus)
-            }
+        // 通道9-16
+        else if (strType == BaseVolume.COMMAND_CAN_STATUS_9_16) {
+
+            val iChannel9 = iChannelStatus1_4 and 0x03
+            val iChannel10 = iChannelStatus1_4 and 0x0c
+            val iChannel11 = iChannelStatus1_4 and 0x30
+            val iChannel12 = iChannelStatus1_4 and 0xc0
+            val iChannel13 = iChannelStatus5_8 and 0x03
+            val iChannel14 = iChannelStatus5_8 and 0x0c
+            val iChannel15 = iChannelStatus5_8 and 0x30
+            val iChannel16 = iChannelStatus5_8 and 0xc0
+
+            deviceState.sensePressStatusList[3] = iChannel9
+            deviceState.sensePressStatusList[4] = iChannel10
+            deviceState.sensePressStatusList[5] = iChannel11
+            deviceState.sensePressStatusList[6] = iChannel12
+            deviceState.sensePressStatusList[7] = iChannel13
+            deviceState.sensePressStatusList[8] = iChannel14
+            deviceState.sensePressStatusList[9] = iChannel15
+            deviceState.sensePressStatusList[10] = iChannel16
         }
-        // 9-12，传感气压
-        else if (strType == BaseVolume.COMMAND_CAN_9_12) {
-            for (iIndex in 0..3) {
-                val iStatus = Integer.parseInt(strContent.substring(iIndex*4, (iIndex+1)*4), 16)
-                deviceState.sensePressStatusList.set(iIndex+3,iStatus)
-            }
-        }
-        // 13-16，传感气压
-        else if (strType == BaseVolume.COMMAND_CAN_13_16) {
-            for (iIndex in 0..3) {
-                val iStatus = Integer.parseInt(strContent.substring(iIndex*4, (iIndex+1)*4), 16)
-                deviceState.sensePressStatusList.set(iIndex+7,iStatus)
-            }
-        }
+
 
         var strLog = ""
 
@@ -277,7 +294,7 @@ class DataAnalysisHelper{
         Log.e("通道状态 ", strLog)
 
         context?.sendBroadcast(Intent(BaseVolume.BROADCAST_RESULT_DATA_INFO)
-                .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_PRESS)
+                .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_CHANNEL_STATUS)
                 .putExtra(BaseVolume.BROADCAST_MSG,deviceState))
 
     }

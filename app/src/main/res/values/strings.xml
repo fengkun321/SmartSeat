@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">SmartSeat</string>
     <string name="she_zhi">Set</string>
     <string name="bang_zhu">The required permissions are missing. Go to permissions to open the required permissions.</string>
@@ -6,5 +8,1467 @@
     <string name="system_hint">System</string>
     <string name="title_activity_history_data_show">HistoryDataShowActivity</string>
 
+    <!-- Bundle display name -->
+    <!-- VSigns/en.lproj/InfoPlist.strings -->
+    <string name="CFBundleDisplayName">"心魔镜"</string>
+
+    <!-- Bundle name -->
+    <!-- VSigns/en.lproj/InfoPlist.strings -->
+    <string name="CFBundleName">"Anura"</string>
+
+    <!-- Privacy - Camera Usage Description -->
+    <!-- VSigns/en.lproj/InfoPlist.strings -->
+    <string name="NSCameraUsageDescription">"我们将使用摄像头来进行测量"</string>
+
+    <!-- English: Results will be saved to your photo library -->
+    <!-- VSigns/en.lproj/InfoPlist.strings -->
+    <string name="NSPhotoLibraryAddUsageDescription">"测量结果将会保存到您的相册"</string>
+
+    <!-- Privacy - Photo Library Usage Description -->
+    <!-- VSigns/en.lproj/InfoPlist.strings -->
+    <string name="NSPhotoLibraryUsageDescription">"我们需要访问您的相册来获取个人资料"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Error_Title_Analyzer_Failed">"分析失败"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Analyzing_Data">"正在分析数据"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Title_Confirm_Skip_Profile">"您确定暂不注册信息吗？"</string>
+
+    <!-- Units for heart rate (Beats per Minute) -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="BPM">BPM</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Blood_Pressure">"血压"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Cancel">"取消"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Code">"验证码"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Continue">"下一步"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Message_Measurement_Timeout">"您的测量数据无法发送
+请检查您的网络连接并重新尝试"</string>
+
+    <!-- Button to dismiss a popup window in the app -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Dismiss">"取消"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Email">"邮箱"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Login_Email_Failed">"邮箱或密码错误，请重新尝试"</string>
+
+    <!-- In this case, the user's password failed to reset. This is the title of the alert that is shown -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Failure">"错误提示"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Female">"女"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Grant_Camera_Access">"授予摄像头访问权限"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Get_Started">"开始测量"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Heart_Rate">"心率"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Landing_Chat_Bubble">"您好，我是Anura.
+您的个人智能健
+康助手"</string>
+
+    <!-- Title on the tab bar to go to the screen to see measurement results history -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="History">"历史记录"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Landing_Login">"已注册账户"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Forgot_Password">"忘记密码？"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Log_In">"登录"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Log_Out">"退出登录"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Login_Facebook">"Facebook账户登录"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Login_Google">"Google账户登录"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Male">"男"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Mean_Arterial_Pressure">"平均动脉压力"</string>
+
+    <!-- title on the tab bar to go to the screen to take a measurement -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Measurement">"测量"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Measurement_Cancelled">"抱歉，测量已取消"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Title_Measurement_Failed">"抱歉，测量不成功"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Title_Measurement_Countdown">"倒计时"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="No">"取消"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Other">"其他"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Password">"密码"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Prompt_Password">"密码（请输入最少5个字符）"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Title_Reset_Password_Email">"请输入您的邮箱地址"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Measurement_Constraint_Distance">"请靠近摄像头并重新测量"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Measurement_Constraint_Gaze">"请重新测量并在整个测量期间保持正对摄像头"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Measurement_Constraint_Movement">"请重新测量并在整个测量期间保持静止"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Measurement_Constraint_Position">"请重新测量并在整个测量期间保持脸部在圆圈内"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Pulse_Pressure">"脉压"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Title_Measurement_Timeout">"您的请求已超时"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Reset_Password">"重置密码"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Results">"测量报告"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Message_Measurement_Failed">"抱歉，无法显示结果
+请重新测量"</string>
+
+    <!-- short for Signal to Noise Ratio -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="SNR">"信噪比"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Sending_Data">"正在发送数据"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Sign_Up">"注册"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Error_Title_SNR">"您的信号强度太弱"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Skip">"暂不注册信息"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Measurement_Constraint_FPS">"抱歉，您的设备无法提供最低帧率"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Submit">"提交"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Success">"成功提示"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Measurement_Constraint_Brightness">"画面太亮"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Measurement_Constraint_Darkness">"画面太暗"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Message_Analyzer_Failed">"抱歉，分析结果时发生错误
+请重新测量"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Try_Again">"请重试"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="You">"个人信息"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Message_Confirm_Skip_Profile">"提供个人信息将会使您的测量结果更准确"</string>
+
+    <!-- Heart Rate units, beats per minute -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="bpm">"次/分"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="cm">"厘米"</string>
+
+    <!-- short for diastolic blood pressure -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="dia">"舒张压"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="in">"英尺"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="kg">"公斤"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="lbs">"磅"</string>
+
+    <!-- short for mean arterial pressure -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="map">"平均动脉压"</string>
+
+    <!-- Blood Pressure units, mm of Mercury Units for blood pressure (Millimetres mercury) -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="mmHG">mmHg</string>
+
+    <!-- short for pulse pressure -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="pp">"脉压"</string>
+
+    <!-- short for systolic blood pressure -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="sys">"收缩压"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Loading">"正在加载"</string>
+
+    <!-- VSigns/en.lproj/Localizable.stringsVSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Stress_Index">"心理压力值"</string>
+
+    <!-- VSigns/en.lproj/Localizable.stringsVSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Measurement_No_Network">"请确保您已连接到WiFi或移动网络"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="View">"查看"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_No_Network">"无法连接网络"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_History_No_Network">"历史记录获取失败
+请确保您已连接到WiFi或移动网络"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Add_Note">"添加记录"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Confirm_Password">"确认密码"</string>
+
+    <!-- Shown on a button that will dismiss a popup window -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="OK">"确认"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Saving">"正在保存"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Share">"分享"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Warning_Measurement_Constraint_Backlight">"背景光过亮 - 请改变位置和角度"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Warning_Measurement_Constraint_Brightness">"面部太亮 - 请降低亮度"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Warning_Measurement_Constraint_Distance">"面部距离屏幕太远 - 请靠近摄像头"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Warning_Measurement_Constraint_Position">"面部缺失 - 请置圈内"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Warning_Measurement_Constraint_Gaze">"面部偏斜 - 请正向面对摄像头"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Warning_Measurement_Constraint_Movement">"出现晃动 - 请保持静止"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="View_Note">"查看记录"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Prompt_Enter_Note">"您可以填加您的个人记录，例如时间、地点以及您正在做的事情，配合测量结果，更清晰地了解您的个人心理状况，本记录可以随时查阅，供您个人参考"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Message_Empty_History">"尚无测量记录，请点击“圆圈”开始第一次测量"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Message_Measurement_Default">请把面部保持在白色脸型轮廓内</string>
+
+    <string name="Message_Enterprise_Confirmation">请确认是否要加入 &lt;ENTERPRISE_NAME&gt;</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Message_Study_Confirmation">请确认是否要加入研究项目 &lt;STUDY_NAME&gt;</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Done">"完成"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Title_Add_Student">"请输入被测学生的手机号和学生号"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Login_WeChat">"微信登录"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Warning_Measurement_Constraint_Exposure">摄像头校准中…\n请保持静止</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Save">"保存"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Student_ID">"学生号"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Error_Message_SNR">"此次测量效果不佳，请调整照明使光线均匀分布在面部，再试一次"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Message_Login_Landing">如需保存历史记录\n
+请先登录</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Sign_Up_Email_Conflict">"该邮箱已注册，请尝试登录"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Sign_Up_Phone_Conflict">"该手机号已注册，请尝试登录"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Login_Phone_Failed">"手机号或密码错误，请重新尝试"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Add_Student_Generic">"手机号或学生号错误，请检查后重新输入"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Verification">"身份验证"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Active_Profile">"当前账户"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Birth_Year">"出生年"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Gender">"性别"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Height">"身高"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Privacy_Policy">"隐私政策"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Profile">"账户"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Rate_App">"给Anura打分"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Title_Verification_Code_Resend">"重新发送验证码"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Settings">"设置"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Terms_of_Use">"使用条款"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Weight">"体重"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="or_over_ios">"高于 %@"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="or_under_ios">"低于 %@"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Add_Student">"添加学生"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Sign_Up_Agreement">"点击注册即表示您同意&lt;TERMS_OF_USE&gt;和&lt;PRIVACY_POLICY&gt;"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Mobile_Number">"手机号"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Skip_Confirm">"确认"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="ID">"学生号"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Skip_Cancel">"取消"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Camera_Disclaimer">"敬请知悉，本应用将使用您的摄像头提取脸部血流数据用于分析。
+
+本应用不适用于任何医疗用途，包括但不限于医疗建议或诊断。如果您有任何健康问题，请咨询符合资格的专业医生。
+
+在手机运营商网络中使用本应用将产生额外的数据流量和相关费用。
+"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Title_HR_Info_3">"高于正常范围－静息心率"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Anura_Stress_Index">"Anura心理压力值 (ASI)"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Server_Connection">抱歉，无法连接到服务器</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Title_HR_Info_1">"低于正常范围－静息心率"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Title_Stress_Info_5">"超载"</string>
+
+    <!-- When translating this leave <TERMS_OF_USE> and <PRIVACY_POLICY> in English with the <> brackets. They will be replaced by the localized version of each of those strings in the code. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Disclaimer_Agreement">"点击下一步即表示您同意&lt;TERMS_OF_USE&gt;和&lt;PRIVACY_POLICY&gt;"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Title_Stress_Info_1">"非常放松"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="TItle_Invalid_QR_Code">"二维码无效"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Title_HR_Info_2">"正常范围—静息心率"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Title_Stress_Info_3">"高效"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Title_Stress_Info_2">"放松"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="State">状态:</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Message_Invalid_QR_Code">"此二维码无效，请确保您扫描的二维码由Nuralogix官方提供"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Title_Stress_Info_4">"警惕"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Message_Stress_Info_1">"• ASI值＂极低＂表示你几乎没有心理压力，身心健康极佳。
+
+• 你可能处于生活无忧或深度放松的状态。
+
+• 但是，过于放松的心态可能使你有时无法集中足够的注意力从事日常活动，因为必要的压力是有正面作用的。"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Message_Stress_Info_3">"• ASI值＂适中＂表示你有一定的心理压力，身心健康处于稳定状态。
+
+• 大多数人在此ASI区间会表现出最佳的工作状态。
+
+• 如果你在工作中保持此ASI状态并在休息时适当放松，将会受益匪浅。"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Message_Stress_Info_4">"• ASI值＂较高＂表示你有相当大的心理压力，并高度警觉。
+
+• 保持此ASI状态，你处理短期棘手的任务会非常高效。
+
+• 但是，不要让你的心理压力长期处于该状态，否则可能会对你的身心健康产生负面影响。"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Message_Stress_Info_5">"• ASI值＂极高＂表示你有巨大的心理压力，身心健康令人担忧。
+
+• 你可能处于极度焦虑的状态，无法让自己平静。
+
+• 建议你劳逸结合，保证充分的睡眠、多运动、多练习深呼吸、避免喝含咖啡因的饮料，尽量使自己放松。平静的生活有助于恢复心理压力的长期平衡，否则可能会导致多种健康问题。"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Message_Stress_Info_2">"• ASI值＂较低＂表示你有适当的心理压力，身心健康处于良好状态。
+
+• 这个状态是大多数人休息的时候应有的状态，同时也适宜处理一些简单的日常事务。
+
+• 有意识地增加心理压力有助于集中注意力去应对困难和挑战。"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Warning_Server_Connection">等待服务器连接</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Logging_Out">"正在退出登录"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Prompt_New_Password">"新密码 (请输入最少5个字符)"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Prompt_Repeat_Password">"确认密码"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Title_Set_New_Password">"设置新密码"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Warning_Measurement_Constraint_Darkness">"面部太暗 - 请提高亮度"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Verification_Code_Incorrect">"验证码错误"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Message_Set_New_Password_Success">"密码已更改"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Message_Reset_Password_Success">"密码重置链接已发送至您的邮箱，请查看"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Login_Generic">"登录错误"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Sign_Up_Generic">"注册错误"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Verification_Code_Generic">"验证电话号码错误"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Timeout">"请确保您已连接到WiFi或移动网络"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Set_New_Password_Generic">"更改密码错误"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Sign_Up_Phone_Update">"更改电话号码失败，请重试"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Message_Reset_Password_Email">"密码重置链接将发送到您的邮箱"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Message_Reset_Password_Phone">"密码重置链接短信将给送到您的手机"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Reset_Password_Generic">"您的密码无法重置"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Load_Profile_Generic">"读取账户失败"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Webview_Loading">"加载失败"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Loading_Note_Generic">"加载记录失败"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Log_Out_Generic">"退出登录失败"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Save_Profile_Generic">"保存账户失败"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Loading_Note">"正在加载记录"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Enter_Note_Generic">"保存记录错误"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Email_Not_Found">"该邮箱地址不存在"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Error_Phone_Not_Found">"该手机号不存在"</string>
+
+    <!-- The string <PHONE_NUMBER> will be replaced with the user's phone number -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Enter_Verification_Code">"请输入&lt;PHONE_NUMBER&gt;的验证码"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Help">"帮助"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Need_Help_Step_2">"请让面部有足够的光照"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Need_Help">"需要帮助?"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Need_Help_Step_1">"请尽量避开身后的光源"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Tip_Number">"提示&lt;NUMBER&gt;"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Warning_Low_Power_Mode">"为了更好的准确度，请取消低电量模式"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Message_HR_Info_2">"成年人的静息心率(RHR)通常在每分钟60到100次(bpm)之间被视作是正常的。
+
+静息心率会被很多因素影响，其中包括但不限于如下因素：
+•    健康水平
+•    年龄
+•    心血管疾病
+•    吸烟
+•    服用药物
+•    身体姿势（比如站立、坐下或躺着）
+
+通常情况下，较低的静息心率反映更加健康的心脏功能，同时也反映较低的心血管疾病风险。专业运动员的正常静息心率可能会低于60bpm，甚至接近40bmp。
+
+如果你对你的静息心率有疑问或想了解等多信息，请咨询专业医生。
+
+关于静息心率的更多资料，可参考梅奥诊所的文章\"&lt;ARTICLE_1&gt;\"、美国心脏学会的文章\"&lt;ARTICLE_2&gt;\" 以及\"&lt;ARTICLE_3&gt;\"。"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Message_HR_Info_3">"不正常的心率偏高或偏低可能预示潜在的问题。如果你的心率持续高于每分钟100次（bpm），特别是当有其它症状（例如头昏、晕眩、呼吸急促等）同时发生时，请咨询专业医生。
+
+静息心率会被很多因素影响，其中包括但不限于如下因素：
+•    健康水平
+•    年龄
+•    心血管疾病
+•    吸烟
+•    服用药物
+•    身体姿势（比如站立、坐下或躺着）
+
+如果你对你的静息心率有疑问或想了解等多信息，请咨询专业医生。
+
+关于静息心率的更多资料，可参考梅奥诊所的文章\"&lt;ARTICLE_1&gt;\"、美国心脏学会的文章\"&lt;ARTICLE_2&gt;\" 以及\"&lt;ARTICLE_3&gt;\"。"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="HR_Article1_Title">"什么是正常的静息心率"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="HR_Article2_Title">"了解你锻炼、减重和健康的心率目标"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="HR_Article3_Title">"关于心率（脉搏）的一切"</string>
+
+    <!-- Fuzzy -->
+    <string name="Message_HR_Info_1">"不正常的心率偏高或偏低可能预示潜在的问题。如果你不是经过训练的专业运动员并且你的心率低于每分钟60次（bpm），特别是当有其它症状（例如头昏、晕眩、呼吸急促等）同时发生时，请咨询专业医生。
+
+静息心率会被很多因素影响，其中包括但不限于如下因素：
+•    健康水平
+•    年龄
+•    心血管疾病
+•    吸烟
+•    服用药物
+•    身体姿势（比如站立、坐下或躺着）
+
+如果你对你的静息心率有疑问或想了解等多信息，请咨询专业医生。
+
+关于静息心率的更多资料，可参考梅奥诊所的文章\"&lt;ARTICLE_1&gt;\"、美国心脏学会的文章\"&lt;ARTICLE_2&gt;\" 以及\"&lt;ARTICLE_3&gt;\"。"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Stress_Info_Note">"正如静息心率（RHR）会持续变化一样，你的心理压力值（ASI）在连续的测量中显示不同的结果也是正常现象，这是因为心率变异性（HRV）也是持续变化的。所以，当你连续测量时，心理压力值（ASI）结果出现多至1.0的波动也并非异常现象。"</string>
+
+    <!-- No comment provided by engineer. -->
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <string name="Note">"注"</string>
+
+    <!-- VSigns/en.lproj/Localizable.strings -->
+    <!-- Fuzzy -->
+    <string name="Send_Feedback">"意见反馈"</string>
+
+    <!-- Fuzzy -->
+    <string name="Message_Log_Out_Confirm">"您是否要退出当前帐户?"</string>
+
+    <!-- Fuzzy -->
+    <string name="Warning_Measurement_Constraint_FPS">摄像头帧数不足 - 请提高亮度</string>
+    <!--BOJvURjU5j8AiW091LqB-->
+    <string name="Error_Request_Timeout">"发送请求超时\n请检查您的网络连接并重新尝试"</string>
+    <string name="International_Server">海外服务器</string>
+    <string name="China_Server">中国服务器</string>
+    <string name="Made_In_Toronto">多伦多研发制造</string>
+
+    <!-- Anura for <ENTERPRISE_NAME> -->
+    <string name="Anura_for_Enterprise">心魔镜 &lt;ENTERPRISE_NAME&gt; 定制版</string>
+    <string name="Study">研究项目</string>
+
+    <string name="Message_HR_Info_1_Android">"不正常的心率偏高或偏低可能预示潜在的问题。如果你不是经过训练的专业运动员并且你的心率低于每分钟60次（bpm），特别是当有其它症状（例如头昏、晕眩、呼吸急促等）同时发生时，请咨询专业医生。
+        &lt;br/&gt;&lt;br/&gt;静息心率会被很多因素影响，其中包括但不限于如下因素：&lt;br/&gt;
+        • 健康水平&lt;br/&gt;
+        • 年龄&lt;br/&gt;
+        • 心血管疾病&lt;br/&gt;
+        • 吸烟&lt;br/&gt;
+        • 服用药物&lt;br/&gt;
+        • 身体姿势（比如站立、坐下或躺着）&lt;br/&gt;&lt;br/&gt;
+    如果你对你的静息心率有疑问或想了解等多信息，请咨询专业医生。&lt;br/&gt;
+    关于静息心率的更多资料，可参考梅奥诊所的文章\"[ARTICLE_1]\"、美国心脏学会的文章\"[ARTICLE_2]\" 以及\"[ARTICLE_3]\"."</string>
+    <string name="Message_HR_Info_2_Android">"成年人的静息心率(RHR)通常在每分钟60到100次(bpm)之间被视作是正常的&lt;br/&gt;&lt;br/&gt;
+       静息心率会被很多因素影响，其中包括但不限于如下因素：&lt;br/&gt;
+        • 健康水平&lt;br/&gt;
+        • 年龄&lt;br/&gt;
+        • 心血管疾病&lt;br/&gt;
+        • 吸烟&lt;br/&gt;
+        • 服用药物&lt;br/&gt;
+        • 身体姿势（比如站立、坐下或躺着）&lt;br/&gt;&lt;br/&gt;
+   通常情况下，较低的静息心率反映更加健康的心脏功能，同时也反映较低的心血管疾病风险。专业运动员的正常静息心率可能会低于60bpm，甚至接近40bpm&lt;br/&gt;&lt;br/&gt;
+   如果你对你的静息心率有疑问或想了解等多信息，请咨询专业医生&lt;br/&gt;&lt;br/&gt;
+    关于静息心率的更多资料，可参考梅奥诊所的文章\"[ARTICLE_1]\"、美国心脏学会的文章\"[ARTICLE_2]\" 以及\"[ARTICLE_3]\"."</string>
+    <string name="Message_HR_Info_3_Android">"不正常的心率偏高或偏低可能预示潜在的问题。如果你的心率持续高于每分钟100次（bpm），特别是当有其它症状（例如头昏、晕眩、呼吸急促等）同时发生时，请咨询专业医生&lt;br/&gt;&lt;br/&gt;
+        静息心率会被很多因素影响，其中包括但不限于如下因素：&lt;br/&gt;
+         • 健康水平&lt;br/&gt;
+        • 年龄&lt;br/&gt;
+        • 心血管疾病&lt;br/&gt;
+        • 吸烟&lt;br/&gt;
+        • 服用药物&lt;br/&gt;
+        • 身体姿势（比如站立、坐下或躺着）&lt;br/&gt;&lt;br/&gt;
+    如果你对你的静息心率有疑问或想了解等多信息，请咨询专业医生&lt;br/&gt;
+    关于静息心率的更多资料，可参考梅奥诊所的文章\"[ARTICLE_1]\"、美国心脏学会的文章\"[ARTICLE_2]\" 以及\"[ARTICLE_3]\"."</string>
+
+    <!-- English: Please enter your mobile number -->
+    <string name="Prompt_Mobile_Number"></string>
+    <string name="under_lbs">"低于 %1$d 磅"</string>
+    <string name="under_kg">"低于 %1$d 公斤"</string>
+    <string name="under_cm">"低于 %1$d 厘米"</string>
+    <string name="under_in">"低于 %1$d\'%2$d\\""</string>
+    <string name="over_lbs">"高于 %1$d 磅"</string>
+    <string name="over_kg">"高于 %1$d 公斤"</string>
+    <string name="over_cm">"高于 %1$d 厘米"</string>
+    <string name="over_in">"高于 %1$d\'%2$d\\""</string>
+    <string name="Message_Stress_Info_1_Android">"•ASI值＂极低＂表示你几乎没有心理压力，身心健康极佳。&lt;br/&gt;&lt;br/&gt;
+• 你可能处于生活无忧或深度放松的状态。&lt;br/&gt;&lt;br/&gt;
+• 但是，过于放松的心态可能使你有时无法集中足够的注意力从事日常活动，因为必要的压力是有正面作用的.&lt;br/&gt;&lt;br/&gt;
+        &lt;b&gt;注:&lt;/b&gt; 正如静息心率（RHR）会持续变化一样，你的心理压力值（ASI）在连续的测量中显示不同的结果也是正常现象，这是因为心率变异性（HRV）也是持续变化的。所以，当你连续测量时，心理压力值（ASI）结果出现多至1.0的波动也并非异常现象"</string>
+    <string name="Message_Stress_Info_2_Android">"• ASI值＂较低＂表示你有适当的心理压力，身心健康处于良好状态。&lt;br/&gt;&lt;br/&gt;
+• 这个状态是大多数人休息的时候应有的状态，同时也适宜处理一些简单的日常事务。&lt;br/&gt;&lt;br/&gt;
+• 有意识地增加心理压力有助于集中注意力去应对困难和挑战.&lt;br/&gt;&lt;br/&gt;
+        &lt;b&gt;注:&lt;/b&gt; 正如静息心率（RHR）会持续变化一样，你的心理压力值（ASI）在连续的测量中显示不同的结果也是正常现象，这是因为心率变异性（HRV）也是持续变化的。所以，当你连续测量时，心理压力值（ASI）结果出现多至1.0的波动也并非异常现象"</string>
+    <string name="Message_Stress_Info_3_Android">"• ASI值＂适中＂表示你有一定的心理压力，身心健康处于稳定状态。&lt;br/&gt;&lt;br/&gt;
+• 大多数人在此ASI区间会表现出最佳的工作状态。&lt;br/&gt;&lt;br/&gt;
+• 如果你在工作中保持此ASI状态并在休息时适当放松，将会受益匪浅.&lt;br/&gt;&lt;br/&gt;
+        &lt;b&gt;注:&lt;/b&gt; 正如静息心率（RHR）会持续变化一样，你的心理压力值（ASI）在连续的测量中显示不同的结果也是正常现象，这是因为心率变异性（HRV）也是持续变化的。所以，当你连续测量时，心理压力值（ASI）结果出现多至1.0的波动也并非异常现象"</string>
+    <string name="Message_Stress_Info_4_Android">"• ASI值＂较高＂表示你有相当大的心理压力，并高度警觉&lt;br/&gt;&lt;br/&gt;
+• 保持此ASI状态，你处理短期棘手的任务会非常高效。&lt;br/&gt;&lt;br/&gt;
+• 但是，不要让你的心理压力长期处于该状态，否则可能会对你的身心健康产生负面影响.&lt;br/&gt;&lt;br/&gt;
+        &lt;b&gt;注:&lt;/b&gt; 正如静息心率（RHR）会持续变化一样，你的心理压力值（ASI）在连续的测量中显示不同的结果也是正常现象，这是因为心率变异性（HRV）也是持续变化的。所以，当你连续测量时，心理压力值（ASI）结果出现多至1.0的波动也并非异常现象"</string>
+    <string name="Message_Stress_Info_5_Android">"• ASI值＂极高＂表示你有巨大的心理压力，身心健康令人担忧。&lt;br/&gt;&lt;br/&gt;
+• 你可能处于极度焦虑的状态，无法让自己平静。&lt;br/&gt;&lt;br/&gt;
+• 建议你劳逸结合，保证充分的睡眠、多运动、多练习深呼吸、避免喝含咖啡因的饮料，尽量使自己放松。平静的生活有助于恢复心理压力的长期平衡，否则可能会导致多种健康问题.&lt;br/&gt;&lt;br/&gt;
+        &lt;b&gt;注:&lt;/b&gt; 正如静息心率（RHR）会持续变化一样，你的心理压力值（ASI）在连续的测量中显示不同的结果也是正常现象，这是因为心率变异性（HRV）也是持续变化的。所以，当你连续测量时，心理压力值（ASI）结果出现多至1.0的波动也并非异常现象"</string>
+    <string name="hint_dot">"..."</string>
+    <string name="one">"1"</string>
+    <string name="two">"2"</string>
+    <string name="three">"3"</string>
+    <string name="four">"4"</string>
+    <string name="five">"5"</string>
+    <string name="Landing_Chat_Bubble_Android">"您好，我是Anura.\n您的个人智能健\n康助手"</string>
+    <string name="Canada">"加拿大"</string>
+    <string name="China">"中国"</string>
+    <string name="Confirm">确认</string>
+    <string name="Message_Share_China">请扫描二维码关注我们的微信公众账号以了解更多信息或下载</string>
+
+    <string name="Message_Share_International">请点击这里下载心魔镜</string>
+
+    <string name="connecting">连接中...</string>
+
+
+    <!-- Fuzzy -->
+    <string name="Confirm_for_Enterprise">确认</string>
+
+    <!-- Short form of Systolic -->
+    <string name="BP_SYS_SHORT">收缩压</string>
+
+    <!-- Short form of diastolic -->
+    <string name="BP_DIA_SHORT">舒张压</string>
+
+    <!-- Want more results? Measure again! -->
+    <string name="WANT_MORE_RESULTS_TRY_AGAIN">想要更多结果吗？再测一次!</string>
+
+    <!-- Short for Cardiovascular Disease Risk -->
+    <string name="CVD_RISK_SHORT">心血管疾病风险</string>
+
+    <!-- Heart Attack Risk -->
+    <string name="HEART_ATTACK_RISK">心脏病风险</string>
+
+    <!-- Stroke Risk -->
+    <string name="STROKE_RISK">中风风险</string>
+
+    <!-- Age -->
+    <string name="AGE">年龄</string>
+
+    <string name="BODY_MASS_INDEX">身体质量指数BMI</string>
+
+    <!-- Vascular Capacity -->
+    <string name="VASCULAR_CAPACITY">血管功能</string>
+
+    <!-- Cardiac Workload -->
+    <string name="CARDIAC_WORKLOAD">心脏负荷</string>
+
+    <!-- Systolic Blood Pressure -->
+    <string name="BP_SYS">收缩压</string>
+
+    <!-- Diastolic Blood Pressure -->
+    <string name="BP_DIA">舒张压</string>
+
+    <!-- Pulse Pressure -->
+    <string name="BP_PP">脉压</string>
+
+    <!-- Cardiovascular Disease Risk -->
+    <string name="CVD_RISK">心血管疾病风险</string>
+
+    <!-- Anura General Health Score -->
+    <string name="ANURA_GENERAL_HEALTH_SCORE">综合健康评分</string>
+
+    <string name="camera_support">您的设备由于缺乏Camera 2 API的支持, 无法得到准确的测量结果</string>
+
+    <string name="Error_Camera_Calibration_Timeout">摄像头无法校准 重新校准中…</string>
+
+    <string name="IRREGULAR_HEARTBEATS">"每分钟心率不齐次数"</string>
+    <string name="FACIAL_SKIN_AGE">"面部皮肤年龄"</string>
+    <string name="FACIAL_VASCULAR_AGE">"面部血管年龄"</string>
+    <string name="SCAN_TO_VIEW_HEALTH_REPORT">"扫码查看个人健康报告"</string>
+    <string name="INFO_SYSTOLIC">"收缩压是指心肌收缩时肱动脉中的峰值压力，单位为毫米汞柱（mmHg）。&lt;br/&gt;&lt;br/&gt;
+
+•收缩压低于90mmHg可被视为低血压&lt;br/&gt;
+•90-139mmHg通常为正常血压&lt;br/&gt;
+•140mmHg及以上有可能是高血压&lt;br/&gt;&lt;br/&gt;
+
+如果你的收缩压处于低血压范围，建议咨询专业医生。如果你的血压处于高血压范围，你可能需要调整你的生活方式，包括更多的锻炼、健康的饮食（少盐、不喝咖啡、不喝酒），尝试通过冥想来减轻压力，并咨询专业医生。"</string>
+    <string name="INFO_DIASTOLIC">"舒张压是指当心脏肌肉放松时，肱动脉中的压力，单位是毫米汞柱（mmHg）。&lt;br/&gt;&lt;br/&gt;
+
+•舒张压低于60mmHg可被视为低血压&lt;br/&gt;
+•60-89mmHg通常为正常血压&lt;br/&gt;
+•90mmHg及以上有可能是高血压&lt;br/&gt;&lt;br/&gt;
+
+如果你的舒张压处于低血压范围，建议咨询专业医生。如果你的血压处于高血压范围，你可能需要调整你的生活方式，包括更多的锻炼、健康的饮食（少盐、不喝咖啡、不喝酒）和冥想来减轻压力，并咨询专业医生。"</string>
+    <string name="INFO_CARDIACWORKLOAD">"心脏负荷，或者更准确地说是心肌负荷，是对心肌压力的测量。&lt;br/&gt;&lt;br/&gt;
+
+心脏负荷可用以下公式计算：&lt;br/&gt;
+心率x收缩压。在静息状态下测量时，该指数可作为心血管健康的指标。&lt;br/&gt;&lt;br/&gt;
+
+例如，通常情况下，一个经常锻炼的人可能比另一个久坐不动的人应该有更低的心脏负荷。你的心脏负荷应该在剧烈运动时增加，但在运动结束后降低。"</string>
+    <string name="INFO_VASCULARCAPACITY">"血管容量，或Tau，是衡量血管弹性的一个指标。&lt;br/&gt;&lt;br/&gt;
+
+血管容量可用以下公式计算：&lt;br/&gt;
+R（血管阻力）x C（动脉顺应性）。&lt;br/&gt;&lt;br/&gt;
+
+在静息状态下测量时，该指数可作为心血管健康的一个指标，因为它与血管硬度密切相关。&lt;br/&gt;&lt;br/&gt;
+
+通常情况下，Tau值高的人比Tau值低的人有更好的血管健康状况。此外，某些活动可导致Tau值立即发生变化（例如，饮酒、吸烟）。"</string>
+    <string name="INFO_BMI">"体重指数（BMI）是对身体质量（肌肉、脂肪和骨骼）的量化。它通常用于将个体分类为体重过轻、正常体重、超重或肥胖。&lt;br/&gt;&lt;br/&gt;
+
+您可以使用以下公式计算您的体重指数：&lt;br/&gt;
+BMI=体重（kg）/身高（m）的平方。&lt;br/&gt;&lt;br/&gt;
+
+根据世界卫生组织的数据，体重指数：&lt;br/&gt;
+•低于18.5被认为是体重不足&lt;br/&gt;
+•18.5-24.9是正常体重&lt;br/&gt;
+•25-29.9是超重&lt;br/&gt;
+•30-34.9是一级肥胖&lt;br/&gt;
+•35-39.9是二级肥胖&lt;br/&gt;
+•40以上是三级肥胖"</string>
+    <string name="INFO_SKINAGE">"面部皮肤年龄是根据面部表面状况来评估你的年龄。&lt;br/&gt;&lt;br/&gt;
+
+这个评估值可以作为面部皮肤老化的指标。&lt;br/&gt;&lt;br/&gt;
+
+这种评估可能会受到许多因素的影响，如你的疲劳程度、护肤品和化妆品的使用等。&lt;br/&gt;&lt;br/&gt;
+
+在不好的照明条件下拍摄的视频图像（例如背光、头顶照明）可能会严重影响皮肤年龄的评估。"</string>
+    <string name="INFO_VASCULARAGE">"面部血管年龄是根据面部皮肤下面的血流特征来评估你的年龄。&lt;br/&gt;&lt;br/&gt;
+
+这个评估值可以作为面部血管老化的指标。"</string>
+    <string name="INFO_CVDRISK">"心血管疾病风险是指你在未来10年内患心血管疾病（心脏病、中风或外周动脉疾病）的可能性（以百分比表示）。&lt;br/&gt;&lt;br/&gt;
+
+该风险评分基于Framingham方法，根据预测性研究的数据建立计算模型，该研究针对参与者进行了超过10年的心血管健康随访。"</string>
+    <string name="INFO_HEARTATTACK">"心脏病发作风险是指你在未来10年内心脏病发作的可能性（以百分比表示）。&lt;br/&gt;&lt;br/&gt;
+
+该风险评分基于Framingham方法，根据预测性研究的数据建立计算模型，该研究针对参与者进行了超过10年的心血管健康随访。"</string>
+    <string name="INFO_STROKE">"中风风险是指在未来10年内发生中风的可能性（以百分比表示）。&lt;br/&gt;&lt;br/&gt;
+
+该风险评分基于Framingham方法，根据预测性研究的数据建立计算模型，该研究针对参与者进行了超过10年的心血管健康随访。"</string>
+    <string name="INFO_OVERALLSCORE">"综合健康评分是根据最基本的生命体征（包括心率、压力、血压、体重指数、心脏负荷、血管容量和心血管疾病风险）的综合计算得出的生理健康指标。&lt;br/&gt;&lt;br/&gt;
+
+通常情况下，你的综合健康评分越高，你的健康状况就越好。"</string>
+    <string name="DEMOGRAPHICS">"个人信息"</string>
+    <string name="FILL_PREVIOUS_PARTICIPANT_DATA">"填写上一个参与者数据"</string>
+    <string name="NAME">"条码号"</string>
+    <string name="HEIGHT">"身高(cm)"</string>
+    <string name="WEIGHT">"体重(kg)"</string>
+    <string name="WAIST">"腰围(cm)"</string>
+    <string name="GENDER">"性别 (m/f)"</string>
+    <string name="MAKEUP_TITLE">"您今天是否使用了 (0=否，1＝是）:"</string>
+    <string name="MEDICAL_CONDITIONS_TITLE">"请问你挡下是否有以下状态 （0=否，1=是）"</string>
+    <string name="NURSE">"护士"</string>
+    <string name="SMOKING">"抽烟"</string>
+    <string name="DIABETES">"糖尿病"</string>
+    <string name="HYPERTENSION">"高血压"</string>
+    <string name="HYPOTENSION">"低血压"</string>
+    <string name="BLOOD_PRESSURE_MEDICATION">"低血压"</string>
+    <string name="MAKEUP">"任何化妆品吗"</string>
+    <string name="FOUNDATION_OR_BB_CREAM">"粉底或BB霜"</string>
+    <string name="SYSTOLIC">"收缩压"</string>
+    <string name="DIASTOLIC">"舒张压"</string>
+    <string name="ERROR_TURN_OFF_LOW_POWER_MODE">"请取消低电量模式再进行测量"</string>
+    <string name="SAVE_VIDEO">"保存视频"</string>
+    <string name="WELCOME_BACK">"欢迎回来！"</string>
+    <string name="REQUEST_CODE">"获取短信验证码"</string>
+    <string name="ENTER_VERIFICATION_CODE">"输入短信验证码"</string>
+
+    <!-- To begin using the latest version, please verify it's you -->
+    <string name="TITLE_CONFIRM_NUMBER">"开始使用最新版本之前，\n请确认身份."</string>
+
+    <!-- Hi, I'm Anura. Let's begin your 30s Health Check. -->
+    <string name="MAIN_WELCOME">您好，我是心魔镜\n开始您的30秒\n健康检测吧</string>
+
+    <!-- You're currently using the preview edition -->
+    <string name="PREVIEW_EDITION">"您当前正在使用预览版"</string>
+
+    <!-- Cellphone number -->
+    <string name="CELLPHONE_NUM">"手机号"</string>
+
+    <!-- Continue -->
+    <string name="CONTINUE">"继续"</string>
+
+    <!-- Please update your profile -->
+    <string name="UPDATE_PROFILE">"请更新个人资料"</string>
+
+    <!-- Nickname (What should Anura call you?) -->
+    <string name="NICKNAME">"呢称（您想让心魔镜如何称呼您？）"</string>
+
+    <!--    &lt;!&ndash; Date of birth &ndash;&gt;-->
+    <!--    <string name="DOB">"出生日期"</string>-->
+
+    <!-- day -->
+    <string name="DAY">"日"</string>
+
+    <!-- Month -->
+    <string name="MONTH">"月"</string>
+
+    <!-- Year -->
+    <string name="YEAR">"年份"</string>
+
+    <!-- Yes -->
+    <string name="YES">"是"</string>
+
+    <!-- No -->
+    <string name="NO">"否"</string>
+
+    <!-- Do you smoke? -->
+    <string name="Q_SMOKE">"您抽烟吗？"</string>
+
+    <!-- Do you have diabetes? -->
+    <string name="Q_DIABETES">"您有糖尿病吗？"</string>
+
+    <!-- Do you have hypertension? -->
+    <string name="Q_HYPERTENSION">"您有高血压吗？"</string>
+
+    <!-- Success! -->
+    <string name="SUCCESS">"成功！"</string>
+
+    <!-- Tap continue to begin Anura 30s Health Check -->
+    <string name="TAP_BEGIN_ANURA">"点击继续开始使用心魔镜30秒健康检测"</string>
+
+    <!-- Note: Use your cellphone number to log back in next time -->
+    <string name="NOTE_CELLPHONE_LOGIN">"注意：下次登录请使用您注册的手机号码"</string>
+
+    <!-- Sign up -->
+    <string name="SIGN_UP">"注册"</string>
+
+    <!-- For existing user, login here. -->
+    <string name="EXIST_USER_LOGIN">"已有心魔镜账号？&lt;LOGIN_HERE&gt;"</string>
+
+    <string name="LOGIN_HERE">"请在此登录."</string>
+
+    <!-- Login with -->
+    <string name="LOGIN_WITH">"登录使用"</string>
+
+    <!-- Hi, <NICKNAME> -->
+    <string name="NICKNAME_GREETING">"您好，&lt;呢称&gt;"</string>
+
+    <!-- Login -->
+    <string name="LOGIN">"登录"</string>
+
+    <!-- We no longer allow email address login, please login with your phone number -->
+    <string name="NO_EMAIL_LOGIN">"我们不再支持电子邮件地址登录，请使用您的手机号登陆。"</string>
+
+    <!-- Welcome to Anura! -->
+    <string name="WELCOME_ANURA">"欢迎使用心魔镜！"</string>
+
+    <!-- The following tutorial will show you how to use Anura correctly for best results -->
+    <string name="TUTORIAL_TEXT">"以下教程将向您演示如何正确使用心魔镜以获得最佳效果。"</string>
+
+    <!-- Start -->
+    <string name="START">"开始"</string>
+
+    <!-- Skip -->
+    <string name="SKIP">"跳过"</string>
+
+    <!-- Choose a well-lit area that maximizes lighting onto your face and minimizes any backlighting. Make sure the phone and face are on the same level. -->
+    <string name="INSTRUCTION_1">"选择光线充足的地方，舒适地坐下并确保手机和面部位于同一水平"</string>
+
+    <!-- Minimize movement by keeping your face within the displayed circle and aligning your chin above the red mark. -->
+    <string name="INSTRUCTION_2">"确保光线均匀地分布在面部
+
+整个测量期间保持面部在白色脸型轮廓内"</string>
+
+    <!-- When measurement has started, please sit still for 30 seconds until the measurement is over. -->
+    <string name="INSTRUCTION_3">"整个测量期间保持静止30秒"</string>
+
+    <!-- Start measurement -->
+    <string name="START_MEASUREMENT">"开始测量"</string>
+
+    <!-- Please center your face in the circle with your forehead on the top red mark and chin on the bottom red mark -->
+    <string name="MEASURE_SCREEN_TEXT">"请把你的脸放在圆圈的中心，前额在上面的红色标记上，下巴在下面的红色标记上。"</string>
+
+    <!-- Measuring someone else > -->
+    <string name="GUEST_TEXT">"测量他人 &gt;"</string>
+
+    <!-- Anura won’t work well if:  The exposure is too high or too low The light is uneven on the face. -->
+    <string name="INSTRUCTION_4">"以下情况可能导致心魔镜无法正常操作：
+
+面部太亮或太暗，光线不均匀，尽量避免背景光"</string>
+
+    <!-- Anura won’t work well if: There are objects taking up majority of the face -->
+    <string name="INSTRUCTION_5">"以下情况可能导致心魔镜无法正常操作：
+
+面部有遮挡，比如眼镜或帽子"</string>
+
+    <!-- Anura won’t work well if: The face is not facing the camera The distance is too far or too close to the camera -->
+    <string name="INSTRUCTION_6">"以下情况可能导致心魔镜无法正常操作：
+
+面部没有朝向手机，距离太远或太近"</string>
+
+    <!-- Guest -->
+    <string name="GUEST">"访客"</string>
+
+    <!-- Please enter your guest information -->
+    <string name="GUEST_PROFILE">"请输入您的访客信息"</string>
+
+    <!-- This will not be saved -->
+    <string name="GUEST_INFO_SAVE">"这将不会被保存"</string>
+
+    <!-- Guest mode -->
+    <string name="GUEST_MODE">"访客模式"</string>
+
+    <string name="phone_number">手机号</string>
+    <string name="DOB">生日（年.月）</string>
+    <string name="Complete_Profile_Begin">完成个人资料</string>
+    <string name="anura_bundle">hCdq7ZoOZ+s=]UoKDFjHqPnzZTpd5g3NSZg==]Qxmvh2izNUxGs6SJ5Ub9yOSUxo04q8f0/kL/yP4hoFo=</string>
+    <string name="PRESS_BACK">再按一次退出</string>
+    <string name="Error_Measurement_Constraint_Distance_Too_Far">请把面部与手机的距离拉近一点，并保持在白色脸型轮廓内</string>
+    <string name="Warning_Measurement_Constraint_Distance_Face_Off_Target">偏离目标区域，请把脸紧贴合圆圈</string>
+    <string name="Warning_Measurement_Constraint_Distance_Too_Far">请把面部与手机的距离拉近一点，并保持在白色脸型轮廓内</string>
+
+    <string name="API_ERROR_UNVERIFIED_ACCOUNT">"账户尚未验证，请按照验证邮件中的说明激活您的帐户"</string>
+    <string name="API_ERROR_LOGIN_METHOD">"请用手机号登录"</string>
+    <string name="API_ERROR_USER_ALREADY_EXISTS">"&lt;username&gt;已被使用"</string>
+    <string name="API_ERROR_INVALID_VERIFICATION_CODE">"验证码无效"</string>
+    <string name="API_ERROR_INVALID_PASSWORD">"邮箱或密码错误，请重新尝试"</string>
+    <string name="API_ERROR_INVALID_USER">"邮箱或密码错误，请重新尝试"</string>
+    <string name="API_ERROR_FORBIDDEN">"抱歉，您的帐户暂时无法使用。请稍后再试"</string>
+    <string name="API_ERROR_INTERNAL_ERROR">"系统出错，请稍后再试"</string>
+    <string name="china_cc">+86</string>
+    <string name="BREATHING">呼吸</string>
+    <string name="PERFECT_HOLD_STILL">测量条件满足，请保持静止</string>
+
+    <string name="oops">抱歉！</string>
+    <string name="oops_text">因为环境光线或面部影像不稳定等原因，心魔镜无法准确测量以下指标，请遵循正确操作方法重试一次:&lt;br/&gt;&lt;br/&gt;
+
+• 血压 (收缩压  &amp; 舒张压)&lt;br/&gt;&lt;br/&gt;
+
+• 血管功能 / 心脏负荷&lt;br/&gt;&lt;br/&gt;
+
+• 心血管疾病风险&lt;br/&gt;&lt;br/&gt;
+
+• 综合健康指数&lt;br/&gt;
+    </string>
+    <string name="VIEW_GUIDELINES">正确操作方法</string>
+
+    <string name="STAR_DESCRIPT_TITLE">五星评级代表什么？</string>
+
+    <string name="STAR_DESCRIPT">&lt;b&gt;五星评级代表什么？&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;这个评级代表您的测量质量.&lt;br/&gt;&lt;br/&gt;
+
+心魔镜的五星评级系统是通过评价光线照在面部的情况，从而显示您的测量质量</string>
+
+    <string name="STAR_5_TITLE">4 – 5 颗星 </string>
+    <string name="STAR_5">良好的光照条件. 光线在面部上均匀地分布 (没有阴影).</string>
+    <string name="STAR_2_TITLE">2 – 3 颗星</string>
+    <string name="STAR_2">合格的光照条件。 面部光线合格 (即不太暗)，并且比较均匀地分布在您的脸上。 这些是心魔镜测量所需的最低照明条件</string>
+    <string name="STAR_0_TITLE">1 颗星</string>
+    <string name="STAR_0">照明条件差. 面部太暗，光线不均匀或测量过程中出现晃动. 在这样的光照条件下，心魔镜将不会完成您的测量.</string>
+
+    <string name="BP_DIASTOLIC_HYPER_RISK">"舒张期高血压风险"</string>
+    <string name="BP_SYSTOLIC_HYPER_RISK">收缩期高血压风险</string>
+    <string name="Body_Mass_Index">体重指数 BMI</string>
+    <string name="CHECK_INBOX">请检查您的邮箱</string>
+    <string name="Error_Message_SNR_Short">此次测量效果不佳
+请调整照明使光线均匀分布在面部</string>
+    <string name="Heart_Rate_Variability_Stress">心率变异性 (心理压力相关)</string>
+    <string name="INFO_BP_SYS">"收缩压是指心肌收缩时肱动脉中的峰值压力，单位为毫米汞柱（mmHg）。&lt;br/&gt;&lt;br/&gt;
+
+•收缩压低于90mmHg可被视为低血压&lt;br/&gt;
+•90-139mmHg通常为正常血压&lt;br/&gt;
+•140mmHg及以上有可能是高血压&lt;br/&gt;&lt;br/&gt;
+
+&lt;b&gt;&lt;font color=\"red\"&gt;免责声明：&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;
+心魔镜不是医疗设备，不应用于医疗目的。 如果您有任何与健康相关的疑问、不适或紧急情况，请务必咨询您的医生或其他医疗专业人员。&lt;br/&gt;&lt;br/&gt;
+
+&lt;b&gt;&lt;u&gt;血压估计的准确性：&lt;/u&gt;&lt;/b&gt;&lt;br/&gt;
+在一项发表在 [ARTICLE_4] 上的研究中，心魔镜使用的一种被称为血谱光学成像技术 (TOI) 的专有技术被证明可以在以下范围内测量血压，平均总准确度为95%：&lt;br/&gt;
+&lt;b&gt;收缩压：100-139 mmHg&lt;br/&gt;
+舒张压：60 – 89 mmHg&lt;/b&gt;"</string>
+    <string name="INFO_BP_DIA">"舒张压是指当心脏肌肉放松时，肱动脉中的压力，单位是毫米汞柱（mmHg）。&lt;br/&gt;&lt;br/&gt;
+
+•舒张压低于60mmHg可被视为低血压&lt;br/&gt;
+•60-89mmHg通常为正常血压&lt;br/&gt;
+•90mmHg及以上有可能是高血压&lt;br/&gt;&lt;br/&gt;
+
+&lt;b&gt;&lt;font color=\"red\"&gt;免责声明：&lt;/font&gt;&lt;/b&gt;&lt;br/&gt;
+心魔镜不是医疗设备，不应用于医疗目的。 如果您有任何与健康相关的疑问、不适或紧急情况，请务必咨询您的医生或其他医疗专业人员。&lt;br/&gt;&lt;br/&gt;
+
+&lt;b&gt;&lt;u&gt;血压估计的准确性：&lt;/u&gt;&lt;/b&gt;&lt;br/&gt;
+在一项发表在 [ARTICLE_5] 上的研究中，心魔镜使用的一种被称为血谱光学成像技术 (TOI) 的专有技术被证明可以在以下范围内测量血压，平均总准确度为95%：&lt;br/&gt;
+&lt;b&gt;收缩压：100-139 mmHg&lt;br/&gt;
+舒张压：60 – 89 mmHg&lt;/b&gt;"</string>
+
+    <string name="BP_SYS_Article4_Title">美国心脏协会杂志《循环：心血管成像》(第12卷，第8期)</string>
+
+    <string name="BP_DIA_Article5_Title">美国心脏协会杂志《循环：心血管成像》(第12卷，第8期)</string>
+
+    <string name="LICENSE_EXPIRY">提示: 您需要下载更新以便继续使用心魔镜</string>
+
+    <string name="MEASUREMENT_STARTED">测量已开始
+请保持静止</string>
+    <string name="DATE_OF_BIRTH">出生日期</string>
+
+    <string name="device_info">Device Info</string>
+    <string name="action_dfx_setting">DFX Settings</string>
+    <string name="pref_dfx_total_chunk_number">dfx_total_chunk_number</string>
+    <string name="pref_dfx_duration_per_chunk">dfx_duration_per_chunk</string>
+    <string name="pref_dfx_min_fps">dfx_min_fps</string>
+    <string name="pref_dfx_dark_threshold">dfx_dark_threshold</string>
+    <string name="pref_dfx_bright_threshold">dfx_bright_threshold</string>
+    <string name="pref_dfx_back_light_threshold">dfx_back_light_threshold</string>
+    <string name="pref_dfx_back_light_search_factor">dfx_back_light_search_factor</string>
+    <string name="pref_dfx_back_light_max_pixels_pct">dfx_back_light_max_pixels_pct</string>
+    <string name="pref_dfx_max_face_rotate_lr_deg">dfx_max_face_rotate_lr_deg</string>
+    <string name="pref_dfx_max_face_rotate_ud_deg">dfx_max_face_rotate_ud_deg</string>
+    <string name="pref_dfx_min_inter_pupil_dist_px">dfx_min_inter_pupil_dist_px</string>
+    <string name="pref_dfx_max_face_movement_mm">dfx_max_face_movement_mm</string>
+    <string name="pref_dfx_face_movement_window_ms">_dfx_face_movement_window_ms</string>
+    <string name="pref_dfx_max_eyebrow_movement_mm">dfx_max_eyebrow_movement_mm</string>
+    <string name="pref_dfx_camera_rotate_chunk_threshold">dfx_camera_rotate_chunk_threshold</string>
+    <string name="pref_dfx_camera_rotate_window_threshold">dfx_camera_rotate_window_threshold</string>
+    <string name="pref_dfx_check_min_fps_enabled">dfx_check_min_fps_enabled</string>
+    <string name="pref_dfx_check_face_centered">dfx_check_face_centered</string>
+    <string name="pref_dfx_check_face_distance">dfx_check_face_distance</string>
+    <string name="pref_dfx_check_face_direction">dfx_check_face_direction</string>
+    <string name="pref_dfx_check_lighting">dfx_check_lighting</string>
+    <string name="pref_dfx_check_face_movement">dfx_check_face_movement</string>
+    <string name="pref_dfx_check_back_light">dfx_check_back_light</string>
+    <string name="pref_dfx_check_camera_movement">dfx_check_camera_movement</string>
+    <string name="pref_dfx_check_eyebrow_movement">dfx_check_eyebrow_movement</string>
+
+    <string name="version_low">Android system version is too low to use Camera2 API</string>
+    <string name="no_front_camera">No front camera detected</string>
+    <string name="unknown_error">unknown error</string>
+
+    <string name="tips" translatable="false">"Tips:
+        1.Click CONFIGURATION,Configure account information(Only need to do it once)
+        2.Click MEASUREMENT, start measurement
+        3.Do not move during the measurement and keep enough light"</string>
 
 </resources>

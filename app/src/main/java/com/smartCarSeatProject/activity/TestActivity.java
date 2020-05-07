@@ -12,11 +12,6 @@ import com.smartCarSeatProject.isometric.IsometricView;
 import com.smartCarSeatProject.isometric.Point;
 import com.smartCarSeatProject.isometric.shapes.Prism;
 import org.jetbrains.annotations.Nullable;
-import org.luaj.vm2.Globals;
-import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.OneArgFunction;
-import org.luaj.vm2.lib.TwoArgFunction;
-import org.luaj.vm2.lib.jse.JsePlatform;
 import java.util.List;
 
 
@@ -36,7 +31,6 @@ public class TestActivity extends BaseActivity {
 
 //        test0();
 
-        Test1();
 
         test2();
 
@@ -107,65 +101,6 @@ public class TestActivity extends BaseActivity {
     }
 
 
-    public void Test1() {
-        String s = "";//lua脚本
-        s += "x=3\r\n";
-        s += "y=4\r\n";
-        s += "print ('hello world!')\r\n";
-        s += "function aa()\r\n";
-        s += "print ('aaa')\r\n";
-        s += "end\r\n";
-        s += "aa()\r\n";
-        s += "c=method1(x)\r\n";
-        s += "d=test.method2(x,y)\r\n";
-        s += "print (x..'π='..c)\r\n";
-        s += "print ('x*y='..d)\r\n";
-
-        Globals globals = JsePlatform.standardGlobals();//初始化lua
-        globals.load(new TestMethod());//注入方法
-        LuaValue chunk = globals.load(s);//加载自己写的脚本
-        chunk.call();//执行脚本
-        String d = globals.get("d").toString();//取得脚本里的变量d的值
-        System.out.println("d:" + d);
-    }
-
-    public class TestMethod extends TwoArgFunction {
-        /**
-         * The implementation of the TwoArgFunction interface.
-         * This will be called once when the library is loaded via require().
-         *
-         * @param modname LuaString containing the name used in the call to require().
-         * @param env     LuaValue containing the environment for this function.
-         * @return Value that will be returned in the require() call.  In this case,
-         * it is the library itself.
-         */
-        public LuaValue call(LuaValue modname, LuaValue env) {
-            //调用方式1 method1(x)
-            env.set("method1", new Method1());
-            env.set("method2", new Method2());
-
-            //调用方式2 test.method1(x)
-            LuaValue library = tableOf();
-            library.set("method1", new Method1());
-            library.set("method2", new Method2());
-            env.set("test", library);
-            return null;
-        }
-
-        //一个参数的方法
-        class Method1 extends OneArgFunction {
-            public LuaValue call(LuaValue x) {
-                return LuaValue.valueOf(Math.PI * x.checkint());
-            }
-        }
-
-        //两个参数的方法
-        class Method2 extends TwoArgFunction {
-            public LuaValue call(LuaValue x, LuaValue y) {
-                return LuaValue.valueOf(x.checkint() * y.checkint());
-            }
-        }
-    }
 
     public void test2() {
 

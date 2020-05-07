@@ -38,6 +38,14 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener {
 
         reciverBand()
 
+        // 显示人体数据： id & 信噪比 & 心跳 & 情绪值 & 低压 & 高压
+        val strArrayInfo = BaseVolume.strPersonDataInfo.split("&")
+        tvSN.text = "信噪比：${strArrayInfo[1]}"
+        tvHeart.text = "心跳：${strArrayInfo[2]}"
+        tvMSI.text = "情绪：${strArrayInfo[3]}"
+        tvBPD.text = "舒张压：${strArrayInfo[4]}"
+        tvBPS.text = "收缩压：${strArrayInfo[5]}"
+
     }
 
     fun initUI() {

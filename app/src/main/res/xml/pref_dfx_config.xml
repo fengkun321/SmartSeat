@@ -1,0 +1,145 @@
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Dfx Configuration">
+
+        <EditTextPreference
+            android:key="@string/pref_dfx_total_chunk_number"
+            android:title="Total Chunk Number:"
+            android:inputType="number"
+            android:summary="6"
+            android:defaultValue="6"/>
+
+        <EditTextPreference
+            android:key="@string/pref_dfx_duration_per_chunk"
+            android:title="Duration per Chunk (s):"
+            android:inputType="number"/>
+
+        <EditTextPreference
+            android:key="@string/pref_dfx_min_fps"
+            android:title="Minimum FPS:"
+            android:inputType="number"/>
+
+        <EditTextPreference
+            android:key="@string/pref_dfx_dark_threshold"
+            android:title="Dark Threshold:"
+            android:inputType="number"/>
+
+        <EditTextPreference
+            android:key="@string/pref_dfx_bright_threshold"
+            android:title="Bright Threshold:"
+            android:inputType="number"/>
+
+        <EditTextPreference
+            android:key="@string/pref_dfx_back_light_threshold"
+            android:title="Back Light Threshold:"
+            android:inputType="number"/>
+
+        <EditTextPreference
+            android:key="@string/pref_dfx_back_light_search_factor"
+            android:title="Back Light Search Factor:"
+            android:inputType="number"/>
+
+        <EditTextPreference
+            android:key="@string/pref_dfx_back_light_max_pixels_pct"
+            android:title="Back Light Max Pixels Percentage:"
+            android:inputType="number"/>
+
+        <EditTextPreference
+            android:key="@string/pref_dfx_max_face_rotate_lr_deg"
+            android:title="Max Face Left-Right Rotate (degree):"
+            android:inputType="number"/>
+
+        <EditTextPreference
+            android:key="@string/pref_dfx_max_face_rotate_ud_deg"
+            android:title="Max Face Up-Down Rotate (degree):"
+            android:inputType="number"/>
+
+        <EditTextPreference
+            android:key="@string/pref_dfx_min_inter_pupil_dist_px"
+            android:title="Min Inter Pupil Dist PX:"
+            android:inputType="number"/>
+
+        <EditTextPreference
+            android:key="@string/pref_dfx_max_face_movement_mm"
+            android:title="Max Face Movement (mm):"
+            android:inputType="number"/>
+
+        <EditTextPreference
+            android:key="@string/pref_dfx_face_movement_window_ms"
+            android:title="Face Movement Window (ms):"
+            android:inputType="number"/>
+
+        <EditTextPreference
+            android:key="@string/pref_dfx_max_eyebrow_movement_mm"
+            android:title="Max Eyebrow Movement (mm):"
+            android:inputType="number"/>
+
+        <EditTextPreference
+            android:key="@string/pref_dfx_camera_rotate_chunk_threshold"
+            android:title="Camera Rotate Chunk Threshold:"
+            android:inputType="number"/>
+
+        <EditTextPreference
+            android:key="@string/pref_dfx_camera_rotate_window_threshold"
+            android:title="Camera Rotate Window Threshold:"
+            android:inputType="number"/>
+
+        <CheckBoxPreference
+            android:enabled="true"
+            android:key="@string/pref_dfx_check_min_fps_enabled"
+            android:title="Check Min Fps"
+	        android:defaultValue="true"/>
+
+        <CheckBoxPreference
+            android:enabled="true"
+            android:key="@string/pref_dfx_check_face_centered"
+            android:title="Check Face Centered"
+            android:defaultValue="true"/>
+
+        <CheckBoxPreference
+            android:enabled="true"
+            android:key="@string/pref_dfx_check_face_distance"
+            android:title="Check Face Distance"
+            android:defaultValue="true"/>
+
+        <CheckBoxPreference
+            android:enabled="true"
+            android:key="@string/pref_dfx_check_face_direction"
+            android:title="Check Face Direction"
+            android:defaultValue="true"/>
+
+        <CheckBoxPreference
+            android:enabled="true"
+            android:key="@string/pref_dfx_check_lighting"
+            android:title="Check Lighting"
+            android:defaultValue="true"/>
+
+        <CheckBoxPreference
+            android:enabled="true"
+            android:key="@string/pref_dfx_check_face_movement"
+            android:title="Check Face Movement"
+            android:defaultValue="true"/>
+
+        <CheckBoxPreference
+            android:enabled="true"
+            android:key="@string/pref_dfx_check_back_light"
+            android:title="Check Back Light"
+            android:defaultValue="true"/>
+
+        <CheckBoxPreference
+            android:enabled="true"
+            android:key="@string/pref_dfx_check_camera_movement"
+            android:title="Check Camera Movement"
+            android:defaultValue="true"/>
+
+        <CheckBoxPreference
+            android:enabled="true"
+            android:key="@string/pref_dfx_check_eyebrow_movement"
+            android:title="Check Eyebrow Movement"
+            android:defaultValue="true"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
