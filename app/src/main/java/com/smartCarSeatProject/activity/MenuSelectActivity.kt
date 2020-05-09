@@ -100,7 +100,6 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         btn2.setOnClickListener(this)
         btn3.setOnClickListener(this)
         btn4.setOnClickListener(this)
-        tvPersonInfo.setOnClickListener(this)
         btn1.isEnabled = false
 
     }
@@ -201,9 +200,6 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             }
             R.id.tvReCanConnect -> {
                 SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
-            }
-            R.id.tvPersonInfo -> {
-                startActivity(Intent(mContext, MeasurementActivity()::class.java))
             }
         }
     }
@@ -767,11 +763,23 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     // 人体数据： id & 信噪比 & 心跳 & 情绪值 & 低压 & 高压
                     val strPersonDataInfo =  "${result.measurementID}&${result.snr}&${result.heartRate}&${result.msi}&${result.bpDiastolic}&${result.bpSystolic}"
                     BaseVolume.strPersonDataInfo = strPersonDataInfo
-                    cancelled_tv.text = "id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}"
+                    Loge("MenuSelectActivity","人体数据：id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}")
+                    measureReuslt.text = "id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}"
+
 
                     if (result.resultIndex + 1 >= MeasurementActivity.TOTAL_NUMBER_CHUNKS) {
-                        stopMeasurement(true)
+                        Loge("MenuSelectActivity","人体数据：测量结束！")
+                        cancelled_tv.visibility = View.GONE
+                        trackerView.visibility = View.GONE
+//                        stopMeasurement(true)
+                        state = STATE.DONE
+                        cloudAnalyzer.stopAnalyzing()
+                        dfxPipe.stopCollect()
+                        if (dialog.isShowing) {
+                            dialog.dismiss()
+                        }
                     }
+
                 }
             }
 
@@ -786,12 +794,6 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 }
             }
         }
-
-//        fileVideoSource = FileVideoSourceImpl("FileVideoSource", core, videoFormat)
-//        val videoDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-//        AnuLogUtil.d(TAG, "Video file path: ${videoDir.absolutePath}")
-//        fileVideoSource.setFileSource(videoDir.absolutePath + "/Camera/1583406136199.mp4")
-
         val dfxConfig = DfxPipeConfiguration(this, null)
         MeasurementActivity.TOTAL_NUMBER_CHUNKS = dfxConfig.getRuntimeParameterInt(DfxPipeConfiguration.RuntimeKey.TOTAL_NUMBER_CHUNKS, 6)
         val duration = MeasurementActivity.TOTAL_NUMBER_CHUNKS * dfxConfig.getRuntimeParameterFloat(DfxPipeConfiguration.RuntimeKey.DURATION_PER_CHUNK, 5f)
@@ -981,6 +983,12 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             renderingVideoSink.start()
         }
         state = STATE.IDLE
+        if (trackerView.visibility == View.GONE) {
+            state = STATE.DONE
+            cloudAnalyzer.stopAnalyzing()
+            dfxPipe.stopCollect()
+        }
+
         super.onResume()
     }
 
