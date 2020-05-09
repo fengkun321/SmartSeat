@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBlack"
@@ -98,7 +99,40 @@
             android:textStyle="bold"
             android:textColor="@color/colorWhite"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:visibility="invisible"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:background="@color/colorWhite"
+            android:visibility="visible">
+
+
+            <ai.nuralogix.anurasdk.render.opengl.GLSurfaceViewTracker
+                android:id="@+id/tracker_opengl_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <ai.nuralogix.anurasdk.views.TrackerView
+                android:id="@+id/tracker_ui_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/cancelled_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:paddingBottom="20sp"
+                android:textAlignment="center"
+                android:textColor="@color/colorAccent"
+                android:text="123"
+                android:textSize="15sp"/>
+
+        </RelativeLayout>
 
         <TextView android:id="@+id/tvPersonInfo"
             android:layout_width="wrap_content"
@@ -110,12 +144,15 @@
             android:layout_alignParentRight="true"
             android:layout_alignBaseline="@+id/tvTitle"/>
 
+        // 模式选择
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_centerInParent="true"
-            android:gravity="center">
+            android:gravity="center"
+            android:visibility="visible"
+            android:paddingTop="150dp">
 
             <RelativeLayout
                 android:layout_width="wrap_content"

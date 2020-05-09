@@ -83,6 +83,8 @@ class MyHisDateAdapter(internal var list: ArrayList<DevelopDataInfo>, internal v
             holder.m_tvAD_6 = convertView.findViewById(R.id.AD_6) as TextView
             holder.m_tvAD_7 = convertView.findViewById(R.id.AD_7) as TextView
             holder.m_tvAD_8 = convertView.findViewById(R.id.AD_8) as TextView
+            holder.m_tvLocation = convertView.findViewById(R.id.lLocation) as TextView
+            holder.m_tvMassage = convertView.findViewById(R.id.mMassage) as TextView
 
             convertView!!.tag = holder
         } else {
@@ -129,6 +131,9 @@ class MyHisDateAdapter(internal var list: ArrayList<DevelopDataInfo>, internal v
         holder.m_tvAD_7!!.text = deviceInfo.p_adjust_cushion_7
         holder.m_tvAD_8!!.text = deviceInfo.p_adjust_cushion_8
 
+        holder.m_tvLocation!!.text = deviceInfo.l_location
+        holder.m_tvMassage!!.text = deviceInfo.m_massage
+
 
         return convertView
     }
@@ -173,6 +178,8 @@ class MyHisDateAdapter(internal var list: ArrayList<DevelopDataInfo>, internal v
         var m_tvAD_6: TextView? = null
         var m_tvAD_7: TextView? = null
         var m_tvAD_8: TextView? = null
+        var m_tvLocation: TextView? = null
+        var m_tvMassage: TextView? = null
 
 
     }

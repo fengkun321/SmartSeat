@@ -22,7 +22,8 @@ open class HistoryDataShowActivity : BaseActivity(){
 
         // 保存数据库！
         val developInfoDao = DevelopInfoDao(this)
-        var mDataSource =  developInfoDao.queryHistDataInf()
+        var mDataSource =  developInfoDao.queryHistDataInfByDataType(DevelopDataInfo.DATA_TYPE_DEVELOP)
+//        var mDataSource =  developInfoDao.queryHistDataInfByDataType(DevelopDataInfo.DATA_TYPE_USE)
         developInfoDao.closeDb()
         myHisDateAdapter = MyHisDateAdapter(mDataSource, this)
 

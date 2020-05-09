@@ -4,12 +4,12 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import com.ai.nuralogix.anura.sample.activities.MainActivity
 
 
 class FirstActivity : BaseActivity() {
 
     private var mPermissionsChecker: PermissionsChecker? = null // 权限�?测器
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,9 +24,9 @@ class FirstActivity : BaseActivity() {
         if (mPermissionsChecker!!.lacksPermissions(*PERMISSIONS)) {
             startPermissionsActivity()
         } else {
-//            startActivity(Intent(this, WelcomeActivity::class.java))
+            startActivity(Intent(this, WelcomeActivity::class.java))
 //            startActivity(Intent(this, TestActivity::class.java))
-            startActivity(Intent(this, MenuSelectActivity::class.java))
+//            startActivity(Intent(this, MenuSelectActivity::class.java))
             finish()
         }
 
@@ -42,9 +42,9 @@ class FirstActivity : BaseActivity() {
         if (requestCode == REQUEST_CODE && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
             finish()
         } else {
-//            startActivity(Intent(this, WelcomeActivity::class.java))
+            startActivity(Intent(this, WelcomeActivity::class.java))
 //            startActivity(Intent(this, TestActivity::class.java))
-            startActivity(Intent(this, MenuSelectActivity::class.java))
+//            startActivity(Intent(this, MenuSelectActivity::class.java))
             finish()
         }
     }

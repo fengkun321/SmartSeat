@@ -1461,10 +1461,13 @@ BMI=体重（kg）/身高（m）的平方。&lt;br/&gt;&lt;br/&gt;
     <string name="pref_dfx_check_back_light">dfx_check_back_light</string>
     <string name="pref_dfx_check_camera_movement">dfx_check_camera_movement</string>
     <string name="pref_dfx_check_eyebrow_movement">dfx_check_eyebrow_movement</string>
+    <string name="pref_camera_info">camera_info</string>
 
     <string name="version_low">Android system version is too low to use Camera2 API</string>
     <string name="no_front_camera">No front camera detected</string>
     <string name="unknown_error">unknown error</string>
+
+    <string name="action_camera_choice">Camera Choices</string>
 
     <string name="tips" translatable="false">"Tips:
         1.Click CONFIGURATION,Configure account information(Only need to do it once)

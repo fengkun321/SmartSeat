@@ -2,6 +2,13 @@ package com.smartCarSeatProject.dao
 
 class DevelopDataInfo {
 
+    companion object{
+        val DATA_TYPE_USE = "DATA_TYPE_USE"
+        val DATA_TYPE_DEVELOP = "DATA_TYPE_DEVELOP"
+    }
+
+
+
     var iID = -1
 
     // 名称
@@ -48,6 +55,11 @@ class DevelopDataInfo {
     var p_adjust_cushion_7 = "0"
     var p_adjust_cushion_8 = "0"
 
+    // 位置调节
+    var l_location = "1"
+    // 按摩模式
+    var m_massage = "1"
+
     // 人员-性别
     var m_gender = "1"
     // 人员-国别
@@ -60,6 +72,8 @@ class DevelopDataInfo {
     var strPSInfo = ""
     // 时间
     var saveTime = ""
+    // 数据类型
+    var dataType = ""
 
     /** 初始化数据 */
     fun initData() {
@@ -118,12 +132,18 @@ class DevelopDataInfo {
         strPSInfo = ""
         // 时间
         saveTime = ""
+        // 数据类型
+        dataType = DATA_TYPE_USE
+        // 位置调节
+        l_location = "1"
+        // 按摩模式
+        m_massage = "1"
 
 
     }
 
     override fun toString(): String {
-        return "DevelopDataInfo(p_init_back_A='$p_init_back_A', p_init_back_B='$p_init_back_B', p_init_cushion='$p_init_cushion', p_recog_back_A='$p_recog_back_A', p_recog_back_B='$p_recog_back_B', p_recog_back_C='$p_recog_back_C', p_recog_back_D='$p_recog_back_D', p_recog_back_E='$p_recog_back_E', p_recog_back_F='$p_recog_back_F', p_recog_back_G='$p_recog_back_G', p_recog_back_H='$p_recog_back_H', p_recog_cushion_1='$p_recog_cushion_1', p_recog_cushion_2='$p_recog_cushion_2', p_recog_cushion_3='$p_recog_cushion_3', p_recog_back_4='$p_recog_back_4', p_recog_back_5='$p_recog_back_5', p_recog_back_6='$p_recog_back_6', p_recog_back_7='$p_recog_back_7', p_recog_back_8='$p_recog_back_8', p_adjust_cushion_1='$p_adjust_cushion_1', p_adjust_cushion_2='$p_adjust_cushion_2', p_adjust_cushion_3='$p_adjust_cushion_3', p_adjust_cushion_4='$p_adjust_cushion_4', p_adjust_cushion_5='$p_adjust_cushion_5', p_adjust_cushion_6='$p_adjust_cushion_6', p_adjust_cushion_7='$p_adjust_cushion_7', p_adjust_cushion_8='$p_adjust_cushion_8', m_gender='$m_gender', m_national='$m_national', m_weight='$m_weight', m_height='$m_height', strPSInfo='$strPSInfo', saveTime='$saveTime')"
+        return "DevelopDataInfo(iID=$iID, strName='$strName', p_init_back_A='$p_init_back_A', p_init_back_B='$p_init_back_B', p_init_cushion='$p_init_cushion', p_recog_back_A='$p_recog_back_A', p_recog_back_B='$p_recog_back_B', p_recog_back_C='$p_recog_back_C', p_recog_back_D='$p_recog_back_D', p_recog_back_E='$p_recog_back_E', p_recog_back_F='$p_recog_back_F', p_recog_back_G='$p_recog_back_G', p_recog_back_H='$p_recog_back_H', p_recog_cushion_1='$p_recog_cushion_1', p_recog_cushion_2='$p_recog_cushion_2', p_recog_cushion_3='$p_recog_cushion_3', p_recog_back_4='$p_recog_back_4', p_recog_back_5='$p_recog_back_5', p_recog_back_6='$p_recog_back_6', p_recog_back_7='$p_recog_back_7', p_recog_back_8='$p_recog_back_8', p_adjust_cushion_1='$p_adjust_cushion_1', p_adjust_cushion_2='$p_adjust_cushion_2', p_adjust_cushion_3='$p_adjust_cushion_3', p_adjust_cushion_4='$p_adjust_cushion_4', p_adjust_cushion_5='$p_adjust_cushion_5', p_adjust_cushion_6='$p_adjust_cushion_6', p_adjust_cushion_7='$p_adjust_cushion_7', p_adjust_cushion_8='$p_adjust_cushion_8', l_location='$l_location', m_massage='$m_massage', m_gender='$m_gender', m_national='$m_national', m_weight='$m_weight', m_height='$m_height', strPSInfo='$strPSInfo', saveTime='$saveTime', dataType='$dataType')"
     }
 
 

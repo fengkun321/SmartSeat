@@ -12,20 +12,28 @@ import com.smartCarSeatProject.R
 class LoadingDialog : Dialog {
 
     private var mTextView: TextView? = null
+    var strMsg = "waitting...";
 
     constructor(context: Context) : super(context) {}
 
-    constructor(context: Context?, theme: Int) : super(context, theme) {}
+    constructor(context: Context?, theme: Int) : super(context!!, theme) {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.setContentView(R.layout.loading_dialog)
         this.setCanceledOnTouchOutside(false)
         mTextView = findViewById<View>(R.id.loading_text) as TextView?
+        this.mTextView?.text = strMsg
     }
 
     fun updateStatusText(text: String) {
-        this.mTextView!!.text = text
+        strMsg = text
+        this.mTextView?.text = text
+    }
+
+    fun showAndMsg(text: String) {
+        strMsg = text
+        this.show()
     }
 
 }

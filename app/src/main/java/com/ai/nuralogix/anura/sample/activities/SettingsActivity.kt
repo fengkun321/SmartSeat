@@ -1,5 +1,7 @@
-package com.ai.nuralogix.anura.sample.activities
+package ai.nuralogix.anura.sample.activities
 
+import ai.nuralogix.anura.sample.settings.CameraConfigurationFragment
+import ai.nuralogix.anura.sample.settings.DfxPipeConfigurationFragment
 import ai.nuralogix.anurasdk.utils.AnuLogUtil
 import android.content.Context
 import android.content.Intent
@@ -8,8 +10,6 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import com.ai.nuralogix.anura.sample.activities.MeasurementActivity
-import com.ai.nuralogix.anura.sample.settings.DfxPipeConfigurationFragment
 import com.ai.nuralogix.anura.sample.utils.BundleUtils
 import com.smartCarSeatProject.R
 
@@ -59,6 +59,11 @@ class SettingsActivity : AppCompatActivity() {
                         fragment = DfxPipeConfigurationFragment()
                         fragment?.arguments = configBundle
                     }
+
+                    CameraConfigurationFragment::class.java.name -> {
+                        fragment = CameraConfigurationFragment()
+                        fragment?.arguments = configBundle
+                    }
                 }
                 if (fragment == null) {
                     // nothing to do in this level
@@ -71,15 +76,25 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    var configBundle: Bundle? = null
+    private var configBundle: Bundle? = null
+    private var fragmentTag: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        configBundle = extractSettingBundle(intent, BundleUtils.DFX_BUNDLE_KEY)
-        val fragmentTag = extractSettingFragmentTag(intent)
+
+        fragmentTag = extractSettingFragmentTag(intent)
+        when (fragmentTag) {
+            DfxPipeConfigurationFragment::class.java.name -> {
+                configBundle = extractSettingBundle(intent, BundleUtils.DFX_BUNDLE_KEY)
+            }
+
+            CameraConfigurationFragment::class.java.name -> {
+                configBundle = extractSettingBundle(intent, BundleUtils.CAMERA_BUNDLE_KEY)
+            }
+        }
 
         createFragment(supportFragmentManager, fragmentTag, configBundle)
     }
@@ -89,12 +104,7 @@ class SettingsActivity : AppCompatActivity() {
         when (item.getItemId()) {
             android.R.id.home -> {
                 AnuLogUtil.d(TAG, "Back to home: $configBundle")
-                val intent = Intent(this, MeasurementActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                intent.putExtra(BundleUtils.DFX_BUNDLE_KEY, configBundle)
-                startActivity(intent)
-                finish()
+                backToHome()
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
@@ -102,12 +112,30 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        val intent = Intent(this, MeasurementActivity::class.java)
+        backToHome()
+        super.onBackPressed()
+    }
+
+    private fun backToHome() {
+        var intent: Intent
+        when (fragmentTag) {
+            DfxPipeConfigurationFragment::class.java.name -> {
+                intent = Intent(this, MeasurementActivity::class.java)
+                intent.putExtra(BundleUtils.DFX_BUNDLE_KEY, configBundle)
+            }
+            CameraConfigurationFragment::class.java.name -> {
+                intent = Intent(this, MainActivity::class.java)
+                intent.putExtra(BundleUtils.CAMERA_BUNDLE_KEY, configBundle)
+            }
+            else -> {
+                intent = Intent(this, MeasurementActivity::class.java)
+            }
+        }
+
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        intent.putExtra(BundleUtils.DFX_BUNDLE_KEY, configBundle)
+
         startActivity(intent)
         finish()
-        super.onBackPressed()
     }
 }

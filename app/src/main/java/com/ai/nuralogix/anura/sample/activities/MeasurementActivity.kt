@@ -13,10 +13,16 @@
  *      NURALOGIX CORP SOFTWARE LICENSE AGREEMENT.
  */
 
-package com.ai.nuralogix.anura.sample.activities
+package ai.nuralogix.anura.sample.activities
+
+import ai.nuralogix.anura.sample.activities.MeasurementActivity.Companion.EMAIL
+import ai.nuralogix.anura.sample.activities.MeasurementActivity.Companion.SAMPLE_REST_URL
+import ai.nuralogix.anura.sample.settings.CameraConfigurationFragment
+import ai.nuralogix.anura.sample.settings.DfxPipeConfigurationFragment
 import ai.nuralogix.anurasdk.camera.CameraAdapter
 import ai.nuralogix.anurasdk.config.DfxPipeConfiguration
 import ai.nuralogix.anurasdk.core.*
+import ai.nuralogix.anurasdk.error.AnuraError
 import ai.nuralogix.anurasdk.face.FaceTrackerAdapter
 import ai.nuralogix.anurasdk.network.DeepAffexDataSpec
 import ai.nuralogix.anurasdk.network.DeepFXClient
@@ -39,21 +45,19 @@ import android.view.*
 import android.widget.TextView
 import android.widget.Toast
 import com.ai.nuralogix.anura.sample.face.MNNFaceDetectorAdapter
-import com.ai.nuralogix.anura.sample.settings.DfxPipeConfigurationFragment
 import com.ai.nuralogix.anura.sample.utils.BundleUtils
 import com.smartCarSeatProject.BuildConfig
 import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import org.opencv.core.Point
+import java.io.FileWriter
+import java.io.IOException
 import com.smartCarSeatProject.R
 import com.smartCarSeatProject.data.BaseVolume
 
 class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAnalysisListener, TrackerView.OnSizeChangedListener {
 
     companion object {
-        const val TAG = "ANURA_MeasurementAct"
-
+        const val TAG = "MeasurementActivity"
 
         var SAMPLE_REST_URL = BuildConfig.SAMPLE_REST_URL
         var SAMPLE_WS_URL = BuildConfig.SAMPLE_WS_URL
@@ -87,9 +91,7 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
     private lateinit var dfxPipe: DfxPipe
     private lateinit var signalAnalysisPipe: VideoPipe
     private lateinit var renderingVideoSink: RenderingVideoSink
-    private lateinit var dumpVideoSink: VideoSink
     private lateinit var render: Render
-    private lateinit var fileVideoSource: FileVideoSource
     private val constraintAverager = RollingConstraintAverager()
 
     private lateinit var viewTracker: GLSurfaceViewTracker
@@ -105,14 +107,13 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
     private lateinit var bpSTv: TextView
     private var state = STATE.UNKNOWN
     private var firstFrameTimestamp = 0L
-    private var faceIndex = 0
     private val showHistogramAndRegions = true
     private lateinit var dialog: AlertDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)//FLAG_KEEP_SCREEN_ON
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) //FLAG_KEEP_SCREEN_ON
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.activity_measurement)
 
@@ -137,9 +138,6 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
         bpDTv = findViewById(R.id.bpd_tv)
         bpSTv = findViewById(R.id.bps_tv)
 
-        val pref = getSharedPreferences(ConfigActivity.PREF_NAME, 0)
-        userToken = pref.getString(ConfigActivity.USER_TOKEN, null)
-//        userToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJPcmdhbml6YXRpb25JRCI6ImYyMDA1ZGRiLTQ2NzEtNGY4Ny05MWFmLWFiYjkxZTczMDRmMSIsIklEIjoiMTE0ZDMyZDAtZDU0NS00NmQzLWIwMjYtM2RkODc4NDRiZTUwIiwiVHlwZSI6IlVzZXIiLCJEZXZpY2VJRCI6IjExYTdjNDA1LWIwMjAtNGFmZS04ODFhLTRkNTYwNDk3MDhmMCIsImV4cCI6MTU5MzA0MzIwMCwiaWF0IjoxNTg4ODM2NTgxLCJpc3MiOiJ1cm46ZGVlcGFmZmV4In0.1Q6pyvHEbgXLSU-YgKUAVh1_Vs2h4CVrOdfFt8nA5ig"
         // start pipeline
         if (userToken != null) {
             DeepAffexDataSpec.REST_SERVER = SAMPLE_REST_URL
@@ -174,8 +172,24 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        AnuLogUtil.d(TAG, "onSizeChanged w=" + w + " h=" + h)
+        if (!this::dfxPipe.isInitialized) {
+            return
+        }
+        val targetBox = ImageUtils.getFaceTargetBox(w, h, IMAGE_HEIGHT.toInt(), IMAGE_WIDTH.toInt())
+        dfxPipe.configuration.setStartupParameter(DfxPipeConfiguration.StartupKey.BOX_CENTER_X_PCT, targetBox.boxCenterX_pct.toString())
+        dfxPipe.configuration.setStartupParameter(DfxPipeConfiguration.StartupKey.BOX_CENTER_Y_PCT, targetBox.boxCenterY_pct.toString())
+        dfxPipe.configuration.setStartupParameter(DfxPipeConfiguration.StartupKey.BOX_WIDTH_PCT, targetBox.boxWidth_pct.toString())
+        dfxPipe.configuration.setStartupParameter(DfxPipeConfiguration.StartupKey.BOX_HEIGHT_PCT, targetBox.boxHeight_pct.toString())
+        dfxPipe.updateStartUpConfig()
+        trackerView.setFaceTargetBox(targetBox)
+    }
+
+    /**************************************Below are private methods****************************************/
+
     private fun restoreConfig() {
-        val pref = getSharedPreferences(ConfigActivity.PREF_NAME, 0)
+        val pref = getSharedPreferences(ConfigActivity.PREF_NAME, MODE_PRIVATE)
         val restUrl = pref.getString(ConfigActivity.REST_SERVER_KEY, SAMPLE_REST_URL)
         SAMPLE_REST_URL = restUrl!!
         val wsUrl = pref.getString(ConfigActivity.WS_SERVER_KEY, SAMPLE_WS_URL)
@@ -188,10 +202,11 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
         LICENSE_KEY = license!!
         val studyId = pref.getString(ConfigActivity.STUDY_ID_KEY, STUDY_ID)
         STUDY_ID = studyId!!
+        userToken = pref.getString(ConfigActivity.USER_TOKEN, null)
     }
 
     private fun initPipeline() {
-        faceIndex = intent.getIntExtra(FACE_ENGINE_KEY, 0)
+        val faceIndex = intent.getIntExtra(FACE_ENGINE_KEY, 0)
         core = Core.createAnuraCore(this)
         constraintAverager.setReasonSpan(60)
         val format = VideoFormat(VideoFormat.ColorFormat.BGRA, 30, IMAGE_HEIGHT.toInt(), IMAGE_WIDTH.toInt())
@@ -211,83 +226,34 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
 
             override fun onResult(result: AnalyzerResult) {
                 val jsonResult = result.jsonResult
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    val measurementId = if (jsonObject.has("MeasurementDataID"))
-                        jsonObject.getString("MeasurementDataID") else ""
+                AnuLogUtil.d(TAG, "JSON result: $jsonResult index: ${result.resultIndex}")
 
-                    val multiplier = jsonObject.getString("Multiplier")
-                    val signals = jsonObject.getJSONObject("Channels")
+                runOnUiThread {
+                    meansurementIdTv.text = "Measurement ID: ${result.measurementID}"
+                    snrTextView.text = "SNR: ${result.snr}"
+                    heartBeatTextView.text = "Heart Beat: ${result.heartRate}"
+                    msiTv.text = "MSI: ${result.msi}"
+                    bpDTv.text = "Blood Pressure Diastolic: ${result.bpDiastolic}"
+                    bpSTv.text = "Blood Pressure Systolic: ${result.bpSystolic}"
 
-                    var heartRateVal = 0.0
-                    if (signals.has("HEART_RATE")) {
-                        val heartbeats = signals.getJSONObject("HEART_RATE")
-                        val heartbeatData = heartbeats.getJSONArray("Data")
-                        heartRateVal = meanOfArray(heartbeatData, java.lang.Double.parseDouble(multiplier))
-                        heartRateVal *= 60.0
-                    } else if (signals.has("HR_BPM")) {
-                        val heartbeats = signals.getJSONObject("HR_BPM")
-                        val heartbeatData = heartbeats.getJSONArray("Data")
-                        heartRateVal = meanOfArray(heartbeatData, java.lang.Double.parseDouble(multiplier))
+                    // 人体数据： id & 信噪比 & 心跳 & 情绪值 & 低压 & 高压
+                    val strPersonDataInfo =  "${result.measurementID}&${result.snr}&${result.heartRate}&${result.msi}&${result.bpDiastolic}&${result.bpSystolic}"
+                    BaseVolume.strPersonDataInfo = strPersonDataInfo
+
+
+                    if (result.resultIndex + 1 >= TOTAL_NUMBER_CHUNKS) {
+                        stopMeasurement(true)
                     }
-
-                    var msi = 0.0
-                    if (signals.has("MENTAL_STRESS_INDEX")) {
-                        var stressIndex = signals.getJSONObject("MENTAL_STRESS_INDEX")
-                        val stressIndexData = stressIndex.getJSONArray("Data")
-                        msi = meanOfArray(stressIndexData, java.lang.Double.parseDouble(multiplier))
-                    } else if (signals.has("MSI")) {
-                        val msis = signals.getJSONObject("MSI")
-                        val msiData = msis.getJSONArray("Data")
-                        msi = meanOfArray(msiData, java.lang.Double.parseDouble(multiplier))
-                    }
-
-                    val bpD = if (signals.has("BP_DIASTOLIC"))
-                        signals.getJSONObject("BP_DIASTOLIC") else null
-
-                    val bpS = if (signals.has("BP_SYSTOLIC"))
-                        signals.getJSONObject("BP_SYSTOLIC") else null
-
-
-                    val bpDData = bpD?.getJSONArray("Data")
-                    val bpDVal = if (bpDData != null)
-                        meanOfArray(bpDData, java.lang.Double.parseDouble(multiplier)) else ""
-
-                    val bpSData = bpS?.getJSONArray("Data")
-                    val bpSVal = if (bpSData != null)
-                        meanOfArray(bpSData, java.lang.Double.parseDouble(multiplier)) else ""
-
-                    runOnUiThread {
-                        meansurementIdTv.text = "Measurement ID: $measurementId"
-                        snrTextView.text = "SNR: ${result.snr}"
-                        heartBeatTextView.text = "Heart Beat: $heartRateVal"
-                        msiTv.text = "MSI: $msi"
-                        bpDTv.text = "Blood Pressure Diastolic: $bpDVal"
-                        bpSTv.text = "Blood Pressure Systolic: $bpSVal"
-
-                        // 人体数据： id & 信噪比 & 心跳 & 情绪值 & 低压 & 高压
-                        val strPersonDataInfo =  "$measurementId&${result.snr}&$heartRateVal&$msi&$bpDVal&$bpSVal"
-                        BaseVolume.strPersonDataInfo = strPersonDataInfo
-
-                        if (result.resultIndex + 1 >= TOTAL_NUMBER_CHUNKS) {
-                            stopAnalyzingAndHideDialog()
-                        }
-                    }
-                } catch (e: JSONException) {
-                    AnuLogUtil.e(TAG, "onChunkResult JSON parsing error... ${e.message}", e)
-                    runOnUiThread { stopAnalyzingAndHideDialog() }
                 }
             }
 
-            override fun onError(errorType: CloudAnalyzerErrorType) {
-                //TODO: hide face region
-                AnuLogUtil.e(TAG, "CloudAnalyzerListener onError")
+            override fun onError(error: AnuraError) {
+                AnuLogUtil.e(TAG, "CloudAnalyzerListener onError:" + error.name)
                 runOnUiThread {
-                    if (errorType == CloudAnalyzerErrorType.SNR_LOW) {
+                    if (error == AnuraError.LOW_SNR) {
                         AnuLogUtil.e(TAG, "SNR is less than 1, signal quality is not good")
                         Toast.makeText(baseContext, "SNR is less than 1, signal quality is not good", Toast.LENGTH_LONG).show()
                     }
-                    stopAnalyzingAndHideDialog()
                     stopMeasurement(true)
                 }
             }
@@ -304,8 +270,8 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
         MEASUREMENT_DURATION = duration.toDouble()
         trackerView.setMeasurementDuration(duration.toDouble())
 
-        cameraAdapter = CameraAdapter.createAndroidCamera2Adapter(core, null)
-        cloudAnalyzer = CloudAnalyzer.createCloudAnalyzer(core, DeepFXClient.getInstance(), cloudAnalyzerListener, dfxConfig.getRuntimeParameterInt(DfxPipeConfiguration.RuntimeKey.TOTAL_NUMBER_CHUNKS, 6))
+        cameraAdapter = CameraAdapter.createAndroidCamera2Adapter(intent.getStringExtra(CameraConfigurationFragment.CAMERA_ID_KEY), core, null)
+        cloudAnalyzer = CloudAnalyzer.createCloudAnalyzer(core, DeepFXClient.getInstance(), cloudAnalyzerListener)
         cameraSource = VideoSource.createCameraSource("CameraSource", core, format, cameraAdapter)
         preprocessPipe = VideoPipe.createPreprocessPipe("PreprocessPipe", core, format)
         faceTrackerPipe = VideoPipe.createFaceTrackerPipe("FaceTrackerPipe", core, format, visageFaceTracker)
@@ -321,9 +287,6 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
         dfxConfig.setStartupParameter(DfxPipeConfiguration.StartupKey.BOX_WIDTH_PCT, targetBox.boxWidth_pct.toString())
         dfxConfig.setStartupParameter(DfxPipeConfiguration.StartupKey.BOX_HEIGHT_PCT, targetBox.boxHeight_pct.toString())
 
-        val strL = getFilesDir().getAbsolutePath()
-        val strDfxConfig =  dfxConfig.toJSONObject().toString()
-        val ccore = core.createDFXFactory(strL + "/r21r23h-8.dat", "discrete")
         dfxPipe = DfxPipe.createDfxPipe("DfxPipe", core, format,
                 core.createDFXFactory(getFilesDir().getAbsolutePath() + "/r21r23h-8.dat", "discrete")!!, dfxConfig.toJSONObject().toString(), cloudAnalyzer, this, renderingVideoSink)
 
@@ -369,15 +332,6 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
         })
 
         trackerView.setMeasurementDuration(MEASUREMENT_DURATION)
-    }
-
-    private fun stopAnalyzingAndHideDialog() {
-        if (this@MeasurementActivity::dialog.isInitialized && dialog.isShowing) {
-            dialog.dismiss()
-        }
-        cloudAnalyzer.stopAnalyzing()
-        dfxPipe.stopCollect()
-        state = STATE.IDLE
     }
 
     override fun onResume() {
@@ -493,6 +447,7 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
         }
 
         val eReason = constraintAverager.maxOccurred
+
         if (this::lastStatus.isInitialized && lastStatus != eStatus) {
             AnuLogUtil.v(TAG, "Constraints Status: $eStatus Reason: $eReason State: $state")
         }
@@ -588,9 +543,6 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
         cameraAdapter.lockWhiteBalance(true)
         cameraAdapter.lockFocus(true)
         firstFrameTimestamp = 0L
-        state = STATE.MEASURING
-        dfxPipe.startCollect()
-        cloudAnalyzer.startAnalyzing(STUDY_ID)
         trackerView.showMask(false)
         trackerView.showMeasurementProgress(true)
         trackerView.setMeasurementProgress(0.0f)
@@ -602,6 +554,10 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
         msiTv.text = "MSI: "
         bpDTv.text = "Blood Pressure Diastolic: "
         bpSTv.text = "Blood Pressure Systolic: "
+
+        state = STATE.MEASURING
+        dfxPipe.startCollect("")
+        cloudAnalyzer.startAnalyzing(STUDY_ID, "")
     }
 
     private fun stopMeasurement(stopResult: Boolean) {
@@ -610,35 +566,28 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
             return
         }
         handler.removeCallbacksAndMessages(null)
-        if (stopResult) {
-            state = STATE.IDLE
-            cloudAnalyzer.stopAnalyzing()
-            dfxPipe.stopCollect()
-        }
         countdown.stop()
         cameraAdapter.lockWhiteBalance(false)
         cameraAdapter.lockExposure(false)
         cameraAdapter.lockFocus(false)
 
         render.showHistograms(false)
+        render.showFeatureRegion(false)
         trackerView.showMask(true)
         trackerView.showMeasurementProgress(false)
         trackerView.setMeasurementProgress(0.0f)
         countdownText.text = "0"
         countdownText.visibility = View.VISIBLE
         cancelledReasonTv.text = ""
-    }
 
-    private fun meanOfArray(jsonArr: JSONArray, multiplier: Double): Double {
-        var meanValue = 0.0
-        for (i in 0 until jsonArr.length()) {
-            meanValue += jsonArr.getDouble(i)
+        if (stopResult) {
+            state = STATE.IDLE
+            cloudAnalyzer.stopAnalyzing()
+            dfxPipe.stopCollect()
+            if (this@MeasurementActivity::dialog.isInitialized && dialog.isShowing) {
+                dialog.dismiss()
+            }
         }
-
-        meanValue /= jsonArr.length()
-        meanValue /= multiplier
-
-        return meanValue
     }
 
     private fun setCancelledReason(eReason: ConstraintResult.ConstraintReason) {
@@ -665,6 +614,7 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
                 reason = resources.getString(R.string.Warning_Measurement_Constraint_Darkness)
             else -> reason = ""
         }
+
         if (!this::lastConstraintReason.isInitialized) {
             cameraAdapter.lockExposure(false)
             cameraAdapter.lockWhiteBalance(false)
@@ -676,6 +626,7 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
             cameraAdapter.lockFocus(false)
         }
         lastConstraintReason = eReason
+
         runOnUiThread {
             cancelledReasonTv.text = reason
         }
@@ -684,26 +635,9 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
     private enum class STATE {
         UNKNOWN,
         IDLE,
-        RESTARTING,
         EXPOSURE,
         COUNTDOWN,
         MEASURING,
         DONE,
-        CANCELED,
-        NOT_SUPPORTED
-    }
-
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        AnuLogUtil.d(TAG, "onSizeChanged w=" + w + " h=" + h)
-        if (!this::dfxPipe.isInitialized) {
-            return
-        }
-        val targetBox = ImageUtils.getFaceTargetBox(w, h, IMAGE_HEIGHT.toInt(), IMAGE_WIDTH.toInt())
-        dfxPipe.configuration.setStartupParameter(DfxPipeConfiguration.StartupKey.BOX_CENTER_X_PCT, targetBox.boxCenterX_pct.toString())
-        dfxPipe.configuration.setStartupParameter(DfxPipeConfiguration.StartupKey.BOX_CENTER_Y_PCT, targetBox.boxCenterY_pct.toString())
-        dfxPipe.configuration.setStartupParameter(DfxPipeConfiguration.StartupKey.BOX_WIDTH_PCT, targetBox.boxWidth_pct.toString())
-        dfxPipe.configuration.setStartupParameter(DfxPipeConfiguration.StartupKey.BOX_HEIGHT_PCT, targetBox.boxHeight_pct.toString())
-        dfxPipe.updateStartUpConfig()
-        trackerView.setFaceTargetBox(targetBox)
     }
 }

@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 import ai.nuralogix.anurasdk.core.AnuraVideoFrame;
 import ai.nuralogix.anurasdk.core.VideoFormat;
-import ai.nuralogix.anurasdk.error.NuraError;
+import ai.nuralogix.anurasdk.error.AnuraError;
 import ai.nuralogix.anurasdk.face.FaceTrackerAdapter;
 import ai.nuralogix.anurasdk.face.FaceTrackerAdapterListener;
 import ai.nuralogix.anurasdk.utils.AnuLogUtil;
@@ -56,9 +56,9 @@ public class MNNFaceDetectorAdapter implements FaceTrackerAdapter {
     }
 
     @Override
-    public NuraError open(@NonNull FaceTrackerAdapterListener faceTrackerAdapterListener) {
+    public AnuraError open(@NonNull FaceTrackerAdapterListener faceTrackerAdapterListener) {
         this.faceTrackerAdapterListener = faceTrackerAdapterListener;
-        return NuraError.OK;
+        return AnuraError.OK;
     }
 
     @Override
@@ -71,10 +71,10 @@ public class MNNFaceDetectorAdapter implements FaceTrackerAdapter {
 
     @NonNull
     @Override
-    public NuraError track(@NonNull AnuraVideoFrame anuraVideoFrame, @NonNull String[] attributes) {
+    public AnuraError track(@NonNull AnuraVideoFrame anuraVideoFrame, @NonNull String[] attributes) {
         if (null == anuraVideoFrame.getCvImage() || null == anuraVideoFrame.getPixelData()
                 || null == faceTrackerAdapterListener || null == mFaceDetector) {
-            return NuraError.ERROR;
+            return AnuraError.ERROR;
         }
         long start = System.currentTimeMillis();
         VideoFormat videoFormat = anuraVideoFrame.getVideoFormat();
@@ -87,7 +87,7 @@ public class MNNFaceDetectorAdapter implements FaceTrackerAdapter {
             faceHashMap.clear();
             faceTrackerAdapterListener.onFacePointsTracked(faceHashMap);
             faceTrackerAdapterListener.onFaceDetected(0);
-            return NuraError.OK;
+            return AnuraError.OK;
         }
         faceTrackerAdapterListener.onFaceDetected(Math.min(results.length, MAX_RESULT));
         Face faceObj;
@@ -135,7 +135,7 @@ public class MNNFaceDetectorAdapter implements FaceTrackerAdapter {
         }
         faceTrackerAdapterListener.onFacePointsTracked(faceHashMap);
 
-        return NuraError.OK;
+        return AnuraError.OK;
     }
 
     @Override

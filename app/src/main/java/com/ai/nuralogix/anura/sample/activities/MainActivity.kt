@@ -13,12 +13,11 @@
  *      NURALOGIX CORP SOFTWARE LICENSE AGREEMENT.
  */
 
-package com.ai.nuralogix.anura.sample.activities
+package ai.nuralogix.anura.sample.activities
 
-import com.ai.nuralogix.anura.sample.activities.MeasurementActivity.Companion.FACE_ENGINE_KEY
+import ai.nuralogix.anura.sample.activities.MeasurementActivity.Companion.FACE_ENGINE_KEY
+import ai.nuralogix.anura.sample.settings.CameraConfigurationFragment
 import ai.nuralogix.anurasdk.utils.AnuLogUtil
-import ai.nuralogix.anurasdk.utils.CameraCapacityCheckResult
-import ai.nuralogix.anurasdk.utils.CameraCapacityCheckUtil
 import android.Manifest
 import android.content.DialogInterface
 import android.content.Intent
@@ -31,7 +30,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
-import android.widget.Toast
+import com.ai.nuralogix.anura.sample.utils.BundleUtils
 import com.alibaba.android.mnnkit.monitor.MNNMonitor
 import com.smartCarSeatProject.BuildConfig
 import com.smartCarSeatProject.R
@@ -46,19 +45,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private var faceIndex = 0
+    private var cameraId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_n)
+        setContentView(R.layout.activity_main)
 
         val goMeasurementBtn = findViewById<Button>(R.id.go_measuremnt_btn)
         goMeasurementBtn.setOnClickListener {
-            if (CameraCapacityCheckResult.GOOD != CameraCapacityCheckUtil.isSupportDFXSDK(baseContext)) {
-                Toast.makeText(baseContext, "Camera does not support", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
+//            if (CameraCapacityCheckResult.GOOD != CameraCapacityCheckUtil.isSupportDFXSDK(baseContext)) {
+//                Toast.makeText(baseContext, "Camera does not support", Toast.LENGTH_LONG).show()
+//                return@setOnClickListener
+//            }
             val intent = Intent(this@MainActivity, MeasurementActivity::class.java)
+            intent.putExtra(FACE_ENGINE_KEY, faceIndex)
+            intent.putExtra(CameraConfigurationFragment.CAMERA_ID_KEY, cameraId)
             startActivity(intent)
+//            showFaceEngineChoiceDialog()
         }
 
         val goConfigBtn = findViewById<Button>(R.id.go_config_btn)
@@ -71,6 +74,7 @@ class MainActivity : AppCompatActivity() {
         MNNMonitor.setMonitorEnable(false)
         copyFileOrDir("r21r23h-8.dat")
 
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE),
                     MY_PERMISSIONS_REQUEST_CAMERA)
@@ -78,7 +82,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.device_info_menus, menu)
+        menuInflater.inflate(R.menu.main_menus, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -89,8 +93,23 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
                 return true
             }
+
+            R.id.action_camera_choice -> {
+                val intent = SettingsActivity.createIntent(this, CameraConfigurationFragment::class.java.name)
+                intent.putExtra(BundleUtils.CAMERA_BUNDLE_KEY, Bundle())
+                startActivity(intent)
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        val configBundle = intent?.getBundleExtra(BundleUtils.CAMERA_BUNDLE_KEY)
+        configBundle?.let {
+            cameraId = configBundle.getString(CameraConfigurationFragment.CAMERA_ID_KEY)
+            AnuLogUtil.d(MainActivity.TAG, "on resume with bundle $configBundle, $cameraId") }
+        super.onNewIntent(intent)
     }
 
     fun copyFileOrDir(path: String) {
@@ -156,6 +175,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     val intent = Intent(this@MainActivity, MeasurementActivity::class.java)
                     intent.putExtra(FACE_ENGINE_KEY, faceIndex)
+                    intent.putExtra(CameraConfigurationFragment.CAMERA_ID_KEY, cameraId)
                     startActivity(intent)
                 }
             })
@@ -174,6 +194,7 @@ class MainActivity : AppCompatActivity() {
             setPositiveButton("OK") { _, _ ->
                 val intent = Intent(this@MainActivity, MeasurementActivity::class.java)
                 intent.putExtra(FACE_ENGINE_KEY, faceIndex)
+                intent.putExtra(CameraConfigurationFragment.CAMERA_ID_KEY, cameraId)
                 startActivity(intent)
             }
             setNegativeButton("Cancel") { _, _ -> }

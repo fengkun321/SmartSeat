@@ -1,6 +1,7 @@
 package com.smartCarSeatProject.data
 
-import com.smartCarSeatProject.dao.MemoryDataInfo
+import com.smartCarSeatProject.dao.DevelopDataInfo
+
 
 class CreateCtrDataHelper {
 
@@ -36,24 +37,24 @@ class CreateCtrDataHelper {
         }
 
         /** 手动模式下，同时调整16个气压值 */
-        fun getCtrPressBy16Manual(nowSelectMemory: MemoryDataInfo?) :String {
+        fun getCtrPressBy16Manual(nowSelectMemory: DevelopDataInfo?) :String {
             var strPressInfo = ""
-            strPressInfo+= "${nowSelectMemory?.strPress1},"
-            strPressInfo+= "${nowSelectMemory?.strPress2},"
-            strPressInfo+= "${nowSelectMemory?.strPress3},"
-            strPressInfo+= "${nowSelectMemory?.strPress4},"
-            strPressInfo+= "${nowSelectMemory?.strPress5},"
-            strPressInfo+= "${nowSelectMemory?.strPress6},"
-            strPressInfo+= "${nowSelectMemory?.strPress7},"
-            strPressInfo+= "${nowSelectMemory?.strPress8},"
-            strPressInfo+= "${nowSelectMemory?.strPressA},"
-            strPressInfo+= "${nowSelectMemory?.strPressB},"
-            strPressInfo+= "${nowSelectMemory?.strPressC},"
-            strPressInfo+= "${nowSelectMemory?.strPressD},"
-            strPressInfo+= "${nowSelectMemory?.strPressE},"
-            strPressInfo+= "${nowSelectMemory?.strPressF},"
-            strPressInfo+= "${nowSelectMemory?.strPressG},"
-            strPressInfo+= "${nowSelectMemory?.strPressH}"
+            strPressInfo+= "${nowSelectMemory?.p_adjust_cushion_1},"
+            strPressInfo+= "${nowSelectMemory?.p_adjust_cushion_2},"
+            strPressInfo+= "${nowSelectMemory?.p_adjust_cushion_3},"
+            strPressInfo+= "${nowSelectMemory?.p_adjust_cushion_4},"
+            strPressInfo+= "${nowSelectMemory?.p_adjust_cushion_5},"
+            strPressInfo+= "${nowSelectMemory?.p_adjust_cushion_6},"
+            strPressInfo+= "${nowSelectMemory?.p_adjust_cushion_7},"
+            strPressInfo+= "${nowSelectMemory?.p_adjust_cushion_8},"
+            strPressInfo+= "${nowSelectMemory?.p_recog_back_A},"
+            strPressInfo+= "${nowSelectMemory?.p_recog_back_B},"
+            strPressInfo+= "${nowSelectMemory?.p_recog_back_C},"
+            strPressInfo+= "${nowSelectMemory?.p_recog_back_D},"
+            strPressInfo+= "${nowSelectMemory?.p_recog_back_E},"
+            strPressInfo+= "${nowSelectMemory?.p_recog_back_F},"
+            strPressInfo+= "${nowSelectMemory?.p_recog_back_G},"
+            strPressInfo+= "${nowSelectMemory?.p_recog_back_H}"
             return "W,3,"+strPressInfo+BaseVolume.COMMAND_END
         }
 

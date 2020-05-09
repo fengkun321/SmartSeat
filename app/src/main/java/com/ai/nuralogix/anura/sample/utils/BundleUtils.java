@@ -9,6 +9,7 @@ import ai.nuralogix.anurasdk.config.Configuration;
 public class BundleUtils {
 
     public static final String DFX_BUNDLE_KEY = "DFX_BUNDLE_KEY";
+    public static final String CAMERA_BUNDLE_KEY = "CAMERA_BUNDLE_KEY";
 
     public static Bundle createRuntimeBundle(Configuration configuration) {
         Bundle bundle = new Bundle();

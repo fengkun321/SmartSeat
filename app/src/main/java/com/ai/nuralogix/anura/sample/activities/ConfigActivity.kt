@@ -13,7 +13,7 @@
  *      NURALOGIX CORP SOFTWARE LICENSE AGREEMENT.
  */
 
-package com.ai.nuralogix.anura.sample.activities
+package ai.nuralogix.anura.sample.activities
 
 import ai.nuralogix.anurasdk.network.DeepAffexDataSpec
 import ai.nuralogix.anurasdk.network.DeepFXClient

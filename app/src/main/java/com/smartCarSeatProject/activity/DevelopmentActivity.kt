@@ -23,6 +23,9 @@ import kotlinx.android.synthetic.main.layout_development_value.view.*
 import android.widget.*
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import com.smartCarSeatProject.utl.DateUtil
+import com.smartCarSeatProject.view.AddMenuWindowDialog
+import kotlinx.android.synthetic.main.layout_b_dmcm.*
+import kotlinx.android.synthetic.main.layout_b_dmcm.view.rlLocation
 
 
 class DevelopmentActivity: BaseActivity(),View.OnClickListener{
@@ -152,6 +155,8 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener{
         btnSaveAllData.setOnClickListener(this)
         btnHistory.setOnClickListener(this)
         llParent.setOnClickListener(this)
+        rlLocation.setOnClickListener(this)
+        rlMassageMode.setOnClickListener(this)
 
         initUIFromB()
     }
@@ -405,8 +410,34 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener{
                 SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.createDeviceSocket()
             R.id.tvReCanConnect ->
                 SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.createCanSocket()
+            R.id.rlLocation ->
+                deviceSelectMenu(true,tvLocation.text.toString(),locationList)
+            R.id.rlMassageMode ->
+                deviceSelectMenu(false,tvMassageMode.text.toString(),massageModeList)
 
         }
+
+    }
+    val locationList = arrayListOf<String>("位置1","位置2","位置3","位置4","位置5","位置6")
+    val massageModeList = arrayListOf<String>("模式1","模式2","模式3")
+    /** 设备编辑菜单选择功能  */
+    private fun deviceSelectMenu(isLocation : Boolean,strValue : String,list : ArrayList<String>) {
+        val strTitle = if (isLocation) "位置调节" else "按摩模式"
+        val dialog1 = AddMenuWindowDialog(mContext, R.style.LoadingDialogStyle, list, strTitle)
+        dialog1.setListener(object : AddMenuWindowDialog.PeriodListener {
+            override fun refreshListener(number: Int,strItem: String) {
+                // 位置调节
+                if (isLocation) {
+                    tvLocation.text = strItem
+                }
+                // 按摩模式
+                else {
+                    tvMassageMode.text = strItem
+                }
+
+            }
+        })
+        dialog1.show()
 
     }
 
@@ -538,6 +569,12 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener{
         nowDevelopDataInfo?.p_adjust_cushion_6 =  includeB.includeB6.tvValueB.text.toString()
         nowDevelopDataInfo?.p_adjust_cushion_7 =  includeB.includeB7.tvValueB.text.toString()
         nowDevelopDataInfo?.p_adjust_cushion_8 =  includeB.includeB8.tvValueB.text.toString()
+        // 位置调节
+        nowDevelopDataInfo?.l_location = tvLocation.text.toString()
+        // 按摩模式
+        nowDevelopDataInfo?.m_massage = tvMassageMode.text.toString()
+        // 数据类型
+        nowDevelopDataInfo?.dataType = DevelopDataInfo.DATA_TYPE_DEVELOP
 
         developInfoDao.insertSingleData(nowDevelopDataInfo)
         developInfoDao.closeDb()

@@ -9,8 +9,8 @@ import android.os.Bundle
 import com.smartCarSeatProject.R
 import com.smartCarSeatProject.adapter.SQLInfoAdapter
 import com.smartCarSeatProject.adapter.WifiInfoAdapter
-import com.smartCarSeatProject.dao.MemoryDataInfo
-import com.smartCarSeatProject.dao.MemoryInfoDao
+import com.smartCarSeatProject.dao.DevelopDataInfo
+import com.smartCarSeatProject.dao.DevelopInfoDao
 import com.smartCarSeatProject.data.*
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import com.smartCarSeatProject.view.AreaAddWindowHint
@@ -21,17 +21,17 @@ import java.util.ArrayList
 
 class SetMemoryActivity: BaseActivity() {
 
-    private var list :ArrayList<MemoryDataInfo> = arrayListOf()
+    private var list :ArrayList<DevelopDataInfo> = arrayListOf()
     private var sqlInfoAdapter: SQLInfoAdapter? = null
-    var nowSelectMemory:MemoryDataInfo? = null
+    var nowSelectMemory:DevelopDataInfo? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_setmemory)
 
         val strFrom = intent.getStringExtra("from")
-        val memoryInfoDao = MemoryInfoDao(this)
-        list = memoryInfoDao.queryHistDataInf()
+        val memoryInfoDao = DevelopInfoDao(this)
+        list = memoryInfoDao.queryHistDataInfByDataType(DevelopDataInfo.DATA_TYPE_USE)
         memoryInfoDao.closeDb()
         initUI()
 
@@ -55,7 +55,7 @@ class SetMemoryActivity: BaseActivity() {
                     object : AreaAddWindowHint.PeriodListener {
                         override fun refreshListener(string: String) {
                             nowSelectMemory = list[i]
-                            val memoryInfoDao = MemoryInfoDao(this@SetMemoryActivity)
+                            val memoryInfoDao = DevelopInfoDao(this@SetMemoryActivity)
                             val isResult = memoryInfoDao.deleteDataByInfo(nowSelectMemory)
                             memoryInfoDao.closeDb()
 

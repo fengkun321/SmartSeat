@@ -1,4 +1,4 @@
-package com.ai.nuralogix.anura.sample.settings
+package ai.nuralogix.anura.sample.settings
 
 import ai.nuralogix.anurasdk.config.DfxPipeConfiguration
 import android.os.Bundle

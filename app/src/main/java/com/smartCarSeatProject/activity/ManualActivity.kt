@@ -12,8 +12,8 @@ import android.widget.RelativeLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import com.smartCarSeatProject.R
-import com.smartCarSeatProject.dao.MemoryDataInfo
-import com.smartCarSeatProject.dao.MemoryInfoDao
+import com.smartCarSeatProject.dao.DevelopDataInfo
+import com.smartCarSeatProject.dao.DevelopInfoDao
 import com.smartCarSeatProject.data.*
 import com.smartCarSeatProject.isometric.Color
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
@@ -34,11 +34,15 @@ import kotlinx.android.synthetic.main.layout_manual_prop.view.view2
 class ManualActivity: BaseActivity(), View.OnClickListener{
 
     var setValueDialog : SetValueAreaAddWindow? = null
-    var nowMemoryInfo = MemoryDataInfo()
+    var nowMemoryInfo = DevelopDataInfo()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_manual)
+
+//        A5AAACB3410C07E40509090D1D06010000000A000001000003050704000F000F00010000000000C5CCCA
+//        A5AAAC5B410601640305070400000F000F02000003040401000F003C037F0204040401000F003C047903030404000005003C057F00000000000005003CC5CCCA
+//        A5AAAC614101014F6666696365C5CCCA
 
         initUI()
         initSeatInfo()
@@ -50,10 +54,6 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
 
     fun initUI() {
         llSeekBar.visibility = View.VISIBLE
-        seekBar.max = ProgressValueMax - ProgressValueMin
-        seekBar.setOnSeekBarChangeListener(seekBarChangeListener)
-
-        seekBar.isEnabled = false
         btnJian.isEnabled = false
         btnJia.isEnabled = false
         btnJian.setTextColor(resources.getColor(R.color.black1))
@@ -81,6 +81,8 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
     /** 初始化支撑调节 */
     // 当前选中的序号
     var iNowSelectNumber = -1
+    // 当前页面 1：支撑 2：位置 3：通风加热按摩
+    var iNowShowPageNumber = 1
     var iNowPressValue = -1
     var ProgressValueMin = 255
     var ProgressValueMax = 3600
@@ -88,12 +90,14 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
     var dimBtnArray = arrayListOf<TextView>()
     // 加按钮集合
     var addBtnArray = arrayListOf<TextView>()
-    // 操作视图集合
+    // 操作视图-父类集合
     var rlViewArray = arrayListOf<RelativeLayout>()
     // 样式的集合
     var drawableList = arrayListOf<GradientDrawable>()
-    // 视图的集合
+    // 控制视图-显示集合
     var viewList = arrayListOf<TextView>()
+    // 滑竿的集合
+    var seekBarList = arrayListOf<SeekBar>()
     fun initSeatInfo() {
         initShape(manualSeat.view0,false,false)
         initShape(manualSeat.view1,true,false)
@@ -115,6 +119,9 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
         rlViewArray.add(manualSeat.rl0);rlViewArray.add(manualSeat.rl1);rlViewArray.add(manualSeat.rl2);rlViewArray.add(manualSeat.rl3)
         rlViewArray.add(manualSeat.rl4);rlViewArray.add(manualSeat.rl5);rlViewArray.add(manualSeat.rl6);rlViewArray.add(manualSeat.rl7)
 
+        seekBarList.add(manualSeat.seekBar0);seekBarList.add(manualSeat.seekBar1);seekBarList.add(manualSeat.seekBar2);seekBarList.add(manualSeat.seekBar3);
+        seekBarList.add(manualSeat.seekBar4);seekBarList.add(manualSeat.seekBar5);seekBarList.add(manualSeat.seekBar6);seekBarList.add(manualSeat.seekBar7);
+
         rlViewArray.forEach {
             it.setOnClickListener {changeSelectBtn(it)}
         }
@@ -127,7 +134,16 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
             it.setOnClickListener (onClickAddListener)
         }
 
+        seekBarList.forEach {
+            it.max = ProgressValueMax - ProgressValueMin
+            it.setOnSeekBarChangeListener(seekBarChangeListener)
+        }
+
     }
+
+
+
+
     /** 初始化位置调节 */
     var iNowSelectLocation = -1;
     var locationList = arrayListOf<TextView>()
@@ -141,7 +157,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
     /** 初始化通风调节 */
     // 传感样式的集合
     var drawableSenseList = arrayListOf<GradientDrawable>()
-    // 视图的集合
+    // 传感视图的集合
     var viewSenseList = arrayListOf<TextView>()
     fun initHeatInfo() {
 
@@ -210,9 +226,9 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
     /** 减号，监听事件 */
     val onClickDimListener = View.OnClickListener {
 
-        if (!isCanControl()) {
-            return@OnClickListener
-        }
+//        if (!isCanControl()) {
+//            return@OnClickListener
+//        }
 
         iNowPressValue -= 5
         if (iNowPressValue < ProgressValueMin)
@@ -220,32 +236,30 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
 
         val iTag = it.tag.toString().toInt()
 
-        viewList[iTag].text = iNowPressValue.toString()
-        if (iTag == 3) {
-            viewList[8].text = iNowPressValue.toString()
-        }
-        else if (iTag == 4){
-            viewList[9].text = iNowPressValue.toString()
-        }
+        seekBarList[iTag].progress = (iNowPressValue - ProgressValueMin)
+
+//        viewList[iTag].text = iNowPressValue.toString()
+//        if (iTag == 3) {
+//            viewList[8].text = iNowPressValue.toString()
+//        }
+//        else if (iTag == 4){
+//            viewList[9].text = iNowPressValue.toString()
+//        }
 
         // 保存控制缓存值
-        MainControlActivity.getInstance()?.setValueBufferByChannel?.put(iNowSelectNumber+1,iNowPressValue.toString())
-
-        val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iNowPressValue)
-        SocketThreadManager.sharedInstance(this)?.StartSendDataNoTime(strSendData)
-
-//        val strSendData = CreateCtrDataHelper.getCtrPressBy1((iNowSelectNumber+1).toString(),iNowPressValue)
-//        SocketThreadManager.sharedInstance(this@ManualActivity)?.StartSendData(strSendData)
-
+//        MainControlActivity.getInstance()?.setValueBufferByChannel?.put(iNowSelectNumber+1,iNowPressValue.toString())
+//
+//        val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iNowPressValue)
+//        SocketThreadManager.sharedInstance(this)?.StartSendDataNoTime(strSendData)
 
     }
 
     /** 加号，监听事件 */
     val onClickAddListener = View.OnClickListener {
 
-        if (!isCanControl()) {
-            return@OnClickListener
-        }
+//        if (!isCanControl()) {
+//            return@OnClickListener
+//        }
 
         iNowPressValue += 5
         if (iNowPressValue > ProgressValueMax)
@@ -253,19 +267,21 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
 
         val iTag = it.tag.toString().toInt()
 
-        viewList[iTag].text = iNowPressValue.toString()
-        if (iTag == 3) {
-            viewList[8].text = iNowPressValue.toString()
-        }
-        else if (iTag == 4){
-            viewList[9].text = iNowPressValue.toString()
-        }
+        seekBarList[iTag].progress = (iNowPressValue - ProgressValueMin)
+
+//        viewList[iTag].text = iNowPressValue.toString()
+//        if (iTag == 3) {
+//            viewList[8].text = iNowPressValue.toString()
+//        }
+//        else if (iTag == 4){
+//            viewList[9].text = iNowPressValue.toString()
+//        }
 
         // 保存控制缓存值
-        MainControlActivity.getInstance()?.setValueBufferByChannel?.put(iNowSelectNumber+1,iNowPressValue.toString())
-
-        val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iNowPressValue)
-        SocketThreadManager.sharedInstance(this)?.StartSendDataNoTime(strSendData)
+//        MainControlActivity.getInstance()?.setValueBufferByChannel?.put(iNowSelectNumber+1,iNowPressValue.toString())
+//
+//        val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iNowPressValue)
+//        SocketThreadManager.sharedInstance(this)?.StartSendDataNoTime(strSendData)
 
     }
 
@@ -357,6 +373,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
             // 根据气压值，改变填充色
             val colorValue = BaseVolume.getColorByPressValue(iPressV,iChannelNumber)
             drawable.setColor(colorValue)
+
         }
     }
 
@@ -373,13 +390,13 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
         override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
             var iNowValue = p0?.progress!! +ProgressValueMin
             if (iNowSelectNumber != -1) {
-
                 val iPressV = BaseVolume.getPressByValue(iNowValue,(iNowSelectNumber+1))
                 tvSeekBarValue.text = iPressV.toString()
-//                viewList[iNowSelectNumber].text = iPressV.toString()
-//                val colorValue = BaseVolume.getColorByPressValue(iPressV,(iNowSelectNumber+1))
-//                drawableList[iNowSelectNumber].setColor(colorValue)
-
+                viewList[p0.tag.toString().toInt()].text = "$iNowValue"
+                if (p0.tag.toString().toInt() == 3)
+                    viewList[8].text = "$iNowValue"
+                else if (p0.tag.toString().toInt() == 4)
+                    viewList[9].text = "$iNowValue"
             }
         }
 
@@ -388,6 +405,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
 
         override fun onStopTrackingTouch(p0: SeekBar?) {
             var iNowValue = p0?.progress!! +ProgressValueMin
+
             if (iNowSelectNumber != -1) {
 //                val iPressV = BaseVolume.getPressByValue(iNowValue,(iNowSelectNumber+1))
 //                viewList[iNowSelectNumber].text = iPressV.toString()
@@ -398,13 +416,8 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                         iNowValue = 3580
                     }
                 }
-
-                // 保存控制缓存值
-                MainControlActivity.getInstance()?.setValueBufferByChannel?.put(iNowSelectNumber+1,iNowValue.toString())
-
-                val strSendData = CreateCtrDataHelper.getCtrPressBy1((iNowSelectNumber+1).toString(),iNowValue)
-                SocketThreadManager.sharedInstance(this@ManualActivity)?.StartSendData(strSendData)
             }
+            iNowPressValue = iNowValue
         }
 
     }
@@ -413,65 +426,6 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
         when(p0?.id) {
             R.id.imgBack -> {
                 MainControlActivity.getInstance()?.finish()
-            }
-            R.id.btnJian -> {
-                var iValue = seekBar.progress
-                iValue -= 5
-                if (iValue > 0)
-                    seekBar.progress = iValue
-                else
-                    seekBar.progress = 0
-
-                var iNowValue = seekBar.progress+ProgressValueMin
-                if (iNowSelectNumber != -1) {
-                    val iPressV = BaseVolume.getPressByValue(iNowValue,(iNowSelectNumber+1))
-//                    viewList[iNowSelectNumber].text = iPressV.toString()
-//                    if (iNowSelectNumber == 3) {
-//                        view3Left?.text = iPressV.toString()
-//                    }
-                    // 通道1，最大值3580
-                    if (iNowSelectNumber == 0) {
-                        if (iNowValue > 3580) {
-                            iNowValue = 3580
-                        }
-                    }
-                    // 保存控制缓存值
-                    MainControlActivity.getInstance()?.setValueBufferByChannel?.put(iNowSelectNumber+1,iNowValue.toString())
-
-                    val strSendData = CreateCtrDataHelper.getCtrPressBy1((iNowSelectNumber+1).toString(),iNowValue)
-                    SocketThreadManager.sharedInstance(this@ManualActivity)?.StartSendData(strSendData)
-                }
-
-            }
-            R.id.btnJia -> {
-                var iValue = seekBar.progress
-                iValue += 5
-                if (iValue < seekBar.max)
-                    seekBar.progress = iValue
-                else
-                    seekBar.progress = seekBar.max
-
-                var iNowValue = seekBar.progress+ProgressValueMin
-                if (iNowSelectNumber != -1) {
-                    val iPressV = BaseVolume.getPressByValue(iNowValue,(iNowSelectNumber+1))
-//                    viewList[iNowSelectNumber].text = iPressV.toString()
-//                    if (iNowSelectNumber == 3) {
-//                        view3Left?.text = iPressV.toString()
-//                    }
-                    // 通道1，最大值3580
-                    if (iNowSelectNumber == 0) {
-                        if (iNowValue > 3580) {
-                            iNowValue = 3580
-                        }
-                    }
-
-                    // 保存控制缓存值
-                    MainControlActivity.getInstance()?.setValueBufferByChannel?.put(iNowSelectNumber+1,iNowValue.toString())
-
-                    val strSendData = CreateCtrDataHelper.getCtrPressBy1((iNowSelectNumber+1).toString(),iNowValue)
-                    SocketThreadManager.sharedInstance(this@ManualActivity)?.StartSendData(strSendData)
-                }
-
             }
             R.id.btnSave -> {
                 saveNowValue()
@@ -496,7 +450,6 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
         }
     }
 
-    var iNowShowPageNumber = 1;
     fun switchCtrView(iNumber: Int) {
 
         iNowShowPageNumber = iNumber
@@ -543,6 +496,9 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
             addBtnArray.forEach {
                 it.isEnabled = false
             }
+            seekBarList.forEach {
+                it.visibility = View.GONE
+            }
 
             if (iTag == -1) {
                 return
@@ -563,6 +519,11 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                 viewList[9].text = iNowValue.toString()
             }
 
+            seekBarList[iTag].visibility = View.VISIBLE
+            seekBarList[iTag].progress = (iNowPressValue - ProgressValueMin)
+            if (iTag == 1 || iTag == 2)
+                seekBarList[iTag].visibility = View.GONE
+
         }
 
 
@@ -581,12 +542,12 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
             if (iTag == iNowSelectNumber) {
                 continue
             }
-            if (iTag == 3 && iNumber == 8) {
-                continue
-            }
-            if (iTag == 4 && iNumber == 9) {
-                continue
-            }
+//            if (iTag == 3 && iNumber == 8) {
+//                continue
+//            }
+//            if (iTag == 4 && iNumber == 9) {
+//                continue
+//            }
 
 
             var drawable = drawableList[iNumber]
@@ -610,8 +571,25 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                     "Please enter the name", object : SetValueAreaAddWindow.PeriodListener {
                 override fun confirmListener(string: String) {
 
-                    nowMemoryInfo = MemoryDataInfo()
-                    nowMemoryInfo.strDataName = string
+                    val isMan = getBooleanBySharedPreferences(SEX_MAN)
+                    val isCN = getBooleanBySharedPreferences(COUNTRY_CN)
+
+                    nowMemoryInfo = DevelopDataInfo()
+                    nowMemoryInfo.initData()
+                    nowMemoryInfo.dataType = DevelopDataInfo.DATA_TYPE_USE
+                    // 名称
+                    nowMemoryInfo.strName = string
+                    nowMemoryInfo.strPSInfo = string
+                    // 男女
+                    if (isMan)
+                        nowMemoryInfo.m_gender = "M"
+                    else
+                        nowMemoryInfo.m_gender = "F"
+                    // 国别
+                    if (isCN)
+                        nowMemoryInfo.m_national = "CN"
+                    else
+                        nowMemoryInfo.m_national = "EU"
                     // 控制数据
                     for (iNumber in 1..8) {
                         updatePressValueByNumber(iNumber,DataAnalysisHelper.deviceState.controlPressValueList[iNumber-1])
@@ -628,7 +606,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                         updatePressValueByNumber(iNumber+6,(DataAnalysisHelper.deviceState.sensePressValueListl[iNumber]))
                     }
 
-                    val memoryInfoDao = MemoryInfoDao(this@ManualActivity)
+                    val memoryInfoDao = DevelopInfoDao(this@ManualActivity)
                     val isHave = memoryInfoDao.isHaveByName(string)
                     // 该名称已存在，则提示用户
                     if (isHave) {
@@ -661,37 +639,37 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
     fun updatePressValueByNumber(iNumber : Int,strValue:String) {
         when(iNumber) {
             1 ->
-                nowMemoryInfo.strPress1 = strValue
+                nowMemoryInfo.p_adjust_cushion_1 = strValue
             2 ->
-                nowMemoryInfo.strPress2 = strValue
+                nowMemoryInfo.p_adjust_cushion_2 = strValue
             3 ->
-                nowMemoryInfo.strPress3 = strValue
+                nowMemoryInfo.p_adjust_cushion_3 = strValue
             4 ->
-                nowMemoryInfo.strPress4 = strValue
+                nowMemoryInfo.p_adjust_cushion_4 = strValue
             5 ->
-                nowMemoryInfo.strPress5 = strValue
+                nowMemoryInfo.p_adjust_cushion_5 = strValue
             6 ->
-                nowMemoryInfo.strPress6 = strValue
+                nowMemoryInfo.p_adjust_cushion_6 = strValue
             7 ->
-                nowMemoryInfo.strPress7 = strValue
+                nowMemoryInfo.p_adjust_cushion_7 = strValue
             8 ->
-                nowMemoryInfo.strPress8 = strValue
+                nowMemoryInfo.p_adjust_cushion_8 = strValue
             9 ->
-                nowMemoryInfo.strPressA = strValue
+                nowMemoryInfo.p_recog_back_A = strValue
             10 ->
-                nowMemoryInfo.strPressB = strValue
+                nowMemoryInfo.p_recog_back_B = strValue
             11 ->
-                nowMemoryInfo.strPressC = strValue
+                nowMemoryInfo.p_recog_back_C = strValue
             12 ->
-                nowMemoryInfo.strPressD = strValue
+                nowMemoryInfo.p_recog_back_D = strValue
             13 ->
-                nowMemoryInfo.strPressE = strValue
+                nowMemoryInfo.p_recog_back_E = strValue
             14 ->
-                nowMemoryInfo.strPressF = strValue
+                nowMemoryInfo.p_recog_back_F = strValue
             15 ->
-                nowMemoryInfo.strPressG = strValue
+                nowMemoryInfo.p_recog_back_G = strValue
             16 ->
-                nowMemoryInfo.strPressH = strValue
+                nowMemoryInfo.p_recog_back_H = strValue
         }
     }
 
@@ -701,7 +679,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
         val areaAddWindowHint = AreaAddWindowHint(this,R.style.Dialogstyle,strTitle,
                 object : PeriodListener {
                     override fun refreshListener(string: String) {
-                        val memoryInfoDao = MemoryInfoDao(this@ManualActivity)
+                        val memoryInfoDao = DevelopInfoDao(this@ManualActivity)
                         // 数据库操作
                         val isResult = memoryInfoDao.updateDataByName(nowMemoryInfo)
                         if (!isResult)
@@ -732,11 +710,11 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                 // 气压
                 else if (strType.equals(BaseVolume.COMMAND_TYPE_PRESS,true)) {
                     // 当前是支撑调节界面，则更新控制气压
-                    if (iNowSelectNumber == 1) {
+                    if (iNowShowPageNumber == 1) {
                         updateSeatView()
                     }
                     // 当前是通风加热按摩，则更新传感气压
-                    else if (iNowSelectNumber == 3) {
+                    else if (iNowShowPageNumber == 3) {
                         updateSenseSeatView()
                     }
 

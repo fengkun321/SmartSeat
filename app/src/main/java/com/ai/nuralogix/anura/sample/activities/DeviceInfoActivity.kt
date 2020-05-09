@@ -1,16 +1,12 @@
-package com.ai.nuralogix.anura.sample.activities
+package ai.nuralogix.anura.sample.activities
 
+import ai.nuralogix.anurasdk.camera.CameraCapability
+import ai.nuralogix.anurasdk.camera.CameraInfo
 import ai.nuralogix.anurasdk.utils.AnuLogUtil
-import ai.nuralogix.anurasdk.utils.CameraCapacityCheckUtil
-import android.content.Context
-import android.graphics.ImageFormat
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.widget.TextView
 import com.smartCarSeatProject.R
 import java.io.RandomAccessFile
@@ -20,6 +16,8 @@ class DeviceInfoActivity : AppCompatActivity() {
     companion object {
         const val TAG = "DeviceInfoActivity"
     }
+
+    var cameraCapability: CameraCapability? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,12 +29,13 @@ class DeviceInfoActivity : AppCompatActivity() {
         stringBuffer.append("\n----------------Mobile phone basic information------------------\n")
         getBaseInfo(stringBuffer)
 
+        cameraCapability = CameraCapability.createCameraCapabilityInstance(this)
         val isSupportVersionCodes = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
         if (isSupportVersionCodes) {
-            stringBuffer.append("\n----------------CameraCapacity------------------\n")
-            checkCameraCapacity(stringBuffer)
-            stringBuffer.append("\n----------------CameraInfo------------------\n")
-            getCameraInfo(stringBuffer);
+            stringBuffer.append("\n----------------Camera Information------------------\n")
+            populateCameraInfos(stringBuffer)
+            stringBuffer.append("\n----------------Aura Core Supported Cameras------------------\n")
+            populateAnuraSupportedCameraInfos(stringBuffer)
         } else {
             stringBuffer.append(getString(R.string.version_low))
             stringBuffer.append("\n")
@@ -65,152 +64,46 @@ class DeviceInfoActivity : AppCompatActivity() {
         stringBuffer.append("\n")
     }
 
-    private fun checkCameraCapacity(stringBuffer: StringBuffer) {
-        try {
-            val lensFacing = CameraCharacteristics.LENS_FACING_FRONT
-            val manager = baseContext.getSystemService(Context.CAMERA_SERVICE) as CameraManager
-            val cameraIdList = manager.cameraIdList
-            if (cameraIdList.size <= 0) {
-                stringBuffer.append(getString(R.string.no_front_camera))
-                stringBuffer.append("\n")
-                return
-            }
-            var cameraCharacteristics: CameraCharacteristics? = null
-            for (cameraId in cameraIdList) {
-                cameraCharacteristics = manager.getCameraCharacteristics(cameraId)
-                val integer = cameraCharacteristics.get(CameraCharacteristics.LENS_FACING)
-                if (null != integer && lensFacing == integer) {
-                    break
+    private fun populateCameraInfos(stringBuffer: StringBuffer) {
+
+        val cameraInfos = cameraCapability!!.cameraInfos
+
+        if (cameraInfos.size <= 0) {
+            stringBuffer.append(getString(R.string.no_front_camera))
+            stringBuffer.append("\n")
+            return
+        }
+
+        for (cameraInfo in cameraInfos) {
+            stringBuffer.append("Camera Id: ${cameraInfo.cameraId} \n")
+            stringBuffer.append("           facing direction:  ${cameraInfo.cameraFacing.name} \n")
+            stringBuffer.append("           device level: ${cameraInfo.deviceLevel.name} \n")
+            stringBuffer.append("           ISO max: ${cameraInfo.isoRange?.upper} - min: ${cameraInfo.isoRange?.lower} \n")
+            stringBuffer.append("           FPS ranges: " + Arrays.toString(cameraInfo.fpsRanges) + " \n")
+            if (null != cameraInfo.outputSizes) {
+                for (size in cameraInfo.outputSizes!!) {
+                    stringBuffer.append("           previewSize width=" + size.width + " height=" + size.height)
+                    stringBuffer.append("\n")
                 }
             }
-            if (null == cameraCharacteristics) {
-                stringBuffer.append("null == cameraCharacteristic:" + getString(R.string.unknown_error))
-                stringBuffer.append("\n")
-                return
-            }
-            val isSupportHardwareLevel = CameraCapacityCheckUtil.getCameraDeviceLevel(cameraCharacteristics) !== CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY
-            stringBuffer.append("Is Camera Level greater than LEVEL_LIMITED:$isSupportHardwareLevel")
-            stringBuffer.append("\n")
-
-            val fpsRanges = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES)
-            Log.d(MainActivity.TAG, "fpsRanges: " + Arrays.toString(fpsRanges))
-            val isSupportFPS = CameraCapacityCheckUtil.isSupportFpsRange(fpsRanges)
-            stringBuffer.append("Does the camera frame rate have 30FPS:$isSupportFPS")
-            stringBuffer.append("\n")
-
-            val streamConfigurationMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
-            var maxPixel: Long = 0
-            if (null != streamConfigurationMap) {
-                val sizes = streamConfigurationMap.getOutputSizes(ImageFormat.YUV_420_888)
-                if (null != sizes && sizes.size > 0) {
-                    var tempPixel: Long
-                    for (size in sizes) {
-                        tempPixel = size.height * size.width.toLong()
-                        Log.d(MainActivity.TAG, "previewSize width=" + size.width + " height=" + size.height)
-                        if (tempPixel > maxPixel) {
-                            maxPixel = tempPixel
-                        }
-                    }
-                }
-            }
-            Log.d(MainActivity.TAG, "maxPixel=$maxPixel")
-            val isSupportMaxPix = maxPixel >= 2000000
-            stringBuffer.append("Whether the maximum pixel meets 2 million:$isSupportMaxPix")
-            stringBuffer.append("\n")
-
-            val isoRange = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE)
-            if (null != isoRange) {
-                val isoUpper = isoRange.upper
-                val isoLower = isoRange.lower
-                Log.d(MainActivity.TAG, "isoRange: RangeUpper=$isoUpper getLower=$isoLower")
-            } else {
-                Log.w(MainActivity.TAG, "Can't get isoRange")
-            }
-            val isSupportAdjustIso = null != isoRange
-            stringBuffer.append(" Is it possible to adjust the ISO:$isSupportAdjustIso")
-            stringBuffer.append("\n")
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            Log.e(MainActivity.TAG, e.message)
-            stringBuffer.append("checkCameraCapacity error:" + e.message)
             stringBuffer.append("\n")
         }
     }
 
-    private fun getCameraInfo(stringBuffer: StringBuffer) {
-        try {
-            val lensFacing = CameraCharacteristics.LENS_FACING_FRONT
-            val manager = baseContext.getSystemService(Context.CAMERA_SERVICE) as CameraManager
-            val cameraIdList = manager.cameraIdList
-            if (cameraIdList.size <= 0) {
-                stringBuffer.append(getString(R.string.no_front_camera))
-                stringBuffer.append("\n")
-                return
-            }
-            var cameraCharacteristics: CameraCharacteristics? = null
-            for (cameraId in cameraIdList) {
-                cameraCharacteristics = manager.getCameraCharacteristics(cameraId)
-                val integer = cameraCharacteristics.get(CameraCharacteristics.LENS_FACING)
-                if (null != integer && lensFacing == integer) {
-                    break
-                }
-            }
-            if (null == cameraCharacteristics) {
-                stringBuffer.append("getCameraInfo null == cameraCharacteristic:" + getString(R.string.unknown_error))
-                stringBuffer.append("\n")
-                return
-            }
-            val deviceLevel: Int? = cameraCharacteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL)
-            when (deviceLevel) {
-                CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL -> {
-                    stringBuffer.append("hardware supported level:LEVEL_FULL")
-                    stringBuffer.append("\n")
-                }
-                CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY -> {
-                    stringBuffer.append("hardware supported level:LEVEL_LEGACY")
-                    stringBuffer.append("\n")
-                }
-                CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_3 -> {
-                    stringBuffer.append("hardware supported level:LEVEL_3")
-                    stringBuffer.append("\n")
-                }
-                CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED -> {
-                    stringBuffer.append("hardware supported level:LEVEL_LIMITED")
-                    stringBuffer.append("\n")
-                }
-            }
-            val fpsRanges = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES)
-            stringBuffer.append("fpsRanges: " + Arrays.toString(fpsRanges))
-            stringBuffer.append("\n")
+    private fun populateAnuraSupportedCameraInfos(stringBuffer: StringBuffer) {
 
-            val streamConfigurationMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
-            if (null != streamConfigurationMap) {
-                val sizes = streamConfigurationMap.getOutputSizes(ImageFormat.YUV_420_888)
-                if (null != sizes && sizes.size > 0) {
-                    for (size in sizes) {
-                        stringBuffer.append("previewSize width=" + size.width + " height=" + size.height)
-                        stringBuffer.append("\n")
-                    }
-                }
-            }
-            val isoRange = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE)
-            if (null != isoRange) {
-                val isoUpper = isoRange.upper
-                val isoLower = isoRange.lower
-                stringBuffer.append("isoRange: RangeUpper=$isoUpper getLower=$isoLower")
-                stringBuffer.append("\n")
-            } else {
-                stringBuffer.append("Can't get isoRange")
-                stringBuffer.append("\n")
-            }
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            Log.e(MainActivity.TAG, e.message)
-            stringBuffer.append("getCameraInfo error:" + e.message)
+        val cameraInfos = cameraCapability!!.getAnuraSupportedCameras(CameraInfo.CAMERA_CHECK_MASK and CameraInfo.CAMERA_CHECK_ISO_ADJUSTABLE_FLAG.inv())
+
+        if (cameraInfos.size <= 0) {
+            stringBuffer.append(getString(R.string.no_front_camera))
             stringBuffer.append("\n")
+            return
+        }
+
+        for (cameraInfo in cameraInfos) {
+            stringBuffer.append("Camera Id: ${cameraInfo.cameraId} \n")
         }
     }
-
 
     private fun getMaxFreq(): Long {
         val cpuCount = Runtime.getRuntime().availableProcessors()

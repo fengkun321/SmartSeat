@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.smartCarSeatProject.R
-import com.smartCarSeatProject.dao.MemoryDataInfo
+import com.smartCarSeatProject.dao.DevelopDataInfo
 import java.util.ArrayList
 
-class SQLInfoAdapter(internal var list: ArrayList<MemoryDataInfo>, internal var con: Context) : BaseAdapter() {
-    internal lateinit var deviceInfo: MemoryDataInfo
+class SQLInfoAdapter(internal var list: ArrayList<DevelopDataInfo>, internal var con: Context) : BaseAdapter() {
+    internal lateinit var deviceInfo: DevelopDataInfo
     internal lateinit var holder: ViewHolder
     internal var number = 0
     override fun getCount(): Int {
@@ -34,7 +34,7 @@ class SQLInfoAdapter(internal var list: ArrayList<MemoryDataInfo>, internal var 
         notifyDataSetChanged()
     }
 
-    fun updateList(li: ArrayList<MemoryDataInfo>) {
+    fun updateList(li: ArrayList<DevelopDataInfo>) {
         this.list = li
         notifyDataSetChanged()
     }
@@ -52,25 +52,25 @@ class SQLInfoAdapter(internal var list: ArrayList<MemoryDataInfo>, internal var 
             holder = convertView.tag as ViewHolder
         }
         deviceInfo = list[position]
-        holder.m_tvDeviceName!!.text = deviceInfo.strDataName
+        holder.m_tvDeviceName!!.text = deviceInfo.strName
 
         var strPressInfo = ""
-        strPressInfo+= "${deviceInfo.strPress1},"
-        strPressInfo+= "${deviceInfo.strPress2},"
-        strPressInfo+= "${deviceInfo.strPress3},"
-        strPressInfo+= "${deviceInfo.strPress4},"
-        strPressInfo+= "${deviceInfo.strPress5},"
-        strPressInfo+= "${deviceInfo.strPress6},"
-        strPressInfo+= "${deviceInfo.strPress7},"
-        strPressInfo+= "${deviceInfo.strPress8},"
-        strPressInfo+= "${deviceInfo.strPressA},"
-        strPressInfo+= "${deviceInfo.strPressB},"
-        strPressInfo+= "${deviceInfo.strPressC},"
-        strPressInfo+= "${deviceInfo.strPressD},"
-        strPressInfo+= "${deviceInfo.strPressE},"
-        strPressInfo+= "${deviceInfo.strPressF},"
-        strPressInfo+= "${deviceInfo.strPressG},"
-        strPressInfo+= "${deviceInfo.strPressH}"
+        strPressInfo+= "${deviceInfo.p_adjust_cushion_1},"
+        strPressInfo+= "${deviceInfo.p_adjust_cushion_2},"
+        strPressInfo+= "${deviceInfo.p_adjust_cushion_3},"
+        strPressInfo+= "${deviceInfo.p_adjust_cushion_4},"
+        strPressInfo+= "${deviceInfo.p_adjust_cushion_5},"
+        strPressInfo+= "${deviceInfo.p_adjust_cushion_6},"
+        strPressInfo+= "${deviceInfo.p_adjust_cushion_7},"
+        strPressInfo+= "${deviceInfo.p_adjust_cushion_8},"
+        strPressInfo+= "${deviceInfo.p_recog_back_A},"
+        strPressInfo+= "${deviceInfo.p_recog_back_B},"
+        strPressInfo+= "${deviceInfo.p_recog_back_C},"
+        strPressInfo+= "${deviceInfo.p_recog_back_D},"
+        strPressInfo+= "${deviceInfo.p_recog_back_E},"
+        strPressInfo+= "${deviceInfo.p_recog_back_F},"
+        strPressInfo+= "${deviceInfo.p_recog_back_G},"
+        strPressInfo+= "${deviceInfo.p_recog_back_H}"
 
         holder.m_tvDeviceType!!.text = strPressInfo
 

@@ -54,9 +54,58 @@ public class DevelopInfoDao {
 				e.printStackTrace();
 			}
 			return result;
-
-
 		}
+
+    /*****
+     * 根据类型查询所有数据
+     *
+     * @return
+     */
+    public ArrayList<DevelopDataInfo> queryHistDataInfByDataType(String strDataType){
+        ArrayList<DevelopDataInfo> result = new ArrayList<DevelopDataInfo>();
+        try {
+            result = mBaseDao.queryForListBySql("select *from "+DBContent.DeviceInfo.TABLE_NAME + " where "+DBContent.DeviceInfo.Columns.dataType+" = '"+strDataType+"' order by saveTime desc ",mRowMapper_MessageData,null );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * 根据名字更新数据
+     * @param developDataInfo
+     */
+    public boolean updateDataByName(DevelopDataInfo developDataInfo) {
+        String whereClause = DBContent.DeviceInfo.Columns.dataName+" = ?";
+        int i;
+        try {
+            i = mDB.update(DBContent.DeviceInfo.TABLE_NAME, makeValues(developDataInfo), whereClause, new String[]{developDataInfo.getStrName()});
+            return (i== 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    /**
+     * 判断该名称是否已经存在
+     * @param strName
+     * @return
+     */
+    public boolean isHaveByName(String strName) {
+        ArrayList<DevelopDataInfo> result = new ArrayList<DevelopDataInfo>();
+        try {
+            result = mBaseDao.queryForListBySql("select *from "+DBContent.DeviceInfo.TABLE_NAME + " where "+DBContent.DeviceInfo.Columns.dataName+" = '"+strName+"'",mRowMapper_MessageData,null );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (result.size() > 0) {
+            return true;
+        }
+        return false;
+
+    }
 
 	/**
 	 * 删除某个数据
@@ -153,7 +202,6 @@ public class DevelopInfoDao {
 			command.setP_adjust_cushion_7(p_adjust_cushion_7);
 			command.setP_adjust_cushion_8(p_adjust_cushion_8);
 
-
 			// 人员-性别
 			String m_gender =  cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.m_gender));
 			// 人员-国别
@@ -166,6 +214,12 @@ public class DevelopInfoDao {
 			String strPSInfo= cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.strPSInfo));
 			// 时间
 			String saveTime = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.saveTime));
+            // 数据类型
+            String dataType = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.dataType));
+            // 位置调节
+            String locationCtr = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.loactionCtr));
+            // 按摩模式
+            String massageMode = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.massageMode));
 
 
 			command.setM_gender(m_gender);
@@ -174,6 +228,9 @@ public class DevelopInfoDao {
 			command.setM_height(m_height);
 			command.setStrPSInfo(strPSInfo);
 			command.setSaveTime(saveTime);
+			command.setDataType(dataType);
+			command.setL_location(locationCtr);
+			command.setM_massage(massageMode);
 
 			return command;
 		}
@@ -219,6 +276,9 @@ public class DevelopInfoDao {
 			initialValues.put(DBContent.DeviceInfo.Columns.m_height, temp.getM_height());
 			initialValues.put(DBContent.DeviceInfo.Columns.strPSInfo, temp.getStrPSInfo());
 			initialValues.put(DBContent.DeviceInfo.Columns.saveTime, temp.getSaveTime());
+			initialValues.put(DBContent.DeviceInfo.Columns.dataType, temp.getDataType());
+			initialValues.put(DBContent.DeviceInfo.Columns.loactionCtr, temp.getL_location());
+			initialValues.put(DBContent.DeviceInfo.Columns.massageMode, temp.getM_massage());
 
 			return initialValues;
 		}

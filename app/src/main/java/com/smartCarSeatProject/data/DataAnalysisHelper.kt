@@ -308,7 +308,7 @@ class DataAnalysisHelper{
         }
 
         for (iNumber in 1 .. deviceState.sensePressStatusList.size) {
-            val it = deviceState.controlPressStatusList[iNumber-1]
+            val it = deviceState.sensePressStatusList[iNumber-1]
             if (it == DeviceWorkInfo.STATUS_INFLATE || it == DeviceWorkInfo.STATUS_DEFLATE) {
                 // 传感气压的通道号，其实是1,2,3，9，10,11，12，13,14，15,16
                 var iTag = iNumber

@@ -103,27 +103,27 @@
 
         // 人体检测
         <activity
-            android:name="com.ai.nuralogix.anura.sample.activities.MainActivity"
+            android:name="ai.nuralogix.anura.sample.activities.MainActivity"
             android:screenOrientation="landscape">
         </activity>
         <activity
-            android:name="com.ai.nuralogix.anura.sample.activities.ConfigActivity"
+            android:name="ai.nuralogix.anura.sample.activities.ConfigActivity"
             android:screenOrientation="landscape">
         </activity>
         <activity
-            android:name="com.ai.nuralogix.anura.sample.activities.DeviceInfoActivity"
+            android:name="ai.nuralogix.anura.sample.activities.DeviceInfoActivity"
             android:screenOrientation="landscape">
         </activity>
         <activity
-            android:name="com.ai.nuralogix.anura.sample.activities.MeasurementActivity"
+            android:name="ai.nuralogix.anura.sample.activities.MeasurementActivity"
             android:screenOrientation="landscape">
         </activity>
         <activity
-            android:name="com.ai.nuralogix.anura.sample.activities.SettingsActivity"
+            android:name="ai.nuralogix.anura.sample.activities.SettingsActivity"
             android:screenOrientation="landscape">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.ai.nuralogix.anura.sample.activities.MeasurementActivity" />
+                android:value="ai.nuralogix.anura.sample.activities.MeasurementActivity" />
         </activity>
 
 

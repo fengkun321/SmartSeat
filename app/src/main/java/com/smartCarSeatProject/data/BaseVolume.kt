@@ -260,7 +260,7 @@ class BaseVolume {
          */
         fun getColorByPressValue(iPress:Int,iChannel:Int):Int{
 
-            var iA = 255
+            var iA = 127
             var iR = 0
             var iG = 0
             var iB = 0

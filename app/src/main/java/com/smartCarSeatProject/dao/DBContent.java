@@ -10,7 +10,6 @@ public class DBContent {
 	public static class DeviceInfo {
 		
 		public static final String TABLE_NAME = "DevelopDataInfo";
-		public static final String TABLE_NAME_MEMORY = "MemoryDataInfo";
 
 		public static class Columns {
 			public static final String id = "ID";
@@ -65,31 +64,15 @@ public class DBContent {
 			public static final String strPSInfo = "strPSInfo";
 			// 时间
 			public static final String saveTime = "saveTime";
-
-
-		}
-
-		public static class ColumnsMemory {
-			public static final String id = "ID";
-			public static final String dataName = "dataName";
-			public static final String strPress1 = "strPress1";
-			public static final String strPress2 = "strPress2";
-			public static final String strPress3 = "strPress3";
-			public static final String strPress4 = "strPress4";
-			public static final String strPress5 = "strPress5";
-			public static final String strPress6 = "strPress6";
-			public static final String strPress7 = "strPress7";
-			public static final String strPress8 = "strPress8";
-			public static final String strPressA = "strPressA";
-			public static final String strPressB = "strPressB";
-			public static final String strPressC = "strPressC";
-			public static final String strPressD = "strPressD";
-			public static final String strPressE = "strPressE";
-			public static final String strPressF = "strPressF";
-			public static final String strPressG = "strPressG";
-			public static final String strPressH = "strPressH";
+            // 类型
+            public static final String dataType = "dataType";
+            // 位置调节
+            public static final String loactionCtr = "loactionCtr";
+            // 按摩模式
+            public static final String massageMode = "massageMode";
 
 		}
+
 
 		public static String getCreateSQL() {
 			return "CREATE TABLE " + TABLE_NAME + "(" + //
@@ -127,32 +110,12 @@ public class DBContent {
 	                "'"+ Columns.m_weight+"' TEXT NOT NULL ," +
 	                "'"+ Columns.m_height+"' TEXT NOT NULL ," +
 	                "'"+ Columns.strPSInfo+"' TEXT NOT NULL ," +
-	                "'"+ Columns.saveTime+"' TEXT NOT NULL" +
+	                "'"+ Columns.saveTime+"' TEXT NOT NULL," +
+                    "'"+ Columns.dataType+"' TEXT NOT NULL," +
+                    "'"+ Columns.loactionCtr+"' TEXT NOT NULL," +
+                    "'"+ Columns.massageMode+"' TEXT NOT NULL" +
 	                ")";
 		}
 
-		public static String getCreateMemorySQL() {
-			return "CREATE TABLE " + TABLE_NAME_MEMORY + "(" + //
-					"'"+ ColumnsMemory.id+"' INTEGER PRIMARY KEY AUTOINCREMENT ," +
-					"'"+ ColumnsMemory.dataName+"' TEXT NOT NULL ," +
-					"'"+ ColumnsMemory.strPress1+"' TEXT NOT NULL ," +
-					"'"+ ColumnsMemory.strPress2+"' TEXT NOT NULL ," +
-					"'"+ ColumnsMemory.strPress3+"' TEXT NOT NULL ," +
-					"'"+ ColumnsMemory.strPress4+"' TEXT NOT NULL ," +
-					"'"+ ColumnsMemory.strPress5+"' TEXT NOT NULL ," +
-					"'"+ ColumnsMemory.strPress6+"' TEXT NOT NULL ," +
-					"'"+ ColumnsMemory.strPress7+"' TEXT NOT NULL ," +
-					"'"+ ColumnsMemory.strPress8+"' TEXT NOT NULL ," +
-					"'"+ ColumnsMemory.strPressA+"' TEXT NOT NULL ," +
-					"'"+ ColumnsMemory.strPressB+"' TEXT NOT NULL ," +
-					"'"+ ColumnsMemory.strPressC+"' TEXT NOT NULL ," +
-					"'"+ ColumnsMemory.strPressD+"' TEXT NOT NULL ," +
-					"'"+ ColumnsMemory.strPressE+"' TEXT NOT NULL ," +
-					"'"+ ColumnsMemory.strPressF+"' TEXT NOT NULL ," +
-					"'"+ ColumnsMemory.strPressG+"' TEXT NOT NULL ," +
-					"'"+ ColumnsMemory.strPressH+"' TEXT NOT NULL " +
-					")";
-		}
-		
 	}
 }
