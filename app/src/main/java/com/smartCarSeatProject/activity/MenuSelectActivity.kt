@@ -34,10 +34,7 @@ import com.ai.nuralogix.anura.sample.utils.BundleUtils
 import com.alibaba.android.mnnkit.monitor.MNNMonitor
 import com.smartCarSeatProject.BuildConfig
 import com.smartCarSeatProject.R
-import com.smartCarSeatProject.data.BaseVolume
-import com.smartCarSeatProject.data.DataAnalysisHelper
-import com.smartCarSeatProject.data.DeviceWorkInfo
-import com.smartCarSeatProject.data.SeatStatus
+import com.smartCarSeatProject.data.*
 import com.smartCarSeatProject.data.SeatStatus.*
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import com.smartCarSeatProject.view.AreaAddWindowHint
@@ -60,7 +57,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
     var isGotoDevelop = false
     // 是否在控制界面
     var isControlShow = false
-
+    // 流程：连接设备TCP（7688A和Can）→ 查询座椅状态，是否恢复到初始值 → 恢复完毕提示用户坐好，座椅切换到正在检测 → 正在检测，检测人体参数 → 检测完毕开始测量身高体重并设置气压值 → 充放气完毕后,切换自动模式，点亮
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_menu)
@@ -86,6 +83,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         // 自动开始采集
         IS_START_AUTOFACE = true
         initNuralogixInfo()
+
+
 
     }
 
@@ -116,6 +115,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         myIntentFilter.addAction(BaseVolume.BROADCAST_CTR_CALLBACK)
         myIntentFilter.addAction(BaseVolume.BROADCAST_GOBACK_MENU)
         myIntentFilter.addAction(BaseVolume.BROADCAST_RESET_ACTION)
+        myIntentFilter.addAction(BaseVolume.COMMAND_TYPE_CHANNEL_STATUS)
 
         // 注册广播
         registerReceiver(myNetReceiver, myIntentFilter)
@@ -247,7 +247,6 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 isControlShow = false
                 SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_STATUS_RESET)
             }
-
             else if (action == BaseVolume.BROADCAST_TCP_INFO) {
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
                 // 开始连接
@@ -339,19 +338,12 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             else if (action == BaseVolume.BROADCAST_RESULT_DATA_INFO) {
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
                 val deviceWorkInfo = intent.getSerializableExtra(BaseVolume.BROADCAST_MSG) as DeviceWorkInfo
-                // 男女国别
-                if (strType.equals(BaseVolume.COMMAND_TYPE_SEX,true)) {
-                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StopSendData()
-                    // 查询状态
-                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_READ_SEAT_STATUS)
-                }
                 // 状态
-                else if (strType.equals(BaseVolume.COMMAND_TYPE_SEAT_STATUS,true)) {
+                if (strType.equals(BaseVolume.COMMAND_TYPE_SEAT_STATUS,true)) {
                     SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StopSendData()
                     loadingDialog?.dismiss()
                     // 状态未达到预设值，则让A灰掉，且不能点击
                     if (deviceWorkInfo?.seatStatus < SeatStatus.press_reserve.iValue) {
-                        DataAnalysisHelper.deviceState.isProbe = false
 
                         imgRun1.visibility = View.GONE
                         imgRun2.visibility = View.GONE
@@ -372,20 +364,18 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     }
                     // 座椅已经达到预设值，则按钮A是亮的，但还没初始化完，所以2是灰的
                     else if (deviceWorkInfo?.seatStatus == SeatStatus.press_reserve.iValue){
-
-                        DataAnalysisHelper.deviceState.isProbe = false
-
                         areaSeatWindowHint?.dismiss()
                         startCheckPeopleWindowHint?.dismiss()
                         progressBarWindowHint?.onSelfDismiss()
 
-                        imgRun1.visibility = View.VISIBLE
+                        imgRun1.visibility = View.GONE
                         imgRun2.visibility = View.GONE
                         imgRun4.visibility = View.GONE
-                        btn1.isEnabled = true
+                        btn1.isEnabled = false
                         btn2.isEnabled = false
                         btn4.isEnabled = true
                         loadingDialog?.dismiss()
+
 
                         ToastMsg("Seat initialization is complete！")
                         // 如果菜单界面，触发了进入自动模式
@@ -394,32 +384,33 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                             gotoMainControlActivity(1)
                         }
 
-                    }
-                    // 正在探测，则按钮A是亮的，但还没完成，所以2是灰的
-                    else if (deviceWorkInfo?.seatStatus == SeatStatus.press_auto_probe.iValue) {
-                        DataAnalysisHelper.deviceState.isProbe = false
+                        // 提示用户落座,并将座椅切换到正在探测状态
+                        startCheckPeopleWindowHint?.showByListener(object : AreaAddWindowHint.PeriodListener {
+                            override fun refreshListener(string: String) {
+                                SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_STATUS_PROBE)
 
-                        imgRun1.visibility = View.VISIBLE
+                            }
+                        })
+
+                    }
+                    // 正在探测，则开始采集人体数据
+                    else if (deviceWorkInfo?.seatStatus == SeatStatus.press_auto_probe.iValue) {
+                        startAiNuralogixFace()
+
+                        imgRun1.visibility = View.GONE
                         imgRun2.visibility = View.GONE
                         imgRun4.visibility = View.GONE
-                        btn1.isEnabled = true
+                        btn1.isEnabled = false
                         btn2.isEnabled = false
                         btn4.isEnabled = true
                         loadingDialog?.dismiss()
                         areaSeatWindowHint?.dismiss()
                         startCheckPeopleWindowHint?.dismiss()
-
                         ToastMsg("Is to detect！")
-                        if (!isControlShow) {
-                            progressBarWindowHint?.updateContent("Is to detect...")
-                            progressBarWindowHint?.onSelfShow()
-                        }
 
                     }
                     // 座椅自动模式，则自动和手动按钮都亮
                     else if (deviceWorkInfo?.seatStatus == SeatStatus.press_automatic.iValue){
-
-                        DataAnalysisHelper.deviceState.isProbe = true
 
                         imgRun1.visibility = View.VISIBLE
                         imgRun2.visibility = View.GONE
@@ -462,10 +453,6 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     else if (deviceWorkInfo?.seatStatus == SeatStatus.develop.iValue) {
                         btn1.isEnabled = true
                         btn2.isEnabled = false
-                        // 已经探测过
-                        if (deviceWorkInfo?.isProbe) {
-                            btn2.isEnabled = true
-                        }
 
                         imgRun1.visibility = View.GONE
                         imgRun2.visibility = View.GONE
@@ -490,10 +477,25 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
                     }
 
+
                 }
                 // 数据表
                 else if (strType.equals(BaseVolume.COMMAND_TYPE_SQL_CTR,true)) {
                     SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StopSendData()
+                }
+                // 通道状态
+                else if (action == BaseVolume.COMMAND_TYPE_CHANNEL_STATUS) {
+                    // 座椅处于检测状态
+                    if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue) {
+                        // 各个通道都已经平稳，则说明已经自动调整完毕
+                        if (DataAnalysisHelper.getInstance(mContext!!)?.getAllChannelStatus()!! < 0) {
+                            SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_AUTO)
+                        }
+
+
+                    }
+
+
                 }
             }
             // 控制回调
@@ -504,9 +506,22 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             // 从控制页面返回到主页
             else if (action == BaseVolume.BROADCAST_GOBACK_MENU) {
                 isControlShow = false
+
             }
         }
     }
+
+    /** 开始检测 */
+    private fun startAiNuralogixFace() {
+        IS_START_AUTOFACE = true
+        initNuralogixInfo()
+        if (this::core.isInitialized) {
+            renderingVideoSink.start()
+        }
+        state = STATE.IDLE
+    }
+
+
 
     /** 校验，是否可以开始连接 */
     fun checkStartConnect() {
@@ -523,7 +538,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         // 先断开连接
         SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.clearAllTCPClient()
         // 开始建立连接！
-        SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createDeviceSocket()
+//        SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createDeviceSocket()
 //        SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
 
 
@@ -548,10 +563,6 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             btn4.isEnabled = true
 
             loadingDialog?.show()
-
-            // 连接成功后，查询顺序：男女国别→座椅状态
-            // 查询男女国别
-//            SocketThreadManager.sharedInstance(this)?.StartSendData(BaseVolume.COMMAND_READ_SEAT_SEX)
             // 查询座椅状态
             SocketThreadManager.sharedInstance(this)?.StartSendData(BaseVolume.COMMAND_READ_SEAT_STATUS)
         }
@@ -627,6 +638,11 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 //        if (IS_START_AUTOFACE)
 //            return
 
+        destoryCamera()
+    }
+
+    /** 释放和终止摄像头控件 */
+    private fun destoryCamera() {
         AnuLogUtil.d(MeasurementActivity.TAG, "onDestroy")
 
         var closeStartTime = SystemClock.elapsedRealtime()
@@ -653,10 +669,9 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         if (this::dialog.isInitialized && dialog.isShowing) {
             dialog.dismiss()
         }
-        super.onDestroy()
+
         var closeStep5Time = SystemClock.elapsedRealtime()
         AnuLogUtil.d(MeasurementActivity.TAG, "Close step 5 consuming: ${closeStep5Time - closeStartTime}")
-
     }
 
 
@@ -717,7 +732,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
     private lateinit var core: Core
     private val constraintAverager = RollingConstraintAverager()
     private lateinit var render: Render
-    private lateinit var viewTracker: GLSurfaceViewTracker
+    private var viewTracker: GLSurfaceViewTracker? = null
     private val showHistogramAndRegions = true
     private lateinit var cloudAnalyzerListener: CloudAnalyzerListener
     private lateinit var trackerView: TrackerView
@@ -745,7 +760,9 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         //val videoFormat = VideoFormat(VideoFormat.VideoCodec.H264, VideoFormat.ColorFormat.BGRA, 30, IMAGE_HEIGHT.toInt(), IMAGE_WIDTH.toInt())
 
         render = Render.createGL20Render(format)
-        viewTracker.setRenderer(render as GLSurfaceView.Renderer)
+        viewTracker?.setRenderer(render as GLSurfaceView.Renderer)
+
+
         render.showFeatureRegion(showHistogramAndRegions)
 
         var visageFaceTracker: FaceTrackerAdapter = MNNFaceDetectorAdapter(baseContext)
@@ -766,9 +783,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     Loge("MenuSelectActivity","人体数据：id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}")
                     measureReuslt.text = "id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}"
 
-
                     if (result.resultIndex + 1 >= MeasurementActivity.TOTAL_NUMBER_CHUNKS) {
-                        Loge("MenuSelectActivity","人体数据：测量结束！")
+                        Loge("MenuSelectActivity","人体数据：测量结束！开始计算身高体重")
                         cancelled_tv.visibility = View.GONE
                         trackerView.visibility = View.GONE
 //                        stopMeasurement(true)
@@ -778,6 +794,20 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         if (dialog.isShowing) {
                             dialog.dismiss()
                         }
+//                        progressBarWindowHint?.updateContent("Initializing...")
+//                        progressBarWindowHint?.onSelfShow()
+//
+//                        // 计算身高体重
+//                        DataAnalysisHelper.getInstance(mContext!!)?.measureHeightWeight()
+//
+//                        // 根据男女，身高体重，获取气压表
+//                        val isMan = getBooleanBySharedPreferences(SEX_MAN)
+//                        val isCN = getBooleanBySharedPreferences(COUNTRY_CN)
+//                        val willCtrPressValue = DataAnalysisHelper.getInstance(mContext!!)?.getAutoCtrPressByPersonStyle(isMan,isCN)
+//                        // 设置气压，并提示用户，正在自动调整
+//                        val sendData = CreateCtrDataHelper.getCtrPressAllValueByPerson(willCtrPressValue!!)
+//                        SocketThreadManager.sharedInstance(mContext!!)?.StartSendData(sendData[0])
+//                        SocketThreadManager.sharedInstance(mContext!!)?.StartSendData(sendData[1])
                     }
 
                 }
@@ -911,7 +941,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         cancelled_tv.text = ""
     }
 
-    private enum class STATE {
+    public enum class STATE {
         UNKNOWN,
         IDLE,
         RESTARTING,
@@ -979,6 +1009,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
     }
 
     override fun onResume() {
+        super.onResume()
         if (this::core.isInitialized) {
             renderingVideoSink.start()
         }
@@ -989,7 +1020,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             dfxPipe.stopCollect()
         }
 
-        super.onResume()
+
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -1014,7 +1045,6 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 renderingVideoSink.stop()
             }
         }
-
     }
 
     override fun onDCValuesReceived(dcResult: DCResult?) {

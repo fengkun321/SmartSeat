@@ -94,7 +94,6 @@ class DataAnalysisHelper{
     /** 性别解析 */
     fun SexAnalySis(strContent:String) {
         val strInfoList = strContent.split(",")
-        deviceState.isProbe = (strInfoList[2].toInt()  == 1)
         context?.sendBroadcast(Intent(BaseVolume.BROADCAST_RESULT_DATA_INFO)
                 .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_SEX)
                 .putExtra(BaseVolume.BROADCAST_MSG,deviceState))

@@ -44,6 +44,7 @@ class AreaAddWindowHint : Dialog, View.OnClickListener {
     }
 
 
+
     /****
      *
      * @author mqw
@@ -74,6 +75,15 @@ class AreaAddWindowHint : Dialog, View.OnClickListener {
         setCancelable(false)
 
 
+    }
+
+    fun setConfirmListener(listener: PeriodListener) {
+        this.listener = listener
+    }
+
+    fun showByListener (listener: PeriodListener) {
+        this.listener = listener
+        this.show()
     }
 
     /** 更新显示内容  */

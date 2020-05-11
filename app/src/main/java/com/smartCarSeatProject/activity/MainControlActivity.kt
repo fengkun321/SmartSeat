@@ -239,15 +239,8 @@ class MainControlActivity : BaseActivity(),View.OnClickListener{
             }
             3 -> {
                 llAllLogo.visibility = View.GONE
-                // 已经探测过
-                if (DataAnalysisHelper.deviceState.isProbe) {
-                    imgLeft1.setImageResource(R.drawable.img_left_1_false)
-                    imgLeft2.setImageResource(R.drawable.img_left_2_false)
-                    imgLeft1.isEnabled = true
-                    imgLeft2.isEnabled = true
-                }
                 // 状态未达到预设值，提示用户等待
-                else if (DataAnalysisHelper.deviceState.seatStatus < SeatStatus.press_reserve.iValue) {
+                if (DataAnalysisHelper.deviceState.seatStatus < SeatStatus.press_reserve.iValue) {
                     imgLeft1.setImageResource(R.drawable.img_left_1_hui)
                     imgLeft2.setImageResource(R.drawable.img_left_2_hui)
                     imgLeft1.isEnabled = false
@@ -274,12 +267,8 @@ class MainControlActivity : BaseActivity(),View.OnClickListener{
                     imgLeft1.setImageResource(R.drawable.img_left_1_false)
                     imgLeft2.setImageResource(R.drawable.img_left_2_hui)
                     imgLeft1.isEnabled = true
-                    imgLeft2.isEnabled = false
-                    // 已经探测过
-                    if (DataAnalysisHelper.deviceState.isProbe) {
-                        imgLeft2.setImageResource(R.drawable.img_left_2_false)
-                        imgLeft2.isEnabled = true
-                    }
+                    imgLeft2.setImageResource(R.drawable.img_left_2_false)
+                    imgLeft2.isEnabled = true
                 }
                 imgLeft3.setImageResource(R.drawable.img_left_3)
                 keyActivity = "SetWifiActivity"
@@ -556,11 +545,11 @@ class MainControlActivity : BaseActivity(),View.OnClickListener{
     }
 
     override fun onDestroy() {
-        super.onDestroy()
 
         // 通知返回主页
         sendBroadcast(Intent(BaseVolume.BROADCAST_GOBACK_MENU))
 
+        super.onDestroy()
         unregisterReceiver(myNetReceiver)
 
         // 遍历hashMap

@@ -17,8 +17,6 @@ class DeviceWorkInfo : Serializable{
     // 传感气压8个
     var sensePressValueListl :ArrayList<String> = arrayListOf("0","0","0","0","0","0","0","0","0","0","0")
 
-    // 是否探测过
-    var isProbe = false
 
     // 身高
     var nowHeight = -1.0
@@ -61,7 +59,6 @@ class DeviceWorkInfo : Serializable{
             controlPressStatusList.add(STATUS_STOP)
         }
 
-        isProbe = false
         seatStatus = SeatStatus.press_unknown.iValue
 //        seatStatus = SeatStatus.press_automatic.iValue // 自动状态
 //        seatStatus = SeatStatus.press_automatic_manual.iValue // 手动状态
