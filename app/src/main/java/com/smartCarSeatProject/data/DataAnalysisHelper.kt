@@ -298,17 +298,17 @@ class DataAnalysisHelper{
 
     }
 
-    /** 遍历所有通道状态，只要有一个在充放气，就不能控制 */
+    /** 遍历所有通道状态，只要有一个在动作，就不能控制 */
     fun getAllChannelStatus() : Int {
         for (iNumber in 1 .. deviceState.controlPressStatusList.size) {
             val it = deviceState.controlPressStatusList[iNumber-1]
-            if (it == DeviceWorkInfo.STATUS_INFLATE || it == DeviceWorkInfo.STATUS_DEFLATE)
+            if (it == DeviceWorkInfo.STATUS_SETTING)
                 return iNumber
         }
 
         for (iNumber in 1 .. deviceState.sensePressStatusList.size) {
             val it = deviceState.sensePressStatusList[iNumber-1]
-            if (it == DeviceWorkInfo.STATUS_INFLATE || it == DeviceWorkInfo.STATUS_DEFLATE) {
+            if (it == DeviceWorkInfo.STATUS_SETTING) {
                 // 传感气压的通道号，其实是1,2,3，9，10,11，12，13,14，15,16
                 var iTag = iNumber
                 if (iNumber > 3) {

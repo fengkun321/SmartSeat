@@ -33,9 +33,8 @@ import android.widget.Toast
 import com.ai.nuralogix.anura.sample.face.MNNFaceDetectorAdapter
 import com.ai.nuralogix.anura.sample.utils.BundleUtils
 import com.smartCarSeatProject.R
-import com.smartCarSeatProject.data.BaseVolume
-import com.smartCarSeatProject.data.DataAnalysisHelper
-import com.smartCarSeatProject.data.DeviceWorkInfo
+import com.smartCarSeatProject.data.*
+import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import kotlinx.android.synthetic.main.layout_auto_seat.view.*
 import kotlinx.android.synthetic.main.layout_automatic.*
 import kotlinx.android.synthetic.main.layout_automatic.cancelled_tv
@@ -65,16 +64,10 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener,DfxPipeListener, V
         updatePersonState()
 
         initNuralogixInfo()
-        if (this::core.isInitialized) {
+        if (this@AutomaticActivity::core.isInitialized) {
             renderingVideoSink.start()
         }
         state = STATE.IDLE
-//        trackerView.visibility = View.GONE
-//        if (trackerView.visibility == View.GONE) {
-//            state = STATE.DONE
-//            cloudAnalyzer.stopAnalyzing()
-//            dfxPipe.stopCollect()
-//        }
 
     }
 
@@ -204,6 +197,20 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener,DfxPipeListener, V
      * */
     private fun onAutoSetPressByStatus() {
         ToastMsg("自动调整气压！")
+        // 体压自适应启动
+        if (cbAutoTiYa.isChecked) {
+            // 根据男女，身高体重，获取气压表
+            val isMan = getBooleanBySharedPreferences(SEX_MAN)
+            val isCN = getBooleanBySharedPreferences(COUNTRY_CN)
+            val willCtrPressValue = DataAnalysisHelper.getInstance(mContext)?.getAutoCtrPressByPersonStyle(isMan,isCN)
+            // 设置气压，并提示用户，正在自动调整
+            val sendData = CreateCtrDataHelper.getCtrPressAllValueByPerson(willCtrPressValue!!)
+            SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan(sendData[0])
+            SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan(sendData[1])
+        }
+
+
+
     }
 
     /**
@@ -316,6 +323,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener,DfxPipeListener, V
 //                        DataAnalysisHelper.deviceState.nowSex = if(isNan) 1 else 2
 //                        DataAnalysisHelper.deviceState.nowRace = if(isCN) 1 else 2
 //                        initData()
+
                     }
                 }
             }
@@ -421,6 +429,23 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener,DfxPipeListener, V
                         if (dialog.isShowing) {
                             dialog.dismiss()
                         }
+                        progressBarWindowHint?.updateContent("Adjusting now, please wait a moment...")
+                        progressBarWindowHint?.onSelfShow()
+
+                        // 测试，跳过调节气压部分，直接进入自动模式
+                        SocketThreadManager.sharedInstance(mContext)?.StartSendData(BaseVolume.COMMAND_SET_MODE_AUTO)
+
+//                        // 计算身高体重
+//                        DataAnalysisHelper.getInstance(mContext!!)?.measureHeightWeight()
+//
+//                        // 根据男女，身高体重，获取气压表
+//                        val isMan = getBooleanBySharedPreferences(SEX_MAN)
+//                        val isCN = getBooleanBySharedPreferences(COUNTRY_CN)
+//                        val willCtrPressValue = DataAnalysisHelper.getInstance(mContext!!)?.getAutoCtrPressByPersonStyle(isMan,isCN)
+//                        // 设置气压，并提示用户，正在自动调整
+//                        val sendData = CreateCtrDataHelper.getCtrPressAllValueByPerson(willCtrPressValue!!)
+//                        SocketThreadManager.sharedInstance(mContext!!)?.StartSendDataByCan(sendData[0])
+//                        SocketThreadManager.sharedInstance(mContext!!)?.StartSendDataByCan(sendData[1])
                     }
 
                 }

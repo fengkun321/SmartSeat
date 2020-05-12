@@ -59,7 +59,7 @@ class SetWifiActivity: BaseActivity() {
                     DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_ALL)
 
             // 显示最后更新的时间
-            refreshView.loadingLayoutProxy.setLastUpdatedLabel(label)
+//            refreshView.loadingLayoutProxy.setLastUpdatedLabel(label)
 
             //代表下拉刷新
             if (refreshView.headerLayout.isShown) {

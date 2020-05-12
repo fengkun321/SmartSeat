@@ -152,51 +152,51 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             }
             R.id.btn1 -> {
 
-                gotoMainControlActivity(1)
+//                gotoMainControlActivity(1)
 
                 // 已经在自动模式下，则直接进入
-//                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue ||
-//                        DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_reserve.iValue) {
-//                    gotoMainControlActivity(1)
-//                }
-//                else {
-//                    // 发送指令，切换到自动模式
-//                    isGotoAuto = true
-//                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_AUTO)
-//                }
+                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue ||
+                        DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_reserve.iValue) {
+                    gotoMainControlActivity(1)
+                }
+                else {
+                    // 发送指令，切换到自动模式
+                    isGotoAuto = true
+                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_AUTO)
+                }
 
             }
             R.id.btn2 -> {
 
-                gotoMainControlActivity(2)
+//                gotoMainControlActivity(2)
 
                 // 已经在手动模式下，则直接进入
-//                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic_manual.iValue) {
-//                    gotoMainControlActivity(2)
-//                }
-//                else {
-//                    // 发送指令，切换到手动模式
-//                    isGotoManual = true
-//                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_MANUAL)
-//                }
+                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic_manual.iValue) {
+                    gotoMainControlActivity(2)
+                }
+                else {
+                    // 发送指令，切换到手动模式
+                    isGotoManual = true
+                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_MANUAL)
+                }
 
             }
             R.id.btn3 ->
                 gotoMainControlActivity(3)
             R.id.btn4 -> {
-                startActivity(Intent(this@MenuSelectActivity,DevelopmentActivity::class.java))
+//                startActivity(Intent(this@MenuSelectActivity,DevelopmentActivity::class.java))
 
                 // 已经在开发者模式下，则直接进入
-//                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.develop.iValue) {
-//                    val intent = Intent()
-//                    intent.setClass(this@MenuSelectActivity,DevelopmentActivity::class.java)
-//                    startActivity(intent)
-//                }
-//                else {
-//                    // 发送指令，切换到开发者模式
-//                    isGotoDevelop = true
-//                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_DEVELOP)
-//                }
+                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.develop.iValue) {
+                    val intent = Intent()
+                    intent.setClass(this@MenuSelectActivity,DevelopmentActivity::class.java)
+                    startActivity(intent)
+                }
+                else {
+                    // 发送指令，切换到开发者模式
+                    isGotoDevelop = true
+                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_DEVELOP)
+                }
             }
             R.id.tvReCanConnect -> {
                 SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
@@ -362,7 +362,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         }
 
                     }
-                    // 座椅已经达到预设值，则按钮A是亮的，但还没初始化完，所以2是灰的
+                    // 座椅已经达到预设值，提示用户入座，准备检测了
                     else if (deviceWorkInfo?.seatStatus == SeatStatus.press_reserve.iValue){
                         areaSeatWindowHint?.dismiss()
                         startCheckPeopleWindowHint?.dismiss()
@@ -488,7 +488,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     // 座椅处于检测状态
                     if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue) {
                         // 各个通道都已经平稳，则说明已经自动调整完毕
-                        if (DataAnalysisHelper.getInstance(mContext!!)?.getAllChannelStatus()!! < 0) {
+                        if (DataAnalysisHelper.getInstance(mContext)?.getAllChannelStatus()!! < 0) {
                             SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_AUTO)
                         }
 
@@ -785,29 +785,39 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
                     if (result.resultIndex + 1 >= MeasurementActivity.TOTAL_NUMBER_CHUNKS) {
                         Loge("MenuSelectActivity","人体数据：测量结束！开始计算身高体重")
-                        cancelled_tv.visibility = View.GONE
-                        trackerView.visibility = View.GONE
-//                        stopMeasurement(true)
-                        state = STATE.DONE
-                        cloudAnalyzer.stopAnalyzing()
-                        dfxPipe.stopCollect()
-                        if (dialog.isShowing) {
-                            dialog.dismiss()
+
+                        stopMeasurement(true)
+
+//                        cancelled_tv.visibility = View.GONE
+//                        trackerView.visibility = View.GONE
+//                        state = STATE.DONE
+//                        cloudAnalyzer.stopAnalyzing()
+//                        dfxPipe.stopCollect()
+//                        if (dialog.isShowing) {
+//                            dialog.dismiss()
+//                        }
+
+                        if (DataAnalysisHelper.deviceState.seatStatus != SeatStatus.press_auto_probe.iValue) {
+                            return@runOnUiThread
                         }
-//                        progressBarWindowHint?.updateContent("Initializing...")
-//                        progressBarWindowHint?.onSelfShow()
-//
+
+                        progressBarWindowHint?.updateContent("Adjusting now, please wait a moment...")
+                        progressBarWindowHint?.onSelfShow()
+
+                        // 测试，跳过调节气压部分，直接进入自动模式
+                        SocketThreadManager.sharedInstance(this@MenuSelectActivity).StartSendData(BaseVolume.COMMAND_SET_MODE_AUTO)
+
 //                        // 计算身高体重
-//                        DataAnalysisHelper.getInstance(mContext!!)?.measureHeightWeight()
+//                        DataAnalysisHelper.getInstance(mContext).measureHeightWeight()
 //
 //                        // 根据男女，身高体重，获取气压表
 //                        val isMan = getBooleanBySharedPreferences(SEX_MAN)
 //                        val isCN = getBooleanBySharedPreferences(COUNTRY_CN)
-//                        val willCtrPressValue = DataAnalysisHelper.getInstance(mContext!!)?.getAutoCtrPressByPersonStyle(isMan,isCN)
+//                        val willCtrPressValue = DataAnalysisHelper.getInstance(mContext).getAutoCtrPressByPersonStyle(isMan,isCN)
 //                        // 设置气压，并提示用户，正在自动调整
 //                        val sendData = CreateCtrDataHelper.getCtrPressAllValueByPerson(willCtrPressValue!!)
-//                        SocketThreadManager.sharedInstance(mContext!!)?.StartSendData(sendData[0])
-//                        SocketThreadManager.sharedInstance(mContext!!)?.StartSendData(sendData[1])
+//                        SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(sendData[0])
+//                        SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(sendData[1])
                     }
 
                 }
@@ -1010,6 +1020,9 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
     override fun onResume() {
         super.onResume()
+        if (!IS_START_AUTOFACE)
+            return
+
         if (this::core.isInitialized) {
             renderingVideoSink.start()
         }

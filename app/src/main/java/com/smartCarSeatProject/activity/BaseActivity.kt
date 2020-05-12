@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.layout_menu.*
 
 open class BaseActivity : AppCompatActivity(){
 
-    protected var mContext:Context? = null
+    protected lateinit var mContext:Context
     // 加载转圈
     protected var loadingDialog:LoadingDialog? = null
     // 自定义进度条
@@ -72,7 +72,7 @@ open class BaseActivity : AppCompatActivity(){
                         // 通知座椅开始探测
                         SocketThreadManager.sharedInstance(this@BaseActivity)?.StartSendData(BaseVolume.COMMAND_SET_STATUS_PROBE)
                     }
-                },"keep driving position, ready for recognization",true)
+                },"keep driving position, ready for recognization",false)
 
 
 

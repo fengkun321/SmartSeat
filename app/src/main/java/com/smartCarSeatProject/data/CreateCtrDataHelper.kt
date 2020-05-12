@@ -32,12 +32,12 @@ class CreateCtrDataHelper {
 //        }
 
         /** 单独调整1个气压值 */
-        fun getCtrPressBy1(strNumber:String?,iValue:Int?) : String{
+        fun getCtrPressBy1O(strNumber:String?,iValue:Int?) : String{
             return "W,3,"+strNumber+","+iValue+BaseVolume.COMMAND_END
         }
 
         /** 手动模式下，同时调整16个气压值 */
-        fun getCtrPressBy16Manual(nowSelectMemory: DevelopDataInfo?) :String {
+        fun getCtrPressBy16ManualO(nowSelectMemory: DevelopDataInfo?) :String {
             var strPressInfo = ""
             strPressInfo+= "${nowSelectMemory?.p_adjust_cushion_1},"
             strPressInfo+= "${nowSelectMemory?.p_adjust_cushion_2},"
@@ -59,7 +59,7 @@ class CreateCtrDataHelper {
         }
 
         /** 开发者模式下，同时调整16个气压值 */
-        fun getCtrPressBy16Develop(strA:String,strSeat:String,strB:String) :String {
+        fun getCtrPressBy16DevelopO(strA:String,strSeat:String,strB:String) :String {
 //            var iAV = strA.toInt()
 //            var iSeatV = strSeat.toInt()
 //            var iBV = strB.toInt()
@@ -91,11 +91,11 @@ class CreateCtrDataHelper {
             if (iNumber < 4)
                 strSendData += BaseVolume.COMMAND_CTR_1_4
             else if (iNumber in 4..7)
-                strSendData += BaseVolume.COMMAND_CAN_5_8
+                strSendData += BaseVolume.COMMAND_CTR_5_8
             else if (iNumber in 8..11)
-                strSendData += BaseVolume.COMMAND_CAN_9_12
+                strSendData += BaseVolume.COMMAND_CTR_9_12
             else if (iNumber >= 12)
-                strSendData += BaseVolume.COMMAND_CAN_13_16
+                strSendData += BaseVolume.COMMAND_CTR_13_16
 
             // 要控制的通道位
             val iLoc = iNumber % 4
@@ -110,11 +110,88 @@ class CreateCtrDataHelper {
             return strSendData
         }
 
+        /** 手动模式下，设置16个通道的气压值 */
+        fun getCtrPressBy16Manual(developDataInfo: DevelopDataInfo) : ArrayList<String>{
+            var dataList = arrayListOf<String>()
+            var strSendData1 = BaseVolume.COMMAND_HEAD + BaseVolume.COMMAND_CTR_1_4
+            var strSendData2 = BaseVolume.COMMAND_HEAD + BaseVolume.COMMAND_CTR_5_8
+            var strSendData3 = BaseVolume.COMMAND_HEAD + BaseVolume.COMMAND_CTR_9_12
+            var strSendData4 = BaseVolume.COMMAND_HEAD + BaseVolume.COMMAND_CTR_13_16
+
+            strSendData1 = strSendData1 +
+                    String.format("%04x",developDataInfo.p_adjust_cushion_1)+
+                    String.format("%04x",developDataInfo.p_adjust_cushion_2)+
+                    String.format("%04x",developDataInfo.p_adjust_cushion_3)+
+                    String.format("%04x",developDataInfo.p_adjust_cushion_4)
+
+            strSendData2 = strSendData2 +
+                    String.format("%04x",developDataInfo.p_adjust_cushion_5)+
+                    String.format("%04x",developDataInfo.p_adjust_cushion_6)+
+                    String.format("%04x",developDataInfo.p_adjust_cushion_7)+
+                    String.format("%04x",developDataInfo.p_adjust_cushion_8)
+            strSendData3 = strSendData3 +
+                    String.format("%04x",developDataInfo.p_recog_back_A)+
+                    String.format("%04x",developDataInfo.p_recog_back_B)+
+                    String.format("%04x",developDataInfo.p_recog_back_C)+
+                    String.format("%04x",developDataInfo.p_recog_back_D)
+            strSendData4 = strSendData4 +
+                    String.format("%04x",developDataInfo.p_recog_back_E)+
+                    String.format("%04x",developDataInfo.p_recog_back_F)+
+                    String.format("%04x",developDataInfo.p_recog_back_G)+
+                    String.format("%04x",developDataInfo.p_recog_back_H)
+
+            dataList.add(strSendData1)
+            dataList.add(strSendData2)
+            dataList.add(strSendData3)
+            dataList.add(strSendData4)
+
+            return dataList
+
+        }
+
+        /** 开发者模式下，同时设置16路通道的气压值 */
+        fun getAllPressValueBy16(strA:String,strSeat:String,strB:String):ArrayList<String>{
+            var dataList = arrayListOf<String>()
+            var strSendData1 = BaseVolume.COMMAND_HEAD + BaseVolume.COMMAND_CTR_1_4
+            var strSendData2 = BaseVolume.COMMAND_HEAD + BaseVolume.COMMAND_CTR_5_8
+            var strSendData3 = BaseVolume.COMMAND_HEAD + BaseVolume.COMMAND_CTR_9_12
+            var strSendData4 = BaseVolume.COMMAND_HEAD + BaseVolume.COMMAND_CTR_13_16
+
+            strSendData1 = strSendData1 +
+                    String.format("%04x",strSeat)+
+                    String.format("%04x",strSeat)+
+                    String.format("%04x",strSeat)+
+                    String.format("%04x",strB)
+
+            strSendData2 = strSendData2 +
+                    String.format("%04x",strB)+
+                    String.format("%04x",strB)+
+                    String.format("%04x",strB)+
+                    String.format("%04x",strB)
+            strSendData3 = strSendData3 +
+                    String.format("%04x",strA)+
+                    String.format("%04x",strA)+
+                    String.format("%04x",strA)+
+                    String.format("%04x",strA)
+            strSendData4 = strSendData4 +
+                    String.format("%04x",strA)+
+                    String.format("%04x",strA)+
+                    String.format("%04x",strA)+
+                    String.format("%04x",strA)
+
+            dataList.add(strSendData1)
+            dataList.add(strSendData2)
+            dataList.add(strSendData3)
+            dataList.add(strSendData4)
+
+            return dataList
+        }
+
         /** 根据体重表，设置8路通道的气压值 */
         fun getCtrPressAllValueByPerson(controlPressInfo: ControlPressInfo):ArrayList<String>{
             var dataList = arrayListOf<String>()
             var strSendData1 = BaseVolume.COMMAND_HEAD + BaseVolume.COMMAND_CTR_1_4
-            var strSendData2 = BaseVolume.COMMAND_HEAD + BaseVolume.COMMAND_CAN_5_8
+            var strSendData2 = BaseVolume.COMMAND_HEAD + BaseVolume.COMMAND_CTR_5_8
 
             strSendData1 = strSendData1 +
                     String.format("%04x",controlPressInfo.press1)+

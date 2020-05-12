@@ -211,8 +211,8 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener{
             seekBarList[iTag].progress = 0
 
         val iNowValue = tvBValueList[iTag].text.toString().toInt()
-        val strSendData = CreateCtrDataHelper.getCtrPressBy1(""+(iTag+1),iNowValue)
-        SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.StartSendData(strSendData)
+        val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iNowValue)
+        SocketThreadManager.sharedInstance(this@DevelopmentActivity).StartSendData(strSendData)
     }
 
     /** 加号的点击时间 */
@@ -226,8 +226,8 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener{
             seekBarList[iTag].progress = seekBarList[iTag].max
 
         val iNowValue = tvBValueList[iTag].text.toString().toInt()
-        val strSendData = CreateCtrDataHelper.getCtrPressBy1(""+(iTag+1),iNowValue)
-        SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.StartSendData(strSendData)
+        val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iNowValue)
+        SocketThreadManager.sharedInstance(this@DevelopmentActivity).StartSendData(strSendData)
 
     }
 
@@ -244,8 +244,8 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener{
             var iProcess = seekBar?.progress!! +BaseVolume.ProgressValueMin
             var iTag = seekBar?.tag  as Int
             iTag += 1
-            val strSendData = CreateCtrDataHelper.getCtrPressBy1(""+iTag,iProcess)
-            SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.StartSendData(strSendData)
+            val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iProcess)
+            SocketThreadManager.sharedInstance(this@DevelopmentActivity).StartSendData(strSendData)
         }
     }
 
@@ -418,7 +418,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener{
         }
 
     }
-    val locationList = arrayListOf<String>("位置1","位置2","位置3","位置4","位置5","位置6")
+    val locationList = arrayListOf<String>("区域1","区域2","区域3","区域4","区域5","区域6")
     val massageModeList = arrayListOf<String>("模式1","模式2","模式3")
     /** 设备编辑菜单选择功能  */
     private fun deviceSelectMenu(isLocation : Boolean,strValue : String,list : ArrayList<String>) {
@@ -429,15 +429,36 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener{
                 // 位置调节
                 if (isLocation) {
                     tvLocation.text = strItem
+                    setLocationData(number)
                 }
                 // 按摩模式
                 else {
                     tvMassageMode.text = strItem
                 }
-
             }
         })
         dialog1.show()
+
+    }
+
+    /** 位置调节 */
+    fun setLocationData (number: Int) {
+        when(number) {
+            0 ->
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_1)
+            1 ->
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_2)
+            2 ->
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_3)
+            3 ->
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_4)
+            4 ->
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_5)
+            5 ->
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_6)
+        }
+        // 每次发完位置后，要再发一条清零指令才会动作
+        SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_0)
 
     }
 
@@ -471,8 +492,11 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener{
 
         ToastMsg("Restoring initial value...")
         // 发指令，设置16个气压
-        val NowSendData = CreateCtrDataHelper.getCtrPressBy16Develop(strVA,strVSeat,strVB)
-        SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.StartSendData(NowSendData)
+        val NowSendDataList = CreateCtrDataHelper.getAllPressValueBy16(strVA,strVSeat,strVB)
+        NowSendDataList.forEach {
+            SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.StartSendData(it)
+        }
+
 
     }
 

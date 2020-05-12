@@ -23,7 +23,7 @@ class SetMemoryActivity: BaseActivity() {
 
     private var list :ArrayList<DevelopDataInfo> = arrayListOf()
     private var sqlInfoAdapter: SQLInfoAdapter? = null
-    var nowSelectMemory:DevelopDataInfo? = null
+    lateinit var nowSelectMemory:DevelopDataInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +46,11 @@ class SetMemoryActivity: BaseActivity() {
 
         list_view.setOnItemClickListener { adapterView, view, i, l ->
             nowSelectMemory = list[i]
-            val strSendData = CreateCtrDataHelper.getCtrPressBy16Manual(nowSelectMemory)
-            SocketThreadManager.sharedInstance(this@SetMemoryActivity)?.StartSendData(strSendData)
+            val strSendDataList = CreateCtrDataHelper.getCtrPressBy16Manual(nowSelectMemory)
+            strSendDataList.forEach {
+                SocketThreadManager.sharedInstance(this@SetMemoryActivity).StartSendData(it)
+            }
+
         }
 
         list_view.setOnItemLongClickListener { adapterView, view, i, l ->

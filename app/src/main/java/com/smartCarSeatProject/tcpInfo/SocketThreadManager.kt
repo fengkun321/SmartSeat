@@ -9,10 +9,11 @@ import com.smartCarSeatProject.data.BaseVolume
 import java.util.HashMap
 
 
-class SocketThreadManager(private val context: Context) {
+class SocketThreadManager() {
 
     var tcpClient:TCPClientS? = null
     var canClient:CanTCPClientS? = null
+
 
     /** 发送次数  */
     private var iSendCount = 0
@@ -31,7 +32,7 @@ class SocketThreadManager(private val context: Context) {
             if (iSendCount > 3) {
                 // 连续发送4次都超时了，提示用户。
                 Log.e(TAG, "连续发送4次都超时了，提示用户！")
-                context.sendBroadcast(Intent(BaseVolume.BROADCAST_SEND_INFO).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_SEND_DATA_TIME_OUT))
+                mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_SEND_INFO).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_SEND_DATA_TIME_OUT))
                 return
             }
             ++iSendCount
@@ -45,15 +46,15 @@ class SocketThreadManager(private val context: Context) {
 
     fun createAllSocket() {
         if (tcpClient == null) {
-            context.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_START))
-            tcpClient = TCPClientS( "",BaseVolume.HostIp, BaseVolume.HostListenningPort, context)
+            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_START))
+            tcpClient = TCPClientS( "",BaseVolume.HostIp, BaseVolume.HostListenningPort, mContext)
         }
         else {
             if (tcpClient!!.isConnect) {
                 // 已经连接的，则不用理会
             }
             else {
-                context.sendBroadcast(Intent(BaseVolume.BROADCAST_SEND_INFO).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_SEND_DATA_START))
+                mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_SEND_INFO).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_SEND_DATA_START))
                 tcpClient!!.doConnect()
             }
         }
@@ -68,15 +69,15 @@ class SocketThreadManager(private val context: Context) {
      */
     fun createDeviceSocket() {
         if (tcpClient == null) {
-            context.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_START))
-            tcpClient = TCPClientS( "",BaseVolume.HostIp, BaseVolume.HostListenningPort, context)
+            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_START))
+            tcpClient = TCPClientS( "",BaseVolume.HostIp, BaseVolume.HostListenningPort, mContext)
         }
         else {
             if (tcpClient!!.isConnect) {
                 // 已经连接的，则不用理会
             }
             else {
-                context.sendBroadcast(Intent(BaseVolume.BROADCAST_SEND_INFO).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_SEND_DATA_START))
+                mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_SEND_INFO).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_SEND_DATA_START))
                 tcpClient!!.doConnect()
             }
         }
@@ -87,15 +88,15 @@ class SocketThreadManager(private val context: Context) {
      */
     fun createCanSocket() {
         if (canClient == null) {
-            context.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_START))
-            canClient = CanTCPClientS(context)
+            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_START))
+            canClient = CanTCPClientS(mContext)
         }
         else {
             if (canClient!!.isConnect) {
                 // 已经连接的，则不用理会
             }
             else {
-                context.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_SEND_DATA_START))
+                mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_SEND_DATA_START))
                 canClient!!.doConnect()
             }
         }
@@ -130,12 +131,12 @@ class SocketThreadManager(private val context: Context) {
     /** 开始发送数据  */
     fun StartSendData(strData: String) {
         if (tcpClient == null || !(tcpClient!!.isConnect)) {
-            context.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO)
+            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO)
                     .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
                     .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
             return
         }
-        context.sendBroadcast(Intent(BaseVolume.BROADCAST_SEND_INFO)
+        mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_SEND_INFO)
                 .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_SEND_DATA_START))
         iSendCount = 0
         strNowSendData = strData
@@ -145,14 +146,14 @@ class SocketThreadManager(private val context: Context) {
     /** 停止发送  */
     fun StopSendData() {
         handler.removeCallbacks(runnableSendTime)
-        context.sendBroadcast(Intent(BaseVolume.BROADCAST_SEND_INFO)
+        mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_SEND_INFO)
                 .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_SEND_DATA_END))
     }
 
-    /** 开始发送数据（不带超时机制） */
-    fun StartSendDataNoTime(strData: String) {
+    /** 通过Can盒发送数据（不带超时机制） */
+    fun StartSendDataByCan(strData: String) {
         if (canClient == null || !(canClient!!.isConnect)) {
-            context.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
+            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
                     .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
                     .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
             return
@@ -164,11 +165,13 @@ class SocketThreadManager(private val context: Context) {
     companion object {
 
         protected val TAG = "SocketThreadManager"
-        var s_SocketManager: SocketThreadManager? = null
+        lateinit var s_SocketManager: SocketThreadManager
+        lateinit var mContext : Context
 
-        fun sharedInstance(context: Context): SocketThreadManager? {
-            if (s_SocketManager == null) {
-                s_SocketManager = SocketThreadManager(context)
+        fun sharedInstance(context: Context): SocketThreadManager {
+            mContext = context
+            if (!this::s_SocketManager.isInitialized) {
+                s_SocketManager = SocketThreadManager()
             }
             return s_SocketManager
         }

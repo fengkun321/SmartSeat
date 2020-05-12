@@ -296,6 +296,22 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
             it.setBackgroundColor(getColor(R.color.colorBlack))
         }
         locationList[iTag].setBackgroundColor(getColor(R.color.colorLightBlue))
+        when(iTag) {
+            0 ->
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_1)
+            1 ->
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_2)
+            2 ->
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_3)
+            3 ->
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_4)
+            4 ->
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_5)
+            5 ->
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_6)
+        }
+        // 每次发完位置后，要再发一条清零指令才会动作
+        SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_0)
 
     }
 

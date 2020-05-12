@@ -27,14 +27,14 @@ class DeviceWorkInfo : Serializable{
 
     companion object{
 
-        // 停止动作
-        val STATUS_STOP = 0
-        // 正在充气
-        val STATUS_INFLATE = 1
-        // 正在放气
-        val STATUS_DEFLATE = 2
-        // 未使用
-        val STATUS_NOT_USED = 3
+        // 恢复默认
+        val STATUS_NORMAL = 0
+        // 正在动作
+        val STATUS_SETTING = 1
+        // 动作完成
+        val STATUS_SETTED = 2
+        // 按摩
+        val STATUS_MASSAGE = 3
 
     }
 
@@ -52,11 +52,11 @@ class DeviceWorkInfo : Serializable{
 
         for (i in 1..11) {
             sensePressValueListl.add("255")
-            sensePressStatusList.add(STATUS_STOP)
+            sensePressStatusList.add(STATUS_NORMAL)
         }
         for (i in 1..8) {
             controlPressValueList.add("255")
-            controlPressStatusList.add(STATUS_STOP)
+            controlPressStatusList.add(STATUS_NORMAL)
         }
 
         seatStatus = SeatStatus.press_unknown.iValue
@@ -71,11 +71,11 @@ class DeviceWorkInfo : Serializable{
         controlPressValueList.clear()
         for (i in 1..11) {
             sensePressValueListl.add("255")
-            sensePressStatusList.add(STATUS_STOP)
+            sensePressStatusList.add(STATUS_NORMAL)
         }
         for (i in 1..8) {
             controlPressValueList.add("255")
-            controlPressStatusList.add(STATUS_STOP)
+            controlPressStatusList.add(STATUS_NORMAL)
         }
     }
 

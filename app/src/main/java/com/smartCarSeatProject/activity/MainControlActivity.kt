@@ -208,67 +208,49 @@ class MainControlActivity : BaseActivity(),View.OnClickListener{
                 keyActivity = "AutomaticActivity"
                 intent1.setClass(this, AutomaticActivity::class.java!!)
 
-                // 座椅已经达到预设值，提示用户调整坐姿！
-                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_reserve.iValue){
+                loadingDialog?.dismiss()
 
-                    areaSeatWindowHint?.dismiss()
-                    progressBarWindowHint?.onSelfDismiss()
-
-                    ToastMsg("Seat initialization is complete！")
-                    loadingDialog?.dismiss()
-
-                    // 按钮1亮，其他的都灰且不能点
-                    imgLeft1.setImageResource(R.drawable.img_left_1)
-                    imgLeft2.setImageResource(R.drawable.img_left_2_hui)
-                    imgLeft1.isEnabled = true
-                    imgLeft2.isEnabled = false
-                    startCheckPeopleWindowHint?.show()
-
-                }
+                imgLeft1.setImageResource(R.drawable.img_left_1)
+                imgLeft2.setImageResource(R.drawable.img_left_2_false)
+                imgLeft4.setImageResource(R.drawable.img_left_4)
+                imgLeft1.isEnabled = true
+                imgLeft2.isEnabled = true
+                imgLeft4.isEnabled = true
 
             }
             2 -> {
 
                 llAllLogo.visibility = View.GONE
-
                 setValueBufferByChannel.clear()
                 imgLeft1.setImageResource(R.drawable.img_left_1_false)
                 imgLeft2.setImageResource(R.drawable.img_left_2)
+                imgLeft4.setImageResource(R.drawable.img_left_4)
+                imgLeft1.isEnabled = true
+                imgLeft2.isEnabled = true
+                imgLeft4.isEnabled = true
+
                 keyActivity = "ManualActivity"
                 intent1.setClass(this, ManualActivity::class.java!!)
             }
             3 -> {
                 llAllLogo.visibility = View.GONE
-                // 状态未达到预设值，提示用户等待
-                if (DataAnalysisHelper.deviceState.seatStatus < SeatStatus.press_reserve.iValue) {
+                // 小于自动模式，则都不能用
+                if (DataAnalysisHelper.deviceState.seatStatus <= SeatStatus.press_auto_probe.iValue) {
                     imgLeft1.setImageResource(R.drawable.img_left_1_hui)
                     imgLeft2.setImageResource(R.drawable.img_left_2_hui)
+                    imgLeft4.setImageResource(R.drawable.img_left_4_hui)
                     imgLeft1.isEnabled = false
                     imgLeft2.isEnabled = false
+                    imgLeft4.isEnabled = false
                 }
-                // 座椅已达到预设值 或 正在检测
-                else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_reserve.iValue
-                        || DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue){
-                    imgLeft1.setImageResource(R.drawable.img_left_1_false)
-                    imgLeft2.setImageResource(R.drawable.img_left_2_hui)
-                    imgLeft1.isEnabled = true
-                    imgLeft2.isEnabled = false
-                }
-                // 座椅自动或手动模式
-                else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue ||
-                        DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic_manual.iValue){
+                // 座椅自动或手动或开发者模式
+                else if (DataAnalysisHelper.deviceState.seatStatus >= SeatStatus.press_automatic.iValue ){
                     imgLeft1.setImageResource(R.drawable.img_left_1_false)
                     imgLeft2.setImageResource(R.drawable.img_left_2_false)
+                    imgLeft4.setImageResource(R.drawable.img_left_4)
                     imgLeft1.isEnabled = true
                     imgLeft2.isEnabled = true
-                }
-                // 开发者模式
-                else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.develop.iValue) {
-                    imgLeft1.setImageResource(R.drawable.img_left_1_false)
-                    imgLeft2.setImageResource(R.drawable.img_left_2_hui)
-                    imgLeft1.isEnabled = true
-                    imgLeft2.setImageResource(R.drawable.img_left_2_false)
-                    imgLeft2.isEnabled = true
+                    imgLeft4.isEnabled = true
                 }
                 imgLeft3.setImageResource(R.drawable.img_left_3)
                 keyActivity = "SetWifiActivity"
@@ -439,59 +421,15 @@ class MainControlActivity : BaseActivity(),View.OnClickListener{
         }
         // 状态未达到预设值，提示用户等待
         else if (DataAnalysisHelper.deviceState.seatStatus < SeatStatus.press_reserve.iValue) {
-
             finish()
-
-//            ToastMsg("Initializing...")
-//            loadingDialog?.show()
-//
-//            // 按钮1亮，其他的都灰且不能点
-//            imgLeft1.setImageResource(R.drawable.img_left_1)
-//            imgLeft2.setImageResource(R.drawable.img_left_2_hui)
-//            imgLeft1.isEnabled = true
-//            imgLeft2.isEnabled = false
-//            switchActivityByNumber(1)
-//
-//            startCheckPeopleWindowHint?.dismiss()
-//            areaSeatWindowHint?.dismiss()
-//            progressBarWindowHint?.updateContent("Initializing...")
-//            progressBarWindowHint?.onSelfShow()
-
         }
         // 座椅已经达到预设值，提示用户调整坐姿！
         else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_reserve.iValue){
-
-            areaSeatWindowHint?.dismiss()
-            progressBarWindowHint?.onSelfDismiss()
-
-            ToastMsg("Seat initialization is complete！")
-            loadingDialog?.dismiss()
-
-            // 按钮1亮，其他的都灰且不能点
-            imgLeft1.setImageResource(R.drawable.img_left_1)
-            imgLeft2.setImageResource(R.drawable.img_left_2_hui)
-            imgLeft1.isEnabled = true
-            imgLeft2.isEnabled = false
-            switchActivityByNumber(1)
-            startCheckPeopleWindowHint?.show()
-
+            finish()
         }
         // 正在探测
         else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue){
-            ToastMsg("Is to detect！")
-
-            // 按钮1亮，其他的都灰且不能点
-            imgLeft1.setImageResource(R.drawable.img_left_1)
-            imgLeft2.setImageResource(R.drawable.img_left_2_hui)
-            imgLeft1.isEnabled = true
-            imgLeft2.isEnabled = false
-            switchActivityByNumber(1)
-
-            startCheckPeopleWindowHint?.dismiss()
-            areaSeatWindowHint?.dismiss()
-            progressBarWindowHint?.updateContent("Is to detect...")
-            progressBarWindowHint?.onSelfShow()
-
+            finish()
         }
         // 座椅自动模式正常运行，则其他功能都可以用
         else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue){

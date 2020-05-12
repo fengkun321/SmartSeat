@@ -76,11 +76,16 @@
         layout="@layout/layout_development_value"
         android:layout_marginTop="3dp"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorWhite"
+        android:layout_marginTop="3dp"/>
+
     <RelativeLayout android:id="@+id/rlLocation"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="3dp"
         android:background="@color/colorBlack"
         android:padding="3dp">
 
@@ -112,11 +117,15 @@
 
     </RelativeLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorWhite"/>
+
     <RelativeLayout android:id="@+id/rlMassageMode"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="3dp"
         android:background="@color/colorBlack"
         android:padding="3dp">
 
@@ -147,6 +156,11 @@
 
 
     </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorWhite"/>
 
 
 

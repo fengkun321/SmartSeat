@@ -259,7 +259,7 @@
                         android:textColor="@color/colorAccent"
                         android:text="123"
                         android:textSize="15sp"
-                        android:visibility="visible"/>
+                        android:visibility="gone"/>
 
                 </RelativeLayout>
 

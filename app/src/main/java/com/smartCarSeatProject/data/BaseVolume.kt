@@ -91,10 +91,6 @@ class BaseVolume {
 
         /** 读取座椅当前状态 */
         val COMMAND_READ_SEAT_STATUS = "R,1\r\n"
-        /** 读取座椅自动模式的男女 */
-        val COMMAND_READ_SEAT_SEX = "R,4\r\n"
-        /** 读取座椅的数据库—手动模式 */
-        val COMMAND_READ_SQL_MANUAL = "R,2\r\n"
 
         /** 设置座椅的状态-开始探测 */
         val COMMAND_SET_STATUS_PROBE = "W,1,0\r\n"
