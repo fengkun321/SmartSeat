@@ -82,6 +82,9 @@ class AreaAddWindowHint : Dialog, View.OnClickListener {
     }
 
     fun showByListener (listener: PeriodListener) {
+        if (isShowing) {
+            return
+        }
         this.listener = listener
         this.show()
     }

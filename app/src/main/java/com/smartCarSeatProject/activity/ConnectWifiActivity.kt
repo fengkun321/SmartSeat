@@ -4,18 +4,20 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.ConnectivityManager
+import android.net.*
+import android.net.ConnectivityManager.NetworkCallback
 import android.net.wifi.WifiManager
+import android.net.wifi.WifiNetworkSpecifier
+import android.os.Build
 import android.os.Bundle
-import com.smartCarSeatProject.R
-import com.smartCarSeatProject.data.BaseVolume
-import com.smartCarSeatProject.view.LoadingDialog
-import com.smartCarSeatProject.wifiInfo.WIFIConnectionManager
-import kotlinx.android.synthetic.main.layout_connectwifi.*
 import android.os.IBinder
+import android.os.PatternMatcher
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
+import com.smartCarSeatProject.R
+import com.smartCarSeatProject.wifiInfo.WIFIConnectionManager
 import com.smartCarSeatProject.wifiInfo.WIFIConnectionTest
+import kotlinx.android.synthetic.main.layout_connectwifi.*
 
 
 class ConnectWifiActivity: BaseActivity() {
@@ -49,34 +51,79 @@ class ConnectWifiActivity: BaseActivity() {
             if (edPwd.text.toString().equals("")){
                 return@setOnClickListener
             }
-            loadingDialog?.show()
-            Loge(this.localClassName,"开始连接！！！！SSID：$selectSSID ++++ PWD：${edPwd.text}")
-//            WIFIConnectionManager.getInstance(this)?.startConnect(selectSSID,edPwd.text.toString())
-
-
-            //createWifiConfig主要用于构建一个WifiConfiguration，代码中的例子主要用于连接不需要密码的Wifi
-            //WifiManager的addNetwork接口，传入WifiConfiguration后，得到对应的NetworkId
-            val netId = wifiManager?.addNetwork(wifiConnectionTest?.createWifiConfig(selectSSID, edPwd.text.toString(), WIFIConnectionTest.WIFICIPHER_WPA))
-
-            //WifiManager的enableNetwork接口，就可以连接到netId对应的wifi了
-            //其中boolean参数，主要用于指定是否需要断开其它Wifi网络
-            val enable = wifiManager?.enableNetwork(netId!!, true)
-            Log.d("ZJTest", "enable: $enable")
-
-            //可选操作，让Wifi重新连接最近使用过的接入点
-            //如果上文的enableNetwork成功，那么reconnect同样连接netId对应的网络
-            //若失败，则连接之前成功过的网络
-            val reconnect = wifiManager?.reconnect()
-            Log.d("ZJTest", "reconnect: $reconnect")
+//            wifiConnect()
+            wifiConnectByAndroidQ()
 
 
 
         }
 
         // 添加网络监听
-        val mFilter = IntentFilter()
-        mFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
-        registerReceiver(myNetReceiver, mFilter)
+//        val mFilter = IntentFilter()
+//        mFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
+//        registerReceiver(myNetReceiver, mFilter)
+    }
+
+    /**
+     * 连接指定wifi
+     */
+    fun wifiConnect() {
+        loadingDialog?.show()
+        Loge(this.localClassName,"开始连接！！！！SSID：$selectSSID ++++ PWD：${edPwd.text}")
+//            WIFIConnectionManager.getInstance(this)?.startConnect(selectSSID,edPwd.text.toString())
+
+
+        //createWifiConfig主要用于构建一个WifiConfiguration，代码中的例子主要用于连接不需要密码的Wifi
+        //WifiManager的addNetwork接口，传入WifiConfiguration后，得到对应的NetworkId
+        val netId = wifiManager?.addNetwork(wifiConnectionTest?.createWifiConfig(selectSSID, edPwd.text.toString(), WIFIConnectionTest.WIFICIPHER_WPA))
+
+        //WifiManager的enableNetwork接口，就可以连接到netId对应的wifi了
+        //其中boolean参数，主要用于指定是否需要断开其它Wifi网络
+        val enable = wifiManager?.enableNetwork(netId!!, true)
+        Log.d("ZJTest", "enable: $enable")
+
+        //可选操作，让Wifi重新连接最近使用过的接入点
+        //如果上文的enableNetwork成功，那么reconnect同样连接netId对应的网络
+        //若失败，则连接之前成功过的网络
+        val reconnect = wifiManager?.reconnect()
+        Log.d("ZJTest", "reconnect: $reconnect")
+    }
+
+
+    /**
+     * 连接指定wifi-针对Android10.0系统
+     */
+    fun wifiConnectByAndroidQ() {
+        val wifiName = selectSSID
+        val wifiPassword = edPwd.text.toString()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val specifier: NetworkSpecifier = WifiNetworkSpecifier.Builder()
+                    .setSsidPattern(PatternMatcher(wifiName, PatternMatcher.PATTERN_PREFIX))
+                    .setWpa2Passphrase(wifiPassword)
+                    .build()
+            val request = NetworkRequest.Builder()
+                    .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                    .removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                    .setNetworkSpecifier(specifier)
+                    .build()
+            val connectivityManager = mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val networkCallback: NetworkCallback = object : NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    // do success processing here..
+                    Log.e("NetworkCallback", "onAvailable: ")
+                    ToastMsg("Connection Success！")
+                    MainControlActivity.getInstance()?.finish()
+                }
+
+                override fun onUnavailable() {
+                    Log.e("NetworkCallback", "onUnavailable:")
+                    ToastMsg("Connection Fail！")
+                }
+            }
+            connectivityManager.requestNetwork(request, networkCallback)
+            // Release the request when done.
+            // connectivityManager.unregisterNetworkCallback(networkCallback);
+        }
     }
 
 
@@ -140,7 +187,7 @@ class ConnectWifiActivity: BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(myNetReceiver)
+//        unregisterReceiver(myNetReceiver)
 
 
     }

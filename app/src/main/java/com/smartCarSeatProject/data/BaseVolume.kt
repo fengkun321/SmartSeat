@@ -1,8 +1,6 @@
 package com.smartCarSeatProject.data
 
 import android.graphics.Color
-import java.math.BigDecimal
-import java.math.BigInteger
 
 
 class BaseVolume {
@@ -10,25 +8,26 @@ class BaseVolume {
     companion object {
 
         // 该版本的打包时间
-        val StartTime = "2019-10-15 00:00:00"
+        const val StartTime = "2019-10-15 00:00:00"
 
         // IP
-        val CanHostIp = "10.10.10.245"
-        val HostIp = "10.10.10.254"
+        const val CanHostIp = "10.10.10.245"
+        const val HostIp = "10.10.10.254"
+//        const val HostIp = "192.168.1.102"
         // Port
-        val CanHostListenningPort = 4001
-        val HostListenningPort = 9999
+        const val CanHostListenningPort = 4001
+        const val HostListenningPort = 9999
         // WIFI标志
-//        val WIFI_SIGN = "HI-LINK_"
-        val WIFI_SIGN = "HLK_OpenWrt"
+        const val WIFI_SIGN = "HLK_OpenWrt"
+//        const val WIFI_SIGN = "TP-LINK_FK"
         // 拖拽进度条最小值
-        val ProgressValueMin = 255
+        const val ProgressValueMin = 255
         // 拖拽进度条最大值
-        val ProgressValueMax = 3600
+        const val ProgressValueMax = 3600
         // 气压最小值
-        val pressValueMin = 25
+        const val pressValueMin = 25
         // 气压最大值
-        val pressValueMax = 500
+        const  val pressValueMax = 500
 
         // 各个通道气压的偏差值
         val deviationValueMap = hashMapOf<Int,Int>(
@@ -69,53 +68,62 @@ class BaseVolume {
         var strPersonDataInfo = "0&0&0&0&0&0"
 
 
-        val BROADCAST_UPDATA_WIFI_INFO = "BROADCAST_UPDATA_WIFI_INFO"
-        val BROADCAST_FINISH_APPLICATION = "BROADCAST_FINISH_APPLICATION"
-        val BROADCAST_RESET_ACTION = "BROADCAST_RESET_ACTION"
+        const val BROADCAST_UPDATA_WIFI_INFO = "BROADCAST_UPDATA_WIFI_INFO"
+        const val BROADCAST_FINISH_APPLICATION = "BROADCAST_FINISH_APPLICATION"
+        const val BROADCAST_RESET_ACTION = "BROADCAST_RESET_ACTION"
 
-        val BROADCAST_TCP_INFO = "BROADCAST_TCP_INFO"
-        val BROADCAST_TCP_INFO_CAN = "BROADCAST_TCP_INFO_CAN"
-        val BROADCAST_TCP_CONNECT_START = "BROADCAST_TCP_START_CONNECT"
-        val BROADCAST_TCP_CONNECT_CALLBACK = "BROADCAST_TCP_CONNECT_CALLBACK"
-        val BROADCAST_TCP_STATUS = "BROADCAST_TCP_CONNECT_STATUS"
-        val BROADCAST_SEND_INFO = "BROADCAST_SEND_INFO"
-        val BROADCAST_SEND_DATA_START = "BROADCAST_SEND_DATA_START"
-        val BROADCAST_SEND_DATA_END = "BROADCAST_SEND_DATA_END"
-        val BROADCAST_SEND_DATA_TIME_OUT = "BROADCAST_SEND_DATA_TIME_OUT"
-        val BROADCAST_RESULT_DATA_INFO = "BROADCAST_RESULT_DATA_INFO"
-        val BROADCAST_CTR_CALLBACK = "BROADCAST_CTR_CALLBACK"
-        val BROADCAST_GOBACK_MENU = "BROADCAST_GOBACK_MENU"
-        val BROADCAST_MSG = "BROADCAST_MSG"
-        val BROADCAST_TYPE = "BROADCAST_TYPE"
+        const val BROADCAST_TCP_INFO = "BROADCAST_TCP_INFO"
+        const val BROADCAST_TCP_INFO_CAN = "BROADCAST_TCP_INFO_CAN"
+        const val BROADCAST_TCP_CONNECT_START = "BROADCAST_TCP_START_CONNECT"
+        const val BROADCAST_TCP_CONNECT_CALLBACK = "BROADCAST_TCP_CONNECT_CALLBACK"
+        const val BROADCAST_TCP_STATUS = "BROADCAST_TCP_CONNECT_STATUS"
+        const val BROADCAST_SEND_INFO = "BROADCAST_SEND_INFO"
+        const val BROADCAST_SEND_DATA_START = "BROADCAST_SEND_DATA_START"
+        const val BROADCAST_SEND_DATA_END = "BROADCAST_SEND_DATA_END"
+        const val BROADCAST_SEND_DATA_TIME_OUT = "BROADCAST_SEND_DATA_TIME_OUT"
+        const val BROADCAST_RESULT_DATA_INFO = "BROADCAST_RESULT_DATA_INFO"
+        const val BROADCAST_CTR_CALLBACK = "BROADCAST_CTR_CALLBACK"
+        const val BROADCAST_GOBACK_MENU = "BROADCAST_GOBACK_MENU"
+        const val BROADCAST_MSG = "BROADCAST_MSG"
+        const val BROADCAST_TYPE = "BROADCAST_TYPE"
+
+        // 连接已断开
+        const val TCP_CONNECT_STATE_DISCONNECT = -1
+
+        // 连接成功
+        const val TCP_CONNECT_STATE_CONNECTED = 1
+
+        // 连接中
+        const val TCP_CONNECT_STATE_CONNECTTING = 0
 
 
         /** 读取座椅当前状态 */
-        val COMMAND_READ_SEAT_STATUS = "R,1\r\n"
+        const val COMMAND_READ_SEAT_STATUS = "R,1\r\n"
 
         /** 设置座椅的状态-开始探测 */
-        val COMMAND_SET_STATUS_PROBE = "W,1,0\r\n"
+        const val COMMAND_SET_STATUS_PROBE = "W,1,0\r\n"
         /** 设置座椅的状态-保压 */
-        val COMMAND_SET_STATUS_KEEP = "W,1,1\r\n"
+        const val COMMAND_SET_STATUS_KEEP = "W,1,1\r\n"
         /** 设置座椅的状态-重置 */
-        val COMMAND_SET_STATUS_RESET = "W,1,2\r\n"
+        const val COMMAND_SET_STATUS_RESET = "W,1,2\r\n"
 
         /** 设置座椅的模式-自动 */
-        val COMMAND_SET_MODE_AUTO = "W,5,1\r\n"
+        const val COMMAND_SET_MODE_AUTO = "W,5,1\r\n"
         /** 设置座椅的模式-手动 */
-        val COMMAND_SET_MODE_MANUAL = "W,5,2\r\n"
+        const val COMMAND_SET_MODE_MANUAL = "W,5,2\r\n"
         /** 设置座椅的模式-开发者 */
-        val COMMAND_SET_MODE_DEVELOP = "W,5,3\r\n"
+        const val COMMAND_SET_MODE_DEVELOP = "W,5,3\r\n"
 
         /** Can盒的数据头 */
-        val COMMAND_HEAD = "080000"
-        val COMMAND_CAN_1_4 = "0201"
-        val COMMAND_CAN_5_8 = "0202"
-        val COMMAND_CAN_9_12 = "0221"
-        val COMMAND_CAN_13_16 = "0222"
+        const val COMMAND_HEAD = "080000"
+        const val COMMAND_CAN_1_4 = "0201"
+        const val COMMAND_CAN_5_8 = "0202"
+        const val COMMAND_CAN_9_12 = "0221"
+        const val COMMAND_CAN_13_16 = "0222"
 
         /** Can盒的状态 */
-        val COMMAND_CAN_STATUS_1_8 = "0203"
-        val COMMAND_CAN_STATUS_9_16 = "0223"
+        const val COMMAND_CAN_STATUS_1_8 = "0203"
+        const val COMMAND_CAN_STATUS_9_16 = "0223"
 
         /** 控制16个通道的数据头 */
         val COMMAND_CTR_1_4 = "03bb"
@@ -124,46 +132,46 @@ class BaseVolume {
         val COMMAND_CTR_13_16 = "03ee"
 
         /** 电机位置1-6 */
-        val COMMAND_CAN_LOCATION_1 = "02f51100000000000000"
-        val COMMAND_CAN_LOCATION_2 = "02f51200000000000000"
-        val COMMAND_CAN_LOCATION_3 = "02f51300000000000000"
-        val COMMAND_CAN_LOCATION_4 = "02f51400000000000000"
-        val COMMAND_CAN_LOCATION_5 = "02f51500000000000000"
-        val COMMAND_CAN_LOCATION_6 = "02f51600000000000000"
+        const val COMMAND_CAN_LOCATION_1 = "02f51100000000000000"
+        const val COMMAND_CAN_LOCATION_2 = "02f51200000000000000"
+        const val COMMAND_CAN_LOCATION_3 = "02f51300000000000000"
+        const val COMMAND_CAN_LOCATION_4 = "02f51400000000000000"
+        const val COMMAND_CAN_LOCATION_5 = "02f51500000000000000"
+        const val COMMAND_CAN_LOCATION_6 = "02f51600000000000000"
         // 每次发完位置后，要再发一条清零指令才会动作
-        val COMMAND_CAN_LOCATION_0 = "02f50000000000000000"
+        const val COMMAND_CAN_LOCATION_0 = "02f50000000000000000"
 
         /** 通道状态 */
-        val CHANNEL_STATUS = "CHANNEL_STATUS"
+        const val CHANNEL_STATUS = "CHANNEL_STATUS"
 
         /** 数据尾 */
-        val COMMAND_END = "\r\n"
+        const val COMMAND_END = "\r\n"
         /** 命令类型：主动上报 */
-        val COMMAND_S = "S"
+        const val COMMAND_S = "S"
         /** 命令类型：设置 */
-        val COMMAND_W = "W"
+        const val COMMAND_W = "W"
         /** 命令类型：读取 */
-        val COMMAND_R = "R"
+        const val COMMAND_R = "R"
         /** 操作结果：成功 */
-        val COMMAND_ACK = "ACK"
+        const val COMMAND_ACK = "ACK"
         /** 分隔符 */
-        val COMMAND_FenGe = ","
+        const val COMMAND_FenGe = ","
 
         /** 指令：座椅状态 */
-        val COMMAND_TYPE_SEAT_STATUS = "1"
+        const val COMMAND_TYPE_SEAT_STATUS = "1"
         /** 指令：数据库相关 */
-        val COMMAND_TYPE_SQL_CTR = "2"
+        const val COMMAND_TYPE_SQL_CTR = "2"
         /** 指令：气压相关 */
-        val COMMAND_TYPE_PRESS = "3"
+        const val COMMAND_TYPE_PRESS = "3"
         /** 指令：性别 */
-        val COMMAND_TYPE_SEX = "4"
+        const val COMMAND_TYPE_SEX = "4"
         /** 指令：座椅模式 */
-        val COMMAND_TYPE_SEX_MODE = "5"
+        const val COMMAND_TYPE_SEX_MODE = "5"
         /** 指令：通道状态 */
-        val COMMAND_TYPE_CHANNEL_STATUS = "6"
+        const val COMMAND_TYPE_CHANNEL_STATUS = "6"
 
         /** 开发者模式下，恢复到了初始气压值 */
-        val COMMAND_INIT_VALUE_BY_DEVELOP = "COMMAND_INIT_VALUE_BY_DEVELOP"
+        const val COMMAND_INIT_VALUE_BY_DEVELOP = "COMMAND_INIT_VALUE_BY_DEVELOP"
 
         /**
          * 16进制字符串 转换成byte字节数组

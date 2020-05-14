@@ -11,9 +11,6 @@ import java.util.HashMap
 
 class SocketThreadManager() {
 
-    var tcpClient:TCPClientS? = null
-    var canClient:CanTCPClientS? = null
-
 
     /** 发送次数  */
     private var iSendCount = 0
@@ -36,50 +33,21 @@ class SocketThreadManager() {
                 return
             }
             ++iSendCount
-            if (tcpClient != null && tcpClient!!.isConnect) {
+            if (isDeviceConnected()) {
 //                Log.e(TAG, "发送数据：$strNowSendData")
-                tcpClient!!.sendHexText(strNowSendData)
-                handler.postDelayed(this, 2000)// 延时2秒后，重新发送
+                TaskCenter.sharedCenter(mContext).sendHexText(strNowSendData)
+                handler.postDelayed(this, 5000)// 延时5秒后，重新发送
             }
         }
-    }
-
-    fun createAllSocket() {
-        if (tcpClient == null) {
-            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_START))
-            tcpClient = TCPClientS( "",BaseVolume.HostIp, BaseVolume.HostListenningPort, mContext)
-        }
-        else {
-            if (tcpClient!!.isConnect) {
-                // 已经连接的，则不用理会
-            }
-            else {
-                mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_SEND_INFO).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_SEND_DATA_START))
-                tcpClient!!.doConnect()
-            }
-        }
-
-        // Can盒连接
-        createCanSocket()
-
     }
 
     /**
      * 创建Device连接
      */
     fun createDeviceSocket() {
-        if (tcpClient == null) {
+        if (TaskCenter.sharedCenter(mContext).iConnectState == BaseVolume.TCP_CONNECT_STATE_DISCONNECT) {
             mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_START))
-            tcpClient = TCPClientS( "",BaseVolume.HostIp, BaseVolume.HostListenningPort, mContext)
-        }
-        else {
-            if (tcpClient!!.isConnect) {
-                // 已经连接的，则不用理会
-            }
-            else {
-                mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_SEND_INFO).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_SEND_DATA_START))
-                tcpClient!!.doConnect()
-            }
+            TaskCenter.sharedCenter(mContext).connect(BaseVolume.HostIp,BaseVolume.HostListenningPort)
         }
     }
 
@@ -87,50 +55,45 @@ class SocketThreadManager() {
      * 创建Can盒连接
      */
     fun createCanSocket() {
-        if (canClient == null) {
+
+        if (CanTaskCenter.sharedCenter(mContext).iConnectState == BaseVolume.TCP_CONNECT_STATE_DISCONNECT) {
             mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_START))
-            canClient = CanTCPClientS(mContext)
+            CanTaskCenter.sharedCenter(mContext).connect(BaseVolume.CanHostIp,BaseVolume.CanHostListenningPort)
         }
-        else {
-            if (canClient!!.isConnect) {
-                // 已经连接的，则不用理会
-            }
-            else {
-                mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_SEND_DATA_START))
-                canClient!!.doConnect()
-            }
-        }
+
+    }
+
+    fun isTCPAllConnected():Boolean {
+
+        return isCanConnected() && isDeviceConnected()
+
+
     }
 
     fun isCanConnected():Boolean {
-        if (canClient == null)
+        if (CanTaskCenter.sharedCenter(mContext).iConnectState != BaseVolume.TCP_CONNECT_STATE_CONNECTED)
             return false
         else
-            return canClient!!.isConnect
+            return CanTaskCenter.sharedCenter(mContext).isConnected
     }
 
     fun isDeviceConnected():Boolean {
-        if (tcpClient == null)
+        if (TaskCenter.sharedCenter(mContext).iConnectState != BaseVolume.TCP_CONNECT_STATE_CONNECTED)
             return false
         else
-            return tcpClient!!.isConnect
+            return TaskCenter.sharedCenter(mContext).isConnected
     }
 
-    fun isTCPAllConnected(): Boolean? {
-        if (tcpClient == null || canClient == null)
-            return false
-        else
-            return (tcpClient!!.isConnect && canClient!!.isConnect)
-    }
 
     fun clearAllTCPClient() {
-        tcpClient?.closeTCPSocket()
-        canClient?.closeTCPSocket()
+        TaskCenter.sharedCenter(mContext).disconnect()
+        CanTaskCenter.sharedCenter(mContext).disconnect()
+
     }
 
     /** 开始发送数据  */
     fun StartSendData(strData: String) {
-        if (tcpClient == null || !(tcpClient!!.isConnect)) {
+        if (!isDeviceConnected()) {
             mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO)
                     .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
                     .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
@@ -152,13 +115,13 @@ class SocketThreadManager() {
 
     /** 通过Can盒发送数据（不带超时机制） */
     fun StartSendDataByCan(strData: String) {
-        if (canClient == null || !(canClient!!.isConnect)) {
+        if (!isCanConnected()) {
             mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
                     .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
                     .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
             return
         }
-        canClient!!.sendHexText(strNowSendData)
+        CanTaskCenter.sharedCenter(mContext).sendHexText(strData)
     }
 
 

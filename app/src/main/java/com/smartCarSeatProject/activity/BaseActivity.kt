@@ -5,21 +5,17 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import com.smartCarSeatProject.R
 import com.smartCarSeatProject.data.BaseVolume
 import com.smartCarSeatProject.data.DataAnalysisHelper
-import com.smartCarSeatProject.data.DeviceWorkInfo
-import com.smartCarSeatProject.tcpInfo.ConnectAndDataListener
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import com.smartCarSeatProject.view.AreaAddWindowHint
 import com.smartCarSeatProject.view.LoadingDialog
 import com.smartCarSeatProject.view.ProgressBarWindowHint
-import com.smartCarSeatProject.view.SureOperWindowHint
 import com.umeng.analytics.MobclickAgent
-import kotlinx.android.synthetic.main.layout_menu.*
+import java.util.*
 
 
 open class BaseActivity : AppCompatActivity(){
@@ -142,5 +138,25 @@ open class BaseActivity : AppCompatActivity(){
             ToastMsg("气袋$iCanCtr ,正在工作，不能控制！")
         return iCanCtr > 0
     }
+
+    var timer = Timer()
+
+    /**
+     * 启动/暂停 60秒检测是否有人
+     */
+    fun startTimerHoldSeat(isRun: Boolean) {
+        timer.cancel()
+        if (!isRun) {
+            return
+        }
+        timer = Timer()
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                SocketThreadManager.sharedInstance(this@BaseActivity).StartSendData(BaseVolume.COMMAND_SET_STATUS_RESET)
+                MainControlActivity.getInstance()?.finish()
+            }
+        }, 1000 * 60) // 设定指定的时间time,此处为60秒
+    }
+
 
 }

@@ -56,6 +56,9 @@ class ProgressBarWindowHint : Dialog,DialogInterface.OnDismissListener{
     }
 
     fun onSelfShow() {
+        if (isShowing) {
+            return
+        }
         super.show()
         mHandler.removeMessages(0)
         progressBar?.progress = 0

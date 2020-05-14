@@ -94,6 +94,7 @@
             android:name=".activity.TestActivity"
             android:screenOrientation="landscape">
 
+
         </activity>
 
         <activity

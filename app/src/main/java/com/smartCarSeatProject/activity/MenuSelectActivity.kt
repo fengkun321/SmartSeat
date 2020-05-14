@@ -137,6 +137,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         object : AreaAddWindowHint.PeriodListener {
                             override fun refreshListener(string: String) {
                                 finish()
+//                                SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.clearAllTCPClient()
                             }
                         },"Are you sure to exit the application?",false)
                 areaAddWindowHint?.show()
@@ -237,6 +238,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     // 2G网络
                 } else {
                     // 网络断开了
+                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.clearAllTCPClient()
                 }
             }
             else if (action == BaseVolume.BROADCAST_FINISH_APPLICATION) {
@@ -263,6 +265,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         tvReDeviceConnect.visibility = View.VISIBLE
                         imgWIFI.visibility = View.GONE
                         ToastMsg("Connect Fail！$strMsg")
+                        startTimerHoldSeat(false)
                     }
                     else {
                         tvReDeviceConnect.visibility = View.GONE
@@ -274,7 +277,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                             imgWIFI.visibility = View.GONE
                             tvReCanConnect.visibility = View.VISIBLE
                             // 开始连接Can
-                            SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
+//                            SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
                         }
 
 
@@ -299,6 +302,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         tvReCanConnect.visibility = View.VISIBLE
                         imgWIFI.visibility = View.GONE
                         ToastMsg("Can Connect Fail！$strMsg")
+                        startTimerHoldSeat(false)
                     }
                     else {
                         tvReCanConnect.visibility = View.GONE
@@ -344,7 +348,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     loadingDialog?.dismiss()
                     // 状态未达到预设值，则让A灰掉，且不能点击
                     if (deviceWorkInfo?.seatStatus < SeatStatus.press_reserve.iValue) {
-
+                        startTimerHoldSeat(false)
                         imgRun1.visibility = View.GONE
                         imgRun2.visibility = View.GONE
                         imgRun4.visibility = View.GONE
@@ -395,7 +399,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     }
                     // 正在探测，则开始采集人体数据
                     else if (deviceWorkInfo?.seatStatus == SeatStatus.press_auto_probe.iValue) {
-                        startAiNuralogixFace()
+//                        startAiNuralogixFace()
 
                         imgRun1.visibility = View.GONE
                         imgRun2.visibility = View.GONE
@@ -425,6 +429,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         if (progressBarWindowHint?.isShowing!!) {
                             progressBarWindowHint?.onSelfDismiss()
                             ToastMsg("Automatic mode！")
+                            startTimerHoldSeat(true)
                         }
 
                         // 如果菜单界面，触发了进入自动模式
@@ -452,7 +457,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     // 开发者模式
                     else if (deviceWorkInfo?.seatStatus == SeatStatus.develop.iValue) {
                         btn1.isEnabled = true
-                        btn2.isEnabled = false
+                        btn2.isEnabled = true
 
                         imgRun1.visibility = View.GONE
                         imgRun2.visibility = View.GONE
@@ -538,7 +543,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         // 先断开连接
         SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.clearAllTCPClient()
         // 开始建立连接！
-//        SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createDeviceSocket()
+        SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createDeviceSocket()
 //        SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
 
 
@@ -634,6 +639,9 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
     override fun onDestroy() {
         super.onDestroy()
         SocketThreadManager.sharedInstance(this)?.clearAllTCPClient()
+
+        startTimerHoldSeat(false)
+
         unregisterReceiver(myNetReceiver)
 //        if (IS_START_AUTOFACE)
 //            return
@@ -829,6 +837,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     if (error == AnuraError.LOW_SNR) {
                         AnuLogUtil.e(MeasurementActivity.TAG, "SNR is less than 1, signal quality is not good")
                         Toast.makeText(baseContext, "SNR is less than 1, signal quality is not good", Toast.LENGTH_LONG).show()
+
                     }
                     stopMeasurement(true)
                 }
