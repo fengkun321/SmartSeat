@@ -141,7 +141,6 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
             it.setOnSeekBarChangeListener(seekBarChangeListener)
         }
 
-
     }
 
 
@@ -555,7 +554,6 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                 dimBtnArray[1].visibility = View.GONE
                 addBtnArray[1].visibility = View.GONE
             }
-
         }
 
 

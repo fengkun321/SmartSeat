@@ -151,7 +151,6 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 areaAddWindowHint?.show()
             }
             R.id.btn1 -> {
-
                 gotoMainControlActivity(1)
 
                 // 已经在自动模式下，则直接进入
@@ -164,10 +163,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 //                    isGotoAuto = true
 //                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_AUTO)
 //                }
-
             }
             R.id.btn2 -> {
-
                 gotoMainControlActivity(2)
 
                 // 已经在手动模式下，则直接进入
@@ -789,7 +786,6 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     BaseVolume.strPersonDataInfo = strPersonDataInfo
                     Loge("MenuSelectActivity","人体数据：id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}")
                     measureReuslt.text = "id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}"
-                    result.healthScore
                     if (result.resultIndex + 1 >= MeasurementActivity.TOTAL_NUMBER_CHUNKS) {
                         Loge("MenuSelectActivity","人体数据：测量结束！开始计算身高体重")
 
