@@ -67,10 +67,10 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         initUI()
         reciverBand()
 
-//        btn1.isEnabled = true
-//        btn2.isEnabled = true
+        btn1.isEnabled = true
+        btn2.isEnabled = true
         btn3.isEnabled = true
-//        btn4.isEnabled = true
+        btn4.isEnabled = true
 
 //        val memoryInfoDao = MemoryInfoDao(this)
 //        memoryInfoDao.insertSingleData(MemoryDataInfo())
@@ -99,7 +99,6 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         btn2.setOnClickListener(this)
         btn3.setOnClickListener(this)
         btn4.setOnClickListener(this)
-        btn1.isEnabled = false
 
     }
 
@@ -153,51 +152,51 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             }
             R.id.btn1 -> {
 
-//                gotoMainControlActivity(1)
+                gotoMainControlActivity(1)
 
                 // 已经在自动模式下，则直接进入
-                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue ||
-                        DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_reserve.iValue) {
-                    gotoMainControlActivity(1)
-                }
-                else {
-                    // 发送指令，切换到自动模式
-                    isGotoAuto = true
-                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_AUTO)
-                }
+//                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue ||
+//                        DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_reserve.iValue) {
+//                    gotoMainControlActivity(1)
+//                }
+//                else {
+//                    // 发送指令，切换到自动模式
+//                    isGotoAuto = true
+//                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_AUTO)
+//                }
 
             }
             R.id.btn2 -> {
 
-//                gotoMainControlActivity(2)
+                gotoMainControlActivity(2)
 
                 // 已经在手动模式下，则直接进入
-                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic_manual.iValue) {
-                    gotoMainControlActivity(2)
-                }
-                else {
-                    // 发送指令，切换到手动模式
-                    isGotoManual = true
-                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_MANUAL)
-                }
+//                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic_manual.iValue) {
+//                    gotoMainControlActivity(2)
+//                }
+//                else {
+//                    // 发送指令，切换到手动模式
+//                    isGotoManual = true
+//                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_MANUAL)
+//                }
 
             }
             R.id.btn3 ->
                 gotoMainControlActivity(3)
             R.id.btn4 -> {
-//                startActivity(Intent(this@MenuSelectActivity,DevelopmentActivity::class.java))
+                startActivity(Intent(this@MenuSelectActivity,DevelopmentActivity::class.java))
 
                 // 已经在开发者模式下，则直接进入
-                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.develop.iValue) {
-                    val intent = Intent()
-                    intent.setClass(this@MenuSelectActivity,DevelopmentActivity::class.java)
-                    startActivity(intent)
-                }
-                else {
-                    // 发送指令，切换到开发者模式
-                    isGotoDevelop = true
-                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_DEVELOP)
-                }
+//                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.develop.iValue) {
+//                    val intent = Intent()
+//                    intent.setClass(this@MenuSelectActivity,DevelopmentActivity::class.java)
+//                    startActivity(intent)
+//                }
+//                else {
+//                    // 发送指令，切换到开发者模式
+//                    isGotoDevelop = true
+//                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_DEVELOP)
+//                }
             }
             R.id.tvReCanConnect -> {
                 SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
@@ -790,7 +789,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     BaseVolume.strPersonDataInfo = strPersonDataInfo
                     Loge("MenuSelectActivity","人体数据：id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}")
                     measureReuslt.text = "id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}"
-
+                    result.healthScore
                     if (result.resultIndex + 1 >= MeasurementActivity.TOTAL_NUMBER_CHUNKS) {
                         Loge("MenuSelectActivity","人体数据：测量结束！开始计算身高体重")
 

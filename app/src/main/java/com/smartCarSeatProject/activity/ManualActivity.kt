@@ -91,7 +91,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
     // 加按钮集合
     var addBtnArray = arrayListOf<TextView>()
     // 操作视图-父类集合
-    var rlViewArray = arrayListOf<RelativeLayout>()
+    var rlViewArray = arrayListOf<View>()
     // 样式的集合
     var drawableList = arrayListOf<GradientDrawable>()
     // 控制视图-显示集合
@@ -116,14 +116,16 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
         addBtnArray.add(manualSeat.tvR0);addBtnArray.add(manualSeat.tvR1);addBtnArray.add(manualSeat.tvR2);addBtnArray.add(manualSeat.tvR3)
         addBtnArray.add(manualSeat.tvR4);addBtnArray.add(manualSeat.tvR5);addBtnArray.add(manualSeat.tvR6);addBtnArray.add(manualSeat.tvR7)
 
-        rlViewArray.add(manualSeat.rl0);rlViewArray.add(manualSeat.rl1);rlViewArray.add(manualSeat.rl2);rlViewArray.add(manualSeat.rl3)
+        rlViewArray.add(manualSeat.rl0);rlViewArray.add(manualSeat.rl1or2);rlViewArray.add(manualSeat.rl1or2);rlViewArray.add(manualSeat.rl3)
         rlViewArray.add(manualSeat.rl4);rlViewArray.add(manualSeat.rl5);rlViewArray.add(manualSeat.rl6);rlViewArray.add(manualSeat.rl7)
 
         seekBarList.add(manualSeat.seekBar0);seekBarList.add(manualSeat.seekBar1);seekBarList.add(manualSeat.seekBar2);seekBarList.add(manualSeat.seekBar3);
         seekBarList.add(manualSeat.seekBar4);seekBarList.add(manualSeat.seekBar5);seekBarList.add(manualSeat.seekBar6);seekBarList.add(manualSeat.seekBar7);
 
         rlViewArray.forEach {
-            it.setOnClickListener {changeSelectBtn(it)}
+            if (it.tag.toString().toInt() != 2233) {
+                it.setOnClickListener {changeSelectBtn(it.tag.toString().toInt())}
+            }
         }
 
         dimBtnArray.forEach {
@@ -138,6 +140,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
             it.max = ProgressValueMax - ProgressValueMin
             it.setOnSeekBarChangeListener(seekBarChangeListener)
         }
+
 
     }
 
@@ -216,7 +219,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
         // 填充色
         drawable.setColor(resources.getColor(R.color.colorTransparency))
         view.setBackgroundDrawable(drawable)
-        view.setOnClickListener { changeSelectBtn(it) }
+        view.setOnClickListener { changeSelectBtn(it.tag.toString().toInt()) }
 
         drawableList.add(drawable)
         viewList.add(view)
@@ -452,7 +455,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                 MainControlActivity.getInstance()?.GotoNewActivity("ManualActivity","SetMemoryActivity",intent)
             }
             R.id.rlParent -> {
-                changeSelectBtn(p0)
+                changeSelectBtn(p0.tag.toString().toInt())
             }
             R.id.btnProp -> {
                 switchCtrView(1)
@@ -496,8 +499,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
     /**
      * 选中某个view
      */
-    fun changeSelectBtn(view: View) {
-        val iTag = view.tag.toString().toInt()
+    fun changeSelectBtn(iTag : Int) {
         if (iNowSelectNumber != iTag) {
             iNowSelectNumber = iTag
             viewList.forEach {
@@ -537,8 +539,22 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
 
             seekBarList[iTag].visibility = View.VISIBLE
             seekBarList[iTag].progress = (iNowPressValue - ProgressValueMin)
-            if (iTag == 1 || iTag == 2)
-                seekBarList[iTag].visibility = View.GONE
+            if (iTag == 1) {
+                seekBarList[1].visibility = View.VISIBLE
+                dimBtnArray[1].visibility = View.VISIBLE
+                addBtnArray[1].visibility = View.VISIBLE
+                seekBarList[2].visibility = View.GONE
+                dimBtnArray[2].visibility = View.GONE
+                addBtnArray[2].visibility = View.GONE
+            }
+            else if (iTag == 2) {
+                seekBarList[2].visibility = View.VISIBLE
+                dimBtnArray[2].visibility = View.VISIBLE
+                addBtnArray[2].visibility = View.VISIBLE
+                seekBarList[1].visibility = View.GONE
+                dimBtnArray[1].visibility = View.GONE
+                addBtnArray[1].visibility = View.GONE
+            }
 
         }
 

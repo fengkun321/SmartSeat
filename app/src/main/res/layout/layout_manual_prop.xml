@@ -25,10 +25,19 @@
 
         // 气袋4放在了靠背两侧
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:rotation="3">
+
+            <RelativeLayout android:id="@+id/rl3"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/channel_border_no"
+                android:layout_centerVertical="true"
+                android:tag="3">
+
+            </RelativeLayout>
 
             <TextView android:id="@+id/view3Left"
                 android:layout_width="25dp"
@@ -50,119 +59,113 @@
                 android:layout_marginLeft="200dp"
                 android:layout_centerVertical="true"/>
 
-            <RelativeLayout android:id="@+id/rl3"
-                android:layout_width="300dp"
+            <TextView android:id="@+id/tvL3"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/channel_border_no"
+                android:background="@drawable/channel_dim_style"
+                android:tag="3"
+                android:enabled="false"
+                android:layout_centerVertical="true"/>
+
+            <TextView android:id="@+id/tvR3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/channel_add_style"
+                android:tag="3"
+                android:enabled="false"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
+
+            <SeekBar android:id="@+id/seekBar3"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:maxHeight="2.0dip"
+                android:minHeight="2.0dip"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:tag="3"
                 android:layout_centerVertical="true"
-                android:tag="3">
-
-                <TextView android:id="@+id/tvL3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/channel_dim_style"
-                    android:tag="3"
-                    android:enabled="false"/>
-
-                <TextView android:id="@+id/tvR3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/channel_add_style"
-                    android:layout_alignParentRight="true"
-                    android:tag="3"
-                    android:enabled="false"/>
-
-                <SeekBar android:id="@+id/seekBar3"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="true"
-                    android:maxHeight="2.0dip"
-                    android:minHeight="2.0dip"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:tag="3"
-                    android:layout_centerVertical="true"
-                    android:progressDrawable="@drawable/while_seekbar_bg"
-                    android:thumb="@drawable/seekbar_thumb"
-                    android:layout_toRightOf="@+id/tvL3"
-                    android:layout_toLeftOf="@+id/tvR3"
-                    android:visibility="gone"/>
-
-
-            </RelativeLayout>
+                android:progressDrawable="@drawable/while_seekbar_bg"
+                android:thumb="@drawable/seekbar_thumb"
+                android:layout_toRightOf="@+id/tvL3"
+                android:layout_toLeftOf="@+id/tvR3"
+                android:visibility="gone"/>
 
         </RelativeLayout>
 
         // 气袋5放在座垫的底部侧边
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="50dp"
             android:rotation="5">
 
-            <TextView android:id="@+id/view4Left"
-                android:layout_width="25dp"
-                android:layout_height="70dp"
-                android:background="@color/device_red"
-                android:gravity="center"
-                android:textColor="@color/colorBlack"
-                android:rotation="10"
-                android:tag="4"
-                android:layout_marginLeft="75dp"
-                android:layout_centerVertical="true"/>
-
-            <TextView android:id="@+id/view4"
-                android:layout_width="25dp"
-                android:layout_height="70dp"
-                android:background="@color/device_red"
-                android:gravity="center"
-                android:textColor="@color/colorBlack"
-                android:tag="4"
-                android:rotation="7"
-                android:layout_marginLeft="190dp"
-                android:layout_centerVertical="true"/>
-
             <RelativeLayout android:id="@+id/rl4"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
                 android:background="@drawable/channel_border_no"
                 android:layout_centerVertical="true"
                 android:tag="4">
 
-                <TextView android:id="@+id/tvL4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/channel_dim_style"
-                    android:tag="4"
-                    android:enabled="false"/>
-
-                <TextView android:id="@+id/tvR4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/channel_add_style"
-                    android:layout_alignParentRight="true"
-                    android:tag="4"
-                    android:enabled="false"/>
-
-                <SeekBar android:id="@+id/seekBar4"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="true"
-                    android:maxHeight="2.0dip"
-                    android:minHeight="2.0dip"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:tag="4"
-                    android:layout_centerVertical="true"
-                    android:progressDrawable="@drawable/while_seekbar_bg"
-                    android:thumb="@drawable/seekbar_thumb"
-                    android:layout_toRightOf="@+id/tvL4"
-                    android:layout_toLeftOf="@+id/tvR4"
-                    android:visibility="gone"/>
-
             </RelativeLayout>
+
+            <TextView android:id="@+id/view4Left"
+                android:layout_width="25dp"
+                android:layout_height="80dp"
+                android:background="@color/device_red"
+                android:gravity="center"
+                android:textColor="@color/colorBlack"
+                android:tag="4"
+                android:rotation="10"
+                android:layout_marginLeft="80dp"
+                android:layout_centerVertical="true"/>
+
+            <TextView android:id="@+id/view4"
+                android:layout_width="25dp"
+                android:layout_height="80dp"
+                android:background="@color/device_red"
+                android:gravity="center"
+                android:textColor="@color/colorBlack"
+                android:tag="4"
+                android:rotation="2"
+                android:layout_marginLeft="190dp"
+                android:layout_centerVertical="true"/>
+
+            <TextView android:id="@+id/tvL4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/channel_dim_style"
+                android:tag="4"
+                android:enabled="false"
+                android:layout_centerVertical="true"/>
+
+            <TextView android:id="@+id/tvR4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/channel_add_style"
+                android:tag="4"
+                android:enabled="false"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
+
+            <SeekBar android:id="@+id/seekBar4"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:maxHeight="2.0dip"
+                android:minHeight="2.0dip"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:tag="4"
+                android:layout_centerVertical="true"
+                android:progressDrawable="@drawable/while_seekbar_bg"
+                android:thumb="@drawable/seekbar_thumb"
+                android:layout_toRightOf="@+id/tvL4"
+                android:layout_toLeftOf="@+id/tvR4"
+                android:visibility="gone"/>
 
         </RelativeLayout>
 
@@ -377,7 +380,7 @@
                 android:minHeight="2.0dip"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:tag="3"
+                android:tag="0"
                 android:layout_centerVertical="true"
                 android:progressDrawable="@drawable/while_seekbar_bg"
                 android:thumb="@drawable/seekbar_thumb"
@@ -388,58 +391,33 @@
         </RelativeLayout>
 
         // 气袋2,3
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <RelativeLayout android:id="@+id/rl1or2"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="310dp">
+            android:background="@drawable/channel_border_no"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="310dp"
+            android:tag="2233">
 
-            // 气袋2
-            <LinearLayout
-                android:layout_width="145dp"
+            <TextView android:id="@+id/tvL1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical">
+                android:background="@drawable/channel_dim_style"
+                android:enabled="false"
+                android:tag="1"/>
 
-                <RelativeLayout android:id="@+id/rl1"
-                    android:layout_width="103dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/channel_border_no"
-                    android:layout_toLeftOf="@+id/view1"
-                    android:tag="1">
+            <TextView android:id="@+id/tvL2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/channel_dim_style"
+                android:enabled="false"
+                android:tag="2"/>
 
-                    <TextView android:id="@+id/tvL1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/channel_dim_style"
-                        android:enabled="false"
-                        android:tag="1"/>
-
-                    <TextView android:id="@+id/tvR1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/channel_add_style"
-                        android:layout_alignParentRight="true"
-                        android:enabled="false"
-                        android:tag="1"/>
-
-                    <SeekBar android:id="@+id/seekBar1"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:focusable="true"
-                        android:maxHeight="2.0dip"
-                        android:minHeight="2.0dip"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:tag="1"
-                        android:layout_centerVertical="true"
-                        android:progressDrawable="@drawable/while_seekbar_bg"
-                        android:thumb="@drawable/seekbar_thumb"
-                        android:layout_toRightOf="@+id/tvL1"
-                        android:layout_toLeftOf="@+id/tvR1"
-                        android:visibility="gone"/>
-
-                </RelativeLayout>
-
+            <LinearLayout
+                android:layout_width="80dp"
+                android:layout_height="35dp"
+                android:orientation="horizontal"
+                android:layout_centerInParent="true">
                 <TextView
                     android:id="@+id/view1"
                     android:layout_width="40dp"
@@ -448,19 +426,7 @@
                     android:gravity="center"
                     android:tag="1"
                     android:textColor="@color/colorBlack"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginLeft="2dp"/>
-
-            </LinearLayout>
-
-            // 气袋3
-            <LinearLayout
-                android:layout_width="145dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
+                    android:layout_alignParentRight="true"/>
                 <TextView
                     android:id="@+id/view2"
                     android:layout_width="40dp"
@@ -469,53 +435,62 @@
                     android:gravity="center"
                     android:tag="2"
                     android:textColor="@color/colorBlack"
-                    android:layout_alignParentLeft="true"/>
-
-                <RelativeLayout android:id="@+id/rl2"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/channel_border_no"
-                    android:layout_marginRight="2dp"
-                    android:tag="2">
-
-                    <TextView android:id="@+id/tvL2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/channel_dim_style"
-                        android:enabled="false"
-                        android:tag="2"/>
-
-                    <TextView android:id="@+id/tvR2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/channel_add_style"
-                        android:layout_alignParentRight="true"
-                        android:enabled="false"
-                        android:tag="2"/>
-
-                    <SeekBar android:id="@+id/seekBar2"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:focusable="true"
-                        android:maxHeight="2.0dip"
-                        android:minHeight="2.0dip"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:tag="2"
-                        android:layout_centerVertical="true"
-                        android:progressDrawable="@drawable/while_seekbar_bg"
-                        android:thumb="@drawable/seekbar_thumb"
-                        android:layout_toRightOf="@+id/tvL2"
-                        android:layout_toLeftOf="@+id/tvR2"
-                        android:visibility="gone"/>
-
-                </RelativeLayout>
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="3dp"/>
 
             </LinearLayout>
 
 
+            <TextView android:id="@+id/tvR1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/channel_add_style"
+                android:layout_alignParentRight="true"
+                android:enabled="false"
+                android:tag="1"/>
 
-        </LinearLayout>
+            <TextView android:id="@+id/tvR2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/channel_add_style"
+                android:layout_alignParentRight="true"
+                android:enabled="false"
+                android:tag="2"/>
+
+            <SeekBar android:id="@+id/seekBar1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:maxHeight="2.0dip"
+                android:minHeight="2.0dip"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:tag="1"
+                android:layout_centerVertical="true"
+                android:progressDrawable="@drawable/while_seekbar_bg"
+                android:thumb="@drawable/seekbar_thumb"
+                android:layout_toRightOf="@+id/tvL1"
+                android:layout_toLeftOf="@+id/tvR1"
+                android:visibility="gone"/>
+
+            <SeekBar android:id="@+id/seekBar2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:maxHeight="2.0dip"
+                android:minHeight="2.0dip"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:tag="2"
+                android:layout_centerVertical="true"
+                android:progressDrawable="@drawable/while_seekbar_bg"
+                android:thumb="@drawable/seekbar_thumb"
+                android:layout_toRightOf="@+id/tvL2"
+                android:layout_toLeftOf="@+id/tvR2"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
 
 
     </RelativeLayout>
