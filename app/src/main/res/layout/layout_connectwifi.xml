@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack"
+    android:orientation="vertical"
+    android:id="@+id/llContent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+
+        <ImageView android:id="@+id/imgBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_top_back"
+            android:layout_alignParentLeft="true"
+            android:visibility="visible"
+            android:layout_alignParentBottom="true"/>
+
+        <ImageView android:id="@+id/imgTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_connect_wifi_title"
+            android:layout_toRightOf="@+id/imgBack"
+            android:layout_centerVertical="true"/>
+
+        <View android:id="@+id/viewLine"
+            android:layout_width="match_parent"
+            android:layout_height="0.3dp"
+            android:background="@color/colorWhite"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_toRightOf="@+id/imgBack"/>
+
+    </RelativeLayout>
+
+    <TextView android:id="@+id/tvNowWifi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="123"
+        android:textSize="20sp"
+        android:textColor="@color/colorWhite"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/img_password"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"/>
+
+    <EditText android:id="@+id/edPwd"
+        android:layout_width="250dp"
+        android:layout_height="40dp"
+        android:background="@color/colorWhite"
+        android:textColor="@color/colorBlack"
+        android:hint="password"
+        android:paddingLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"/>
+
+    <Button android:id="@+id/btnConnect"
+        android:layout_width="250dp"
+        android:layout_height="45dp"
+        android:textColor="@color/colorWhite"
+        android:textAllCaps="false"
+        android:text="Connect"
+        android:background="@drawable/btn_on_press_bg"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"/>
+
+
+</LinearLayout>

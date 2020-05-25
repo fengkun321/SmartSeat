@@ -1,0 +1,24 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/custom_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical">
+
+    <!-- 我们添加了一个属性：ptr:ptrMode="both" ，意思：上拉和下拉都支持。
+		可选值为：disabled（禁用下拉刷新），pullFromStart（仅支持下拉刷新），
+		pullFromEnd（仅支持上拉刷新），both（二者都支持），manualOnly（只允许手动触发） -->
+    <!--
+        ptr:ptrAnimationStyle="rotate"
+        FlipLoadingLayout为iOS风格的箭头颠倒的刷新动画
+        ptr:ptrAnimationStyle="flip"
+        RotateLoadingLayout为android风格的图片旋转动画 -->
+    <com.pulltorefreshlistview.PullToRefreshListView
+        xmlns:ptr="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/pull_to_refresh_listview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        ptr:ptrMode="both"
+        ptr:ptrAnimationStyle="flip"/>
+
+</LinearLayout>

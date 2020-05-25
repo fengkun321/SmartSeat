@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--&lt;!&ndash; 按压时 &ndash;&gt;-->
+    <!--<item android:color="@android:color/white" android:state_pressed="true" />-->
+    <!--&lt;!&ndash; 被选中时 &ndash;&gt;-->
+    <!--<item android:color="@android:color/white" android:state_selected="true" />-->
+    <!--&lt;!&ndash; 默认时 &ndash;&gt;-->
+    <!--<item android:color="@android:color/black" />-->
+
+    <item android:drawable="@drawable/img_switch_on"  android:state_checked="true" />
+    <item android:drawable="@drawable/img_switch_off" android:state_checked="false" />
+</selector>

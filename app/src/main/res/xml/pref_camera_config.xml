@@ -1,0 +1,13 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="Camera Configuration">
+
+        <ListPreference
+            android:key="@string/pref_camera_info"
+            android:title="Camera Choices:" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

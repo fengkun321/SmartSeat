@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 上拉刷新 -->
+    <!-- &#8230;代表三个点   ... -->
+    <string name="pull_to_refresh_pull_label">Pull refresh&#8230;</string>
+    <string name="pull_to_refresh_release_label">Loosen the refresh&#8230;</string>
+    <string name="pull_to_refresh_refreshing_label">Being loaded&#8230;</string>
+
+    <!-- 下拉加载更多 -->
+    <string name="pull_to_refresh_from_bottom_pull_label">Pull refresh&#8230;</string>
+    <string name="pull_to_refresh_from_bottom_release_label">Loosen the refresh&#8230;</string>
+    <string name="pull_to_refresh_from_bottom_refreshing_label">Being loaded&#8230;</string>
+
+    <!--<string name="pull_to_refresh_from_bottom_pull_label">向下拉加载更多&#8230;</string>-->
+    <!--<string name="pull_to_refresh_from_bottom_release_label">松开加载更多&#8230;</string>-->
+    <!--<string name="pull_to_refresh_from_bottom_refreshing_label">正在加载&#8230;</string>-->
+
+</resources>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="@color/colorBlack">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+
+        <ImageView android:id="@+id/imgBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_top_back"
+            android:layout_alignParentLeft="true"
+            android:visibility="visible"
+            android:layout_alignParentBottom="true"/>
+
+        <ImageView android:id="@+id/imgTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_users_memory_title"
+            android:layout_toRightOf="@+id/imgBack"
+            android:layout_centerVertical="true"/>
+
+        <TextView android:id="@+id/tvNowWifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/colorWhite"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imgTitle"
+            android:layout_marginLeft="10dp"/>
+
+        <Button android:id="@+id/btnRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Refresh"
+            android:textColor="@color/colorWhite"
+            android:layout_alignParentRight="true"
+            android:visibility="gone"
+            android:background="@color/colorTransparency"/>
+
+        <View android:id="@+id/viewLine"
+            android:layout_width="match_parent"
+            android:layout_height="0.3dp"
+            android:background="@color/colorWhite"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_toRightOf="@+id/imgBack"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView android:id="@+id/imgRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_users_memory_right"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"/>
+
+        <ListView android:id="@+id/list_view"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:divider="#ccc"
+            android:dividerHeight="0.5dp"
+            android:fadingEdge="none"
+            android:background="#00000000"
+            android:scrollbars="none"
+            android:listSelector="@android:color/transparent"
+            android:layout_toLeftOf="@+id/imgRight">
+
+        </ListView>
+
+
+
+    </RelativeLayout>
+
+
+
+
+
+</LinearLayout>

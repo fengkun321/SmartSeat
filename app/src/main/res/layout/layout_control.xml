@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView android:id="@+id/imgClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_close"
+            android:layout_margin="10dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"/>
+
+        <ImageView android:id="@+id/imgReset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_reset"
+            android:layout_margin="10dp"
+            android:layout_toRightOf="@+id/imgClose"
+            android:layout_alignParentTop="true"/>
+
+        <LinearLayout android:id="@+id/llAllLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerInParent="true"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_logo_aodi"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_logo_nobo_auto"
+                android:layout_marginLeft="10dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentRight="true">
+
+            <TextView android:id="@+id/tvReCanConnect"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:text="Can Reconnect"
+                android:textSize="20sp"
+                android:textColor="@color/colorWhite"
+                android:layout_toLeftOf="@+id/imgWIFI"
+                android:visibility="visible"
+                android:gravity="center"/>
+
+            <TextView android:id="@+id/tvReDeviceConnect"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:text="Device Reconnect"
+                android:textSize="20sp"
+                android:textColor="@color/colorWhite"
+                android:layout_toLeftOf="@+id/imgWIFI"
+                android:visibility="visible"
+                android:gravity="center"
+                android:layout_marginLeft="10dp"/>
+
+            <ImageView android:id="@+id/imgWIFI"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_wifi"
+                android:layout_margin="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginLeft="20dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center">
+
+            <ImageView android:id="@+id/imgLeft0"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/img_left_0"/>
+
+            <ImageView android:id="@+id/imgLeft1"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/img_left_1_hui"/>
+
+            <ImageView android:id="@+id/imgLeft2"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/img_left_2_hui"/>
+
+            <ImageView android:id="@+id/imgLeft3"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/img_left_3_false"/>
+
+            <ImageView android:id="@+id/imgLeft4"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/img_left_4_hui"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal"
+                android:background="#fff"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp">
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

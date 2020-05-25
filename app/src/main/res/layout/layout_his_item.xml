@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@drawable/item_on_press_bg"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+    <TextView android:id="@+id/his_name"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="名称"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+    <TextView android:id="@+id/his_sex"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="性别"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/his_nation"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="国别"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/his_height"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="身高"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+
+    <TextView android:id="@+id/his_weight"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="体重"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/tvInitA"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="init_A"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/tvInitB"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="init_B"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/tvInitSeat"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="init_cushion"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/A_A"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="A_A"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/A_B"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="A_B"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/A_C"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="A_C"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/A_D"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="A_D"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/A_E"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="A_E"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/A_F"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="A_F"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/A_G"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="A_G"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+
+
+    <TextView android:id="@+id/A_H"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="A_H"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/ZD_1"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+
+    <TextView android:id="@+id/ZD_2"
+        android:layout_width="70dp"
+        android:layout_gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/ZD_3"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="13sp"
+        android:layout_gravity="center_vertical"
+        
+        android:textColor="@color/colorWhite"/>
+
+
+
+    <TextView android:id="@+id/B_4"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/B_5"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="13sp"
+        android:layout_gravity="center_vertical"
+        
+        android:textColor="@color/colorWhite"/>
+
+
+    <TextView android:id="@+id/B_6"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="13sp"
+        android:layout_gravity="center_vertical"
+        
+        android:textColor="@color/colorWhite"/>
+
+
+    <TextView android:id="@+id/B_7"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+
+    <TextView android:id="@+id/B_8"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/AD_1"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+
+    <TextView android:id="@+id/AD_2"
+        android:layout_width="70dp"
+        android:layout_gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/AD_3"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="13sp"
+        android:layout_gravity="center_vertical"
+        
+        android:textColor="@color/colorWhite"/>
+
+
+
+    <TextView android:id="@+id/AD_4"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/AD_5"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="13sp"
+        android:layout_gravity="center_vertical"
+        
+        android:textColor="@color/colorWhite"/>
+
+
+    <TextView android:id="@+id/AD_6"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="13sp"
+        android:layout_gravity="center_vertical"
+        
+        android:textColor="@color/colorWhite"/>
+
+
+    <TextView android:id="@+id/AD_7"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+
+    <TextView android:id="@+id/AD_8"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView android:id="@+id/lLocation"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="13sp"
+
+        android:textColor="@color/colorWhite"/>
+    <TextView android:id="@+id/mMassage"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="13sp"
+
+        android:textColor="@color/colorWhite"/>
+
+    </LinearLayout>
+
+</LinearLayout>

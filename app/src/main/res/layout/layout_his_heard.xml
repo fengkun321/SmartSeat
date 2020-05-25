@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@color/colorBlack">
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="comment"
+        android:textSize="13sp"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"/>
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="gender"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"/>
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="national"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="height"
+        android:textSize="13sp"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"/>
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="weight"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="init_A"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="init_B"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="init_cushion"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_A"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_B"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_C"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_D"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_E"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_F"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_G"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_H"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_1"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_2"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_3"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+
+
+
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_4"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_5"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_6"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_7"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+    <TextView
+         android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_8"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="adjust_1"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="adjust_2"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="adjust_3"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+
+
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="adjust_4"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_5"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="adjust_6"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        
+        android:textColor="@color/colorWhite"/>
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="adjust_7"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        
+        android:textColor="@color/colorWhite"/>
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="adjust_8"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        android:textColor="@color/colorWhite"/>
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="loaction"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        android:textColor="@color/colorWhite"/>
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="massage"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        android:textColor="@color/colorWhite"/>
+</LinearLayout>
