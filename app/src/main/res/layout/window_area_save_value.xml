@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="600dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:id="@+id/scrollView">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/dialog_finddevice_border_sure"
+        android:orientation="vertical"
+        android:scrollbars="vertical" >
+
+        <TextView
+            android:id="@+id/dialog_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="保存数据"
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_margin="10dp">
+            // 性别
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="性别："
+                    android:textColor="@color/colorWhite"/>
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton android:id="@+id/rbNan"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="男"
+                        android:textColor="@color/colorWhite"/>
+
+                    <RadioButton android:id="@+id/rbNv"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="女"
+                        android:textColor="@color/colorWhite"/>
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+            // 国别
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="国别："
+                    android:textColor="@color/colorWhite"/>
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton android:id="@+id/rbDongFang"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="东方"
+                        android:textColor="@color/colorWhite"/>
+
+                    <RadioButton android:id="@+id/rbXiFang"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="西方"
+                        android:textColor="@color/colorWhite"/>
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="身高："
+                android:textColor="@color/colorWhite"/>
+
+            <EditText
+                android:id="@+id/edHeight"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:layout_margin="5dip"
+                android:paddingLeft="5dp"
+                android:textSize="17sp"
+                android:singleLine="true"
+                android:inputType="numberDecimal"
+                android:gravity="center"
+                android:textColor="#3d3d3d"
+                android:background="@drawable/finddevice_border"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="体重："
+                android:textColor="@color/colorWhite"/>
+
+            <EditText
+                android:id="@+id/edWeight"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:layout_margin="5dip"
+                android:paddingLeft="5dp"
+                android:textSize="17sp"
+                android:singleLine="true"
+                android:inputType="numberDecimal"
+                android:gravity="center"
+                android:textColor="#3d3d3d"
+                android:background="@drawable/finddevice_border"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="备注："
+                android:textColor="@color/colorWhite"/>
+
+            <EditText
+                android:id="@+id/edName"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:layout_margin="5dip"
+                android:paddingLeft="5dp"
+                android:textSize="17sp"
+                android:singleLine="true"
+                android:gravity="center"
+                android:textColor="#3d3d3d"
+                android:background="@drawable/finddevice_border"/>
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dp">
+
+        <TextView android:id="@+id/tvXinLv"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="心率：xxx"
+            android:textColor="@color/colorWhite"/>
+        <TextView android:id="@+id/tvHuXiLv"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="呼吸率：xxx"
+            android:textColor="@color/colorWhite"/>
+        <TextView android:id="@+id/tvQingXu"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="情绪值：xxx"
+            android:textColor="@color/colorWhite"/>
+        <TextView android:id="@+id/tvShuZhang"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="舒张压：xxx"
+            android:textColor="@color/colorWhite"/>
+        <TextView android:id="@+id/tvShouSuo"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="收缩压：xxx"
+            android:textColor="@color/colorWhite"/>
+        <TextView android:id="@+id/tvWeiZhi"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="位置：xxx"
+            android:textColor="@color/colorWhite"/>
+
+    </LinearLayout>
+
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.5px"
+            android:background="#D1D1D1"
+            android:layout_marginTop="10dp"/>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/cancel_btn"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/dialog_btn_select"
+                android:text="cancel"
+                android:textColor="@color/colorWhite"/>
+
+            <View android:id="@+id/view1"
+                android:layout_width="0.5dp"
+                android:layout_height="fill_parent"
+                android:background="#D1D1D1" />
+
+            <Button
+                android:id="@+id/confirm_btn"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/dialog_btn_select"
+                android:text="confirm"
+                android:textColor="@color/colorWhite"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

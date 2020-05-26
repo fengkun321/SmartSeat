@@ -21,12 +21,13 @@
         android:orientation="horizontal"
         android:layout_marginTop="5dp">
 
-        <include
+        <TextView android:id="@+id/tvInitValue"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            layout="@layout/layout_a_pmcm_child"
-            android:visibility="invisible"/>
+            android:visibility="invisible"
+            android:text=""
+            android:textColor="@color/colorWhite"/>
 
         <include android:id="@+id/includeAAL"
             android:layout_width="0dp"
@@ -40,14 +41,15 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             layout="@layout/layout_a_pmcm_child"
+            android:visibility="gone"
             android:layout_marginLeft="20dp"/>
 
-        <TextView android:id="@+id/tvInitValue"
+        <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:text=""
             android:textColor="@color/colorWhite"/>
 
@@ -81,7 +83,8 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             layout="@layout/layout_a_pmcm_child"
-            android:layout_marginLeft="20dp"/>
+            android:layout_marginLeft="20dp"
+            android:visibility="gone"/>
 
         <include
             android:layout_width="0dp"
@@ -89,7 +92,7 @@
             android:layout_height="match_parent"
             layout="@layout/layout_a_pmcm_child"
             android:layout_marginLeft="10dp"
-            android:visibility="invisible"/>
+            android:visibility="gone"/>
 
     </LinearLayout>
 
@@ -119,14 +122,16 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             layout="@layout/layout_a_pmcm_child"
-            android:layout_marginLeft="20dp"/>
+            android:layout_marginLeft="20dp"
+            android:visibility="gone"/>
 
         <include android:id="@+id/includeACR"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
             layout="@layout/layout_a_pmcm_child"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginLeft="10dp"
+            android:visibility="gone"/>
 
     </LinearLayout>
 
@@ -156,6 +161,7 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             layout="@layout/layout_a_pmcm_child"
+            android:visibility="gone"
             android:layout_marginLeft="20dp"/>
 
         <include android:id="@+id/includeAER"
@@ -163,6 +169,7 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             layout="@layout/layout_a_pmcm_child"
+            android:visibility="gone"
             android:layout_marginLeft="10dp"/>
 
     </LinearLayout>
@@ -193,6 +200,7 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             layout="@layout/layout_a_pmcm_child"
+            android:visibility="gone"
             android:layout_marginLeft="20dp"/>
 
         <include android:id="@+id/includeAGR"
@@ -200,6 +208,7 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             layout="@layout/layout_a_pmcm_child"
+            android:visibility="gone"
             android:layout_marginLeft="10dp"/>
 
     </LinearLayout>

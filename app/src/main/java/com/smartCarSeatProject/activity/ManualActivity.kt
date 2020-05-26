@@ -20,6 +20,7 @@ import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import com.smartCarSeatProject.view.AreaAddWindowHint
 import com.smartCarSeatProject.view.AreaAddWindowHint.PeriodListener
 import com.smartCarSeatProject.view.SetValueAreaAddWindow
+import com.smartCarSeatProject.view.SureSaveValueWindow
 import kotlinx.android.synthetic.main.layout_auto_seat_transparent.view.*
 import kotlinx.android.synthetic.main.layout_manual.*
 import kotlinx.android.synthetic.main.layout_manual_heat.*
@@ -33,7 +34,6 @@ import kotlinx.android.synthetic.main.layout_manual_prop.view.view2
 
 class ManualActivity: BaseActivity(), View.OnClickListener{
 
-    var setValueDialog : SetValueAreaAddWindow? = null
     var nowMemoryInfo = DevelopDataInfo()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -249,10 +249,9 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
 //        }
 
         // 保存控制缓存值
-//        MainControlActivity.getInstance()?.setValueBufferByChannel?.put(iNowSelectNumber+1,iNowPressValue.toString())
-//
-//        val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iNowPressValue)
-//        SocketThreadManager.sharedInstance(this)?.StartSendDataNoTime(strSendData)
+        MainControlActivity.getInstance()?.setValueBufferByChannel?.put(iNowSelectNumber+1,iNowPressValue.toString())
+        val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iNowPressValue)
+        SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(strSendData)
 
     }
 
@@ -280,10 +279,9 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
 //        }
 
         // 保存控制缓存值
-//        MainControlActivity.getInstance()?.setValueBufferByChannel?.put(iNowSelectNumber+1,iNowPressValue.toString())
-//
-//        val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iNowPressValue)
-//        SocketThreadManager.sharedInstance(this)?.StartSendDataNoTime(strSendData)
+        MainControlActivity.getInstance()?.setValueBufferByChannel?.put(iNowSelectNumber+1,iNowPressValue.toString())
+        val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iNowPressValue)
+        SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(strSendData)
 
     }
 
@@ -297,23 +295,24 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
         locationList.forEach {
             it.setBackgroundColor(getColor(R.color.colorBlack))
         }
+        DataAnalysisHelper.deviceState.l_location = "${iTag+1}"
         locationList[iTag].setBackgroundColor(getColor(R.color.colorLightBlue))
         when(iTag) {
             0 ->
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_1)
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_1)
             1 ->
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_2)
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_2)
             2 ->
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_3)
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_3)
             3 ->
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_4)
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_4)
             4 ->
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_5)
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_5)
             5 ->
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_6)
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_6)
         }
         // 每次发完位置后，要再发一条清零指令才会动作
-        SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_0)
+        SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_0)
 
     }
 
@@ -436,6 +435,10 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                 }
             }
             iNowPressValue = iNowValue
+            // 保存控制缓存值
+            MainControlActivity.getInstance()?.setValueBufferByChannel?.put(iNowSelectNumber+1,iNowPressValue.toString())
+            val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(p0.tag.toString().toInt(),iNowPressValue)
+            SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(strSendData)
         }
 
     }
@@ -596,72 +599,92 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
      */
     fun saveNowValue() {
 
-        if (setValueDialog == null) {
-            setValueDialog = SetValueAreaAddWindow(this, R.style.Dialogstyle,
-                    "Please enter the name", object : SetValueAreaAddWindow.PeriodListener {
-                override fun confirmListener(string: String) {
+        var setValueDialog = SureSaveValueWindow(this, R.style.Dialogstyle,
+                "Please enter the name", object : SureSaveValueWindow.PeriodListener {
+            override fun confirmListener(deviceWorkInfo : DeviceWorkInfo,strName: String) {
 
-                    val isMan = getBooleanBySharedPreferences(SEX_MAN)
-                    val isCN = getBooleanBySharedPreferences(COUNTRY_CN)
+                val isMan = deviceWorkInfo.m_gender
+                val isCN = deviceWorkInfo.m_national
 
-                    nowMemoryInfo = DevelopDataInfo()
-                    nowMemoryInfo.initData()
-                    nowMemoryInfo.dataType = DevelopDataInfo.DATA_TYPE_USE
-                    // 名称
-                    nowMemoryInfo.strName = string
-                    nowMemoryInfo.strPSInfo = string
-                    // 男女
-                    if (isMan)
-                        nowMemoryInfo.m_gender = "M"
-                    else
-                        nowMemoryInfo.m_gender = "F"
-                    // 国别
-                    if (isCN)
-                        nowMemoryInfo.m_national = "CN"
-                    else
-                        nowMemoryInfo.m_national = "EU"
-                    // 控制数据
-                    for (iNumber in 1..8) {
-                        updatePressValueByNumber(iNumber,DataAnalysisHelper.deviceState.controlPressValueList[iNumber-1])
-                    }
-                    // 控制过的通道值
-                    MainControlActivity.getInstance()?.setValueBufferByChannel?.forEach {
-                        val iNumber = it.key
-                        val strValue = it.value
-                        updatePressValueByNumber(iNumber,strValue)
-                    }
+                nowMemoryInfo = DevelopDataInfo()
+                nowMemoryInfo.initData()
+                nowMemoryInfo.dataType = DevelopDataInfo.DATA_TYPE_USE
 
-                    // 传感数据
-                    for (iNumber in 3 .. 10) {
-                        updatePressValueByNumber(iNumber+6,(DataAnalysisHelper.deviceState.sensePressValueListl[iNumber]))
-                    }
+                // 名称
+                nowMemoryInfo.strName = strName
+                nowMemoryInfo.strPSInfo = strName
+                // 人员-体重
+                nowMemoryInfo.m_weight = "${deviceWorkInfo.nowWeight}"
+                // 人员-身高
+                nowMemoryInfo.m_height = "${deviceWorkInfo.nowHeight}"
+                // 心率
+                nowMemoryInfo.HeartRate = deviceWorkInfo.HeartRate
+                // 呼吸率
+                nowMemoryInfo.BreathRate = deviceWorkInfo.BreathRate
+                // 情绪值
+                nowMemoryInfo.E_Index = deviceWorkInfo.E_Index
+                // 舒张压
+                nowMemoryInfo.Dia_BP = deviceWorkInfo.Dia_BP
+                // 收缩压
+                nowMemoryInfo.Sys_BP = deviceWorkInfo.Sys_BP
+                // 男女
+                if (isMan)
+                    nowMemoryInfo.m_gender = "M"
+                else
+                    nowMemoryInfo.m_gender = "F"
+                // 国别
+                if (isCN)
+                    nowMemoryInfo.m_national = "CN"
+                else
+                    nowMemoryInfo.m_national = "EU"
 
-                    val memoryInfoDao = DevelopInfoDao(this@ManualActivity)
-                    val isHave = memoryInfoDao.isHaveByName(string)
-                    // 该名称已存在，则提示用户
-                    if (isHave) {
-                        memoryInfoDao.closeDb()
-                        showHintDialog("System","The name already exists. Do not replace it？",string)
-                    }
-                    // 直接添加
-                    else {
-                        // 数据库操作
-                        val isResult = memoryInfoDao.insertSingleData(nowMemoryInfo)
-                        if (isResult < 0)
-                            ToastMsg("Manual mode, data saved fault！")
-                        else
-                            ToastMsg("Manual mode, data saved successfully！")
-                        memoryInfoDao.closeDb()
-                    }
+                // 位置
+                nowMemoryInfo.l_location = "位置"+deviceWorkInfo.l_location
+
+                // 控制数据
+                for (iNumber in 1..8) {
+                    updatePressValueByNumber(iNumber,DataAnalysisHelper.deviceState.controlPressValueList[iNumber-1])
                 }
-                override fun cancelListener() {
-
+                // 控制过的通道值
+                MainControlActivity.getInstance()?.setValueBufferByChannel?.forEach {
+                    val iNumber = it.key
+                    val strValue = it.value
+                    updatePressValueByNumber(iNumber,strValue)
                 }
-            }, "", false)
 
-            setValueDialog!!.setCancelable(false)
-        }
-        setValueDialog!!.setNowValue("")
+                // 传感数据A面
+                for (iNumber in 1 .. 8) {
+                    updateRecogPressValueByNumber(iNumber+8,(DataAnalysisHelper.deviceState.recog_back_A_valueList[iNumber-1]))
+                }
+                // 传感数据B面
+                for (iNumber in 1 .. 8) {
+                    updateRecogPressValueByNumber(iNumber,(DataAnalysisHelper.deviceState.recog_back_B_valueList[iNumber-1]))
+                }
+
+                val memoryInfoDao = DevelopInfoDao(this@ManualActivity)
+                val isHave = memoryInfoDao.isHaveByName(strName)
+                // 该名称已存在，则提示用户
+                if (isHave) {
+                    memoryInfoDao.closeDb()
+                    showHintDialog("System","The name already exists. Do not replace it？",strName)
+                }
+                // 直接添加
+                else {
+                    // 数据库操作
+                    val isResult = memoryInfoDao.insertSingleData(nowMemoryInfo)
+                    if (isResult < 0)
+                        ToastMsg("Manual mode, data saved fault！")
+                    else
+                        ToastMsg("Manual mode, data saved successfully！")
+                    memoryInfoDao.closeDb()
+                }
+            }
+            override fun cancelListener() {
+
+            }
+        }, DataAnalysisHelper.deviceState)
+
+        setValueDialog!!.setCancelable(false)
         setValueDialog!!.show()
     }
 
@@ -684,6 +707,29 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                 nowMemoryInfo.p_adjust_cushion_7 = strValue
             8 ->
                 nowMemoryInfo.p_adjust_cushion_8 = strValue
+
+        }
+    }
+
+    // 根据序号更新值R
+    fun updateRecogPressValueByNumber(iNumber : Int,strValue:String) {
+        when(iNumber) {
+            1 ->
+                nowMemoryInfo.p_recog_cushion_1 = strValue
+            2 ->
+                nowMemoryInfo.p_recog_cushion_2 = strValue
+            3 ->
+                nowMemoryInfo.p_recog_cushion_3 = strValue
+            4 ->
+                nowMemoryInfo.p_recog_back_4 = strValue
+            5 ->
+                nowMemoryInfo.p_recog_back_5 = strValue
+            6 ->
+                nowMemoryInfo.p_recog_back_6 = strValue
+            7 ->
+                nowMemoryInfo.p_recog_back_7 = strValue
+            8 ->
+                nowMemoryInfo.p_recog_back_8 = strValue
             9 ->
                 nowMemoryInfo.p_recog_back_A = strValue
             10 ->

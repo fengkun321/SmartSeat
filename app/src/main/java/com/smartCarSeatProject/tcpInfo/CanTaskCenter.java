@@ -79,7 +79,7 @@ public class CanTaskCenter {
                         Log.e(TAG,"连接成功");
                         iConnectState = BaseVolume.TCP_CONNECT_STATE_CONNECTED;
                         strOldBuffer = "";
-                        mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO)
+                        mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
                                 .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
                                 .putExtra(BaseVolume.BROADCAST_TCP_STATUS,true));
                         receive();
@@ -89,7 +89,7 @@ public class CanTaskCenter {
                         Log.e(TAG,"连接失败");
                         iConnectState = BaseVolume.TCP_CONNECT_STATE_DISCONNECT;
                         // 局域网离线啦！
-                        mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO)
+                        mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
                                 .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
                                 .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false)
                                 .putExtra(BaseVolume.BROADCAST_MSG,"连接失败"));
@@ -102,7 +102,7 @@ public class CanTaskCenter {
                     Log.e(TAG,"连接异常");
                     iConnectState = BaseVolume.TCP_CONNECT_STATE_DISCONNECT;
                     // 局域网离线啦！
-                    mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO)
+                    mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
                             .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
                             .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false)
                             .putExtra(BaseVolume.BROADCAST_MSG,e.getMessage()));
@@ -177,7 +177,7 @@ public class CanTaskCenter {
             catch (IOException e) {
                 Log.e(TAG,"连接异常e:"+e.getMessage());
                 // 局域网离线啦！
-                mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO)
+                mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
                         .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
                         .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false)
                         .putExtra(BaseVolume.BROADCAST_MSG,e.getMessage()));
@@ -194,7 +194,7 @@ public class CanTaskCenter {
             boolean isHead = strOldBuffer.substring(0, 6).equalsIgnoreCase(BaseVolume.COMMAND_HEAD);
             if (isHead) {
                 String strGood = strOldBuffer.substring(0,26);
-                Log.e("Can数据", "Can有效数据：$strGood");
+                Log.e("Can数据", "Can有效数据："+strGood);
                 analysisData(strGood);
                 strOldBuffer = strOldBuffer.substring(2);
             } else {
@@ -233,7 +233,8 @@ public class CanTaskCenter {
     public void sendHexText(String cmd) {
         Log.e(TAG, "发送数据："+cmd);
         strNowSendData = cmd;
-        byte[] mBuffer = cmd.getBytes();
+//        byte[] mBuffer = cmd.getBytes();
+        byte[] mBuffer = BaseVolume.hexStringToBytes(strNowSendData);
         new Thread(new Runnable() {
             @Override
             public void run() {

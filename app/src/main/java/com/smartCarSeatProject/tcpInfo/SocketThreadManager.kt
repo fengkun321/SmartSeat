@@ -52,7 +52,7 @@ class SocketThreadManager() {
     }
 
     /**
-     * 创建Can盒连接
+     * 创建Can盒 1控制气压的连接
      */
     fun createCanSocket() {
 
@@ -63,11 +63,20 @@ class SocketThreadManager() {
 
     }
 
+    /**
+     * 创建Can盒 2调节位置的连接
+     */
+    fun createLocSocket() {
+
+        if (LocTaskCenter.sharedCenter(mContext).iConnectState == BaseVolume.TCP_CONNECT_STATE_DISCONNECT) {
+            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_START))
+            LocTaskCenter.sharedCenter(mContext).connect(BaseVolume.CanHostIp,BaseVolume.LocHostListenningPort)
+        }
+
+    }
+
     fun isTCPAllConnected():Boolean {
-
-        return isCanConnected() && isDeviceConnected()
-
-
+        return isCanConnected() && isCan2Connected() && isDeviceConnected()
     }
 
     fun isCanConnected():Boolean {
@@ -75,6 +84,13 @@ class SocketThreadManager() {
             return false
         else
             return CanTaskCenter.sharedCenter(mContext).isConnected
+    }
+
+    fun isCan2Connected():Boolean {
+        if (LocTaskCenter.sharedCenter(mContext).iConnectState != BaseVolume.TCP_CONNECT_STATE_CONNECTED)
+            return false
+        else
+            return LocTaskCenter.sharedCenter(mContext).isConnected
     }
 
     fun isDeviceConnected():Boolean {
@@ -88,7 +104,7 @@ class SocketThreadManager() {
     fun clearAllTCPClient() {
         TaskCenter.sharedCenter(mContext).disconnect()
         CanTaskCenter.sharedCenter(mContext).disconnect()
-
+        LocTaskCenter.sharedCenter(mContext).disconnect()
     }
 
     /** 开始发送数据  */
@@ -122,6 +138,17 @@ class SocketThreadManager() {
             return
         }
         CanTaskCenter.sharedCenter(mContext).sendHexText(strData)
+    }
+
+    /** 通过Can盒 2发送数据（调节位置） */
+    fun StartSendDataByCan2(strData: String) {
+        if (!isCan2Connected()) {
+            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
+                    .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
+                    .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
+            return
+        }
+        LocTaskCenter.sharedCenter(mContext).sendHexText(strData)
     }
 
 

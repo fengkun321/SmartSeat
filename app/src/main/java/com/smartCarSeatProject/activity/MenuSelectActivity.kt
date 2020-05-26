@@ -27,6 +27,7 @@ import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.os.SystemClock
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.ai.nuralogix.anura.sample.face.MNNFaceDetectorAdapter
@@ -41,12 +42,12 @@ import com.smartCarSeatProject.view.AreaAddWindowHint
 import com.smartCarSeatProject.view.SureOperWindowHint
 import com.smartCarSeatProject.wifiInfo.WIFIConnectionManager
 import kotlinx.android.synthetic.main.layout_menu.*
-import com.umeng.commonsdk.statistics.AnalyticsConstants.LOG_TAG
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import org.opencv.core.Point
 import java.io.*
+import kotlin.math.log
 
 
 class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, VideoSignalAnalysisListener, TrackerView.OnSizeChangedListener{
@@ -72,9 +73,10 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         btn3.isEnabled = true
         btn4.isEnabled = true
 
-//        val memoryInfoDao = MemoryInfoDao(this)
-//        memoryInfoDao.insertSingleData(MemoryDataInfo())
-//        memoryInfoDao.closeDb()
+        val isMan = getBooleanBySharedPreferences(SEX_MAN)
+        val isCN = getBooleanBySharedPreferences(COUNTRY_CN)
+        DataAnalysisHelper.deviceState.m_gender = isMan
+        DataAnalysisHelper.deviceState.m_national = isCN
 
         // 人体采集相关
         AnuLogUtil.setShowLog(BuildConfig.DEBUG)
@@ -86,6 +88,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
 
 
+
     }
 
     fun initUI() {
@@ -94,11 +97,26 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         imgReset.setOnClickListener(this)
         imgWIFI.setOnClickListener(this)
         tvReCanConnect.setOnClickListener(this)
+        tvReLocConnect.setOnClickListener(this)
         tvReDeviceConnect.setOnClickListener(this)
+        tvTitle.setOnClickListener(this)
         btn1.setOnClickListener(this)
         btn2.setOnClickListener(this)
         btn3.setOnClickListener(this)
         btn4.setOnClickListener(this)
+
+        tvTitle.setOnLongClickListener {
+            // 根据当前身高体重，得到16个通道的数据，并发送
+            // 根据男女，身高体重，获取气压表
+            val isMan = getBooleanBySharedPreferences(SEX_MAN)
+            val isCN = getBooleanBySharedPreferences(COUNTRY_CN)
+            val willCtrPressValue = DataAnalysisHelper.getInstance(mContext).getAutoCtrPressByPersonStyle(isMan,isCN)
+            // 设置气压，并提示用户，正在自动调整
+            val sendData = CreateCtrDataHelper.getCtrPressAllValueByPerson(willCtrPressValue!!)
+//            SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(sendData[0])
+//            SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(sendData[1])
+            true
+        }
 
     }
 
@@ -198,6 +216,15 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             R.id.tvReCanConnect -> {
                 SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
             }
+            R.id.tvReLocConnect -> {
+                SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createLocSocket()
+            }
+            R.id.tvTitle -> {
+                // 计算身高体重
+                DataAnalysisHelper.getInstance(mContext).measureHeightWeight()
+                ToastMsg("计算结果，身高：${DataAnalysisHelper.deviceState.nowHeight}，体重：${DataAnalysisHelper.deviceState.nowWeight}")
+
+            }
         }
     }
 
@@ -264,21 +291,21 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         startTimerHoldSeat(false)
                     }
                     else {
+                        imgWIFI.visibility = View.VISIBLE
                         tvReDeviceConnect.visibility = View.GONE
-                        if (SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.isCanConnected()!!) {
-                            imgWIFI.visibility = View.VISIBLE
-                            tvReCanConnect.visibility = View.GONE
-                        }
-                        else {
+
+                        tvReCanConnect.visibility = View.GONE
+                        tvReLocConnect.visibility = View.GONE
+                        if (!SocketThreadManager.sharedInstance(this@MenuSelectActivity).isCanConnected()) {
                             imgWIFI.visibility = View.GONE
                             tvReCanConnect.visibility = View.VISIBLE
-                            // 开始连接Can
-//                            SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
+                        }
+                        if (!SocketThreadManager.sharedInstance(this@MenuSelectActivity).isCan2Connected()) {
+                            imgWIFI.visibility = View.GONE
+                            tvReLocConnect.visibility = View.VISIBLE
                         }
 
-
-
-                        ToastMsg("Connection successful！")
+                        ToastMsg("Device Connection successful！")
                     }
                     OnStartLoadData(isConnected)
                 }
@@ -301,17 +328,47 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         startTimerHoldSeat(false)
                     }
                     else {
+                        imgWIFI.visibility = View.VISIBLE
                         tvReCanConnect.visibility = View.GONE
-                        if (SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.isDeviceConnected()!!) {
-                            imgWIFI.visibility = View.VISIBLE
-                            tvReDeviceConnect.visibility = View.GONE
-                        }
-                        else {
+
+                        tvReLocConnect.visibility = View.GONE
+                        tvReDeviceConnect.visibility = View.GONE
+                        if (!SocketThreadManager.sharedInstance(this@MenuSelectActivity).isDeviceConnected()) {
                             imgWIFI.visibility = View.GONE
                             tvReDeviceConnect.visibility = View.VISIBLE
                         }
+                        if (!SocketThreadManager.sharedInstance(this@MenuSelectActivity).isCan2Connected()) {
+                            imgWIFI.visibility = View.GONE
+                            tvReLocConnect.visibility = View.VISIBLE
+                        }
                         ToastMsg("Can Connection successful！")
                     }
+                }
+            }
+            else if (action == BaseVolume.BROADCAST_TCP_INFO_CAN2) {
+                val isConnected = intent.getBooleanExtra(BaseVolume.BROADCAST_TCP_STATUS, false)
+                val strMsg = intent.getStringExtra(BaseVolume.BROADCAST_MSG)
+
+                if (!isConnected) {
+                    tvReLocConnect.visibility = View.VISIBLE
+                    imgWIFI.visibility = View.GONE
+                    ToastMsg("Loc Connect Fail！$strMsg")
+                }
+                else {
+                    imgWIFI.visibility = View.VISIBLE
+                    tvReLocConnect.visibility = View.GONE
+
+                    tvReDeviceConnect.visibility = View.GONE
+                    tvReCanConnect.visibility = View.GONE
+                    if (!SocketThreadManager.sharedInstance(this@MenuSelectActivity).isDeviceConnected()) {
+                        imgWIFI.visibility = View.GONE
+                        tvReDeviceConnect.visibility = View.VISIBLE
+                    }
+                    if (!SocketThreadManager.sharedInstance(this@MenuSelectActivity).isCanConnected()) {
+                        imgWIFI.visibility = View.GONE
+                        tvReCanConnect.visibility = View.VISIBLE
+                    }
+                    ToastMsg("Loc Connection successful！")
                 }
             }
             else if (action == BaseVolume.BROADCAST_SEND_INFO) {
@@ -387,6 +444,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         // 提示用户落座,并将座椅切换到正在探测状态
                         startCheckPeopleWindowHint?.showByListener(object : AreaAddWindowHint.PeriodListener {
                             override fun refreshListener(string: String) {
+                                // 保存当前16个传感器所有的值，用于收集数据！
+                                DataAnalysisHelper.deviceState.saveRecogPressValue()
                                 SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.StartSendData(BaseVolume.COMMAND_SET_STATUS_PROBE)
 
                             }
@@ -783,9 +842,13 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 runOnUiThread {
                     // 人体数据： id & 信噪比 & 心跳 & 情绪值 & 低压 & 高压
                     val strPersonDataInfo =  "${result.measurementID}&${result.snr}&${result.heartRate}&${result.msi}&${result.bpDiastolic}&${result.bpSystolic}"
-                    BaseVolume.strPersonDataInfo = strPersonDataInfo
                     Loge("MenuSelectActivity","人体数据：id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}")
                     measureReuslt.text = "id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}"
+                    DataAnalysisHelper.deviceState.snr = "${result.snr}"
+                    DataAnalysisHelper.deviceState.HeartRate = "${result.heartRate}"
+                    DataAnalysisHelper.deviceState.E_Index = "${result.msi}"
+                    DataAnalysisHelper.deviceState.Dia_BP = "${result.bpDiastolic}"
+                    DataAnalysisHelper.deviceState.Sys_BP = "${result.bpSystolic}"
                     if (result.resultIndex + 1 >= MeasurementActivity.TOTAL_NUMBER_CHUNKS) {
                         Loge("MenuSelectActivity","人体数据：测量结束！开始计算身高体重")
 

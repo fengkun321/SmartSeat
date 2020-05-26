@@ -25,6 +25,8 @@ class BaseApplication : Application() {
          */
         UMConfigure.init(this, "5d722f4f4ca357f80d00071f", "Umeng", UMConfigure.DEVICE_TYPE_PHONE,null)
 
+
+
     }
 
     fun initTypeface() {

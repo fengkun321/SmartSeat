@@ -57,6 +57,8 @@ class MainControlActivity : BaseActivity(),View.OnClickListener{
 //        else
 //            checkSeatStatus()
 
+
+
     }
 
     /**
@@ -307,7 +309,11 @@ class MainControlActivity : BaseActivity(),View.OnClickListener{
     override fun onResume() {
         super.onResume()
         mactivityManager?.dispatchResume()
+    }
 
+    override fun onPause() {
+        super.onPause()
+        mactivityManager?.dispatchPause(false)
     }
 
     /****

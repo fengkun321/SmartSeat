@@ -68,8 +68,16 @@ public class DBContent {
             public static final String dataType = "dataType";
             // 位置调节
             public static final String loactionCtr = "loactionCtr";
-            // 按摩模式
-            public static final String massageMode = "massageMode";
+            // 心率
+            public static final String HeartRate = "HeartRate";
+            // 呼吸率
+            public static final String BreathRate = "BreathRate";
+            // 情绪值
+            public static final String E_Index = "E_Index";
+            // 舒张压
+            public static final String Dia_BP = "Dia_BP";
+            // 收缩压
+            public static final String Sys_BP = "Sys_BP";
 
 		}
 
@@ -113,7 +121,11 @@ public class DBContent {
 	                "'"+ Columns.saveTime+"' TEXT NOT NULL," +
                     "'"+ Columns.dataType+"' TEXT NOT NULL," +
                     "'"+ Columns.loactionCtr+"' TEXT NOT NULL," +
-                    "'"+ Columns.massageMode+"' TEXT NOT NULL" +
+                    "'"+ Columns.HeartRate+"' TEXT NOT NULL," +
+                    "'"+ Columns.BreathRate+"' TEXT NOT NULL," +
+                    "'"+ Columns.E_Index+"' TEXT NOT NULL," +
+                    "'"+ Columns.Dia_BP+"' TEXT NOT NULL," +
+                    "'"+ Columns.Sys_BP+"' TEXT NOT NULL" +
 	                ")";
 		}
 

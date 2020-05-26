@@ -11,11 +11,11 @@ class BaseVolume {
         const val StartTime = "2019-10-15 00:00:00"
 
         // IP
-        const val CanHostIp = "10.10.10.245"
+        const val CanHostIp = "192.168.1.10"
         const val HostIp = "10.10.10.254"
-//        const val HostIp = "192.168.1.102"
         // Port
         const val CanHostListenningPort = 4001
+        const val LocHostListenningPort = 4002
         const val HostListenningPort = 9999
         // WIFI标志
         const val WIFI_SIGN = "HLK_OpenWrt"
@@ -61,11 +61,7 @@ class BaseVolume {
         var strSensorInitValue = ""
         var strSeatInitValue = ""
         var strAdjustInitialValue = ""
-        var strHight = ""
-        var strWeight = ""
 
-        /** 检测到的人体数据 */
-        var strPersonDataInfo = "0&0&0&0&0&0"
 
 
         const val BROADCAST_UPDATA_WIFI_INFO = "BROADCAST_UPDATA_WIFI_INFO"
@@ -74,6 +70,7 @@ class BaseVolume {
 
         const val BROADCAST_TCP_INFO = "BROADCAST_TCP_INFO"
         const val BROADCAST_TCP_INFO_CAN = "BROADCAST_TCP_INFO_CAN"
+        const val BROADCAST_TCP_INFO_CAN2 = "BROADCAST_TCP_INFO_CAN2"
         const val BROADCAST_TCP_CONNECT_START = "BROADCAST_TCP_START_CONNECT"
         const val BROADCAST_TCP_CONNECT_CALLBACK = "BROADCAST_TCP_CONNECT_CALLBACK"
         const val BROADCAST_TCP_STATUS = "BROADCAST_TCP_CONNECT_STATUS"
@@ -131,15 +128,16 @@ class BaseVolume {
         val COMMAND_CTR_9_12 = "03dd"
         val COMMAND_CTR_13_16 = "03ee"
 
-        /** 电机位置1-6 */
-        const val COMMAND_CAN_LOCATION_1 = "02f51100000000000000"
-        const val COMMAND_CAN_LOCATION_2 = "02f51200000000000000"
-        const val COMMAND_CAN_LOCATION_3 = "02f51300000000000000"
-        const val COMMAND_CAN_LOCATION_4 = "02f51400000000000000"
-        const val COMMAND_CAN_LOCATION_5 = "02f51500000000000000"
-        const val COMMAND_CAN_LOCATION_6 = "02f51600000000000000"
+        /** 电机位置1-6 结构：包头+ID+数据 */
+        const val COMMAND_CAN_LOCATION_ID = "02f5"
+        const val COMMAND_CAN_LOCATION_1 = COMMAND_HEAD+COMMAND_CAN_LOCATION_ID+"1100000000000000"
+        const val COMMAND_CAN_LOCATION_2 = COMMAND_HEAD+COMMAND_CAN_LOCATION_ID+"1200000000000000"
+        const val COMMAND_CAN_LOCATION_3 = COMMAND_HEAD+COMMAND_CAN_LOCATION_ID+"1300000000000000"
+        const val COMMAND_CAN_LOCATION_4 = COMMAND_HEAD+COMMAND_CAN_LOCATION_ID+"1400000000000000"
+        const val COMMAND_CAN_LOCATION_5 = COMMAND_HEAD+COMMAND_CAN_LOCATION_ID+"1500000000000000"
+        const val COMMAND_CAN_LOCATION_6 = COMMAND_HEAD+COMMAND_CAN_LOCATION_ID+"1600000000000000"
         // 每次发完位置后，要再发一条清零指令才会动作
-        const val COMMAND_CAN_LOCATION_0 = "02f50000000000000000"
+        const val COMMAND_CAN_LOCATION_0 = COMMAND_HEAD+COMMAND_CAN_LOCATION_ID+"0000000000000000"
 
         /** 通道状态 */
         const val CHANNEL_STATUS = "CHANNEL_STATUS"
@@ -178,6 +176,7 @@ class BaseVolume {
          * @param hexString 16进制字符串
          * @return byte字节数组
          */
+        @JvmStatic
         fun hexStringToBytes(hexString: String?): ByteArray? {
             var hexString = hexString
             if (hexString == null || hexString == "") {
@@ -343,6 +342,8 @@ class BaseVolume {
             val color = Color.argb(iA, iR, iG, iB)
             return color
         }
+
+
 
 
     }

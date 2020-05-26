@@ -238,7 +238,6 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
 
                     // 人体数据： id & 信噪比 & 心跳 & 情绪值 & 低压 & 高压
                     val strPersonDataInfo =  "${result.measurementID}&${result.snr}&${result.heartRate}&${result.msi}&${result.bpDiastolic}&${result.bpSystolic}"
-                    BaseVolume.strPersonDataInfo = strPersonDataInfo
 
 
                     if (result.resultIndex + 1 >= TOTAL_NUMBER_CHUNKS) {

@@ -218,9 +218,16 @@ public class DevelopInfoDao {
             String dataType = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.dataType));
             // 位置调节
             String locationCtr = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.loactionCtr));
-            // 按摩模式
-            String massageMode = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.massageMode));
-
+            // 心率
+            String HeartRate = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.HeartRate));
+            // 呼吸率
+            String BreathRate = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.BreathRate));
+            // 情绪值
+            String E_Index = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.E_Index));
+            // 舒张压
+            String Dia_BP = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.Dia_BP));
+            // 收缩压
+            String Sys_BP = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.Sys_BP));
 
 			command.setM_gender(m_gender);
 			command.setM_national(m_national);
@@ -230,7 +237,11 @@ public class DevelopInfoDao {
 			command.setSaveTime(saveTime);
 			command.setDataType(dataType);
 			command.setL_location(locationCtr);
-			command.setM_massage(massageMode);
+			command.setHeartRate(HeartRate);
+			command.setBreathRate(BreathRate);
+			command.setE_Index(E_Index);
+			command.setDia_BP(Dia_BP);
+			command.setSys_BP(Sys_BP);
 
 			return command;
 		}
@@ -278,7 +289,11 @@ public class DevelopInfoDao {
 			initialValues.put(DBContent.DeviceInfo.Columns.saveTime, temp.getSaveTime());
 			initialValues.put(DBContent.DeviceInfo.Columns.dataType, temp.getDataType());
 			initialValues.put(DBContent.DeviceInfo.Columns.loactionCtr, temp.getL_location());
-			initialValues.put(DBContent.DeviceInfo.Columns.massageMode, temp.getM_massage());
+			initialValues.put(DBContent.DeviceInfo.Columns.HeartRate, temp.getHeartRate());
+			initialValues.put(DBContent.DeviceInfo.Columns.BreathRate, temp.getBreathRate());
+			initialValues.put(DBContent.DeviceInfo.Columns.Dia_BP, temp.getDia_BP());
+			initialValues.put(DBContent.DeviceInfo.Columns.Sys_BP, temp.getSys_BP());
+			initialValues.put(DBContent.DeviceInfo.Columns.E_Index, temp.getE_Index());
 
 			return initialValues;
 		}

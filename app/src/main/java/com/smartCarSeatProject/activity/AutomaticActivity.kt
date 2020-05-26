@@ -32,6 +32,8 @@ import android.widget.TextView
 import android.widget.Toast
 import com.ai.nuralogix.anura.sample.face.MNNFaceDetectorAdapter
 import com.ai.nuralogix.anura.sample.utils.BundleUtils
+import com.alibaba.android.mnnkit.monitor.MNNMonitor
+import com.smartCarSeatProject.BuildConfig
 import com.smartCarSeatProject.R
 import com.smartCarSeatProject.data.*
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
@@ -63,23 +65,24 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener,DfxPipeListener, V
 
         updatePersonState()
 
+        // 人体采集相关
+        AnuLogUtil.setShowLog(BuildConfig.DEBUG)
+        MNNMonitor.setMonitorEnable(false)
+//        copyFileOrDir("r21r23h-8.dat")
+        // 自动开始采集
+        IS_START_AUTOFACE = true
         initNuralogixInfo()
-        if (this@AutomaticActivity::core.isInitialized) {
-            renderingVideoSink.start()
-        }
-        state = STATE.IDLE
 
     }
 
     /** 更新人体数据 */
     fun updatePersonState() {
         // 显示人体数据： id & 信噪比 & 心跳 & 情绪值 & 低压 & 高压
-        val strArrayInfo = BaseVolume.strPersonDataInfo.split("&")
-        tvSN.text = "信噪比：${strArrayInfo[1]}"
-        tvHeart.text = "心跳：${strArrayInfo[2]}"
-        tvMSI.text = "情绪：${strArrayInfo[3]}"
-        tvBPD.text = "舒张压：${strArrayInfo[4]}"
-        tvBPS.text = "收缩压：${strArrayInfo[5]}"
+        tvSN.text = "信噪比："+DataAnalysisHelper.deviceState.snr
+        tvHeart.text = "心跳："+DataAnalysisHelper.deviceState.HeartRate
+        tvMSI.text = "情绪："+DataAnalysisHelper.deviceState.E_Index
+        tvBPD.text = "舒张压："+DataAnalysisHelper.deviceState.Dia_BP
+        tvBPS.text = "收缩压："+DataAnalysisHelper.deviceState.Sys_BP
     }
 
     fun initUI() {
@@ -157,6 +160,8 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener,DfxPipeListener, V
         btnNv.setTextColor(getColor(R.color.black1))
         btnDongF.setTextColor(getColor(R.color.black1))
         btnXiF.setTextColor(getColor(R.color.black1))
+        DataAnalysisHelper.deviceState.m_gender = isMan
+        DataAnalysisHelper.deviceState.m_national = isCN
         // 男
         if (isMan) {
             btnNan.tag = true
@@ -249,6 +254,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener,DfxPipeListener, V
                 }
                 btnNan.tag = true
                 btnNv.tag = false
+                DataAnalysisHelper.deviceState.m_gender = true
                 btnNan.setTextColor(getColor(R.color.colorWhite))
                 btnNv.setTextColor(getColor(R.color.black1))
                 saveBooleanBySharedPreferences(SEX_MAN,true)
@@ -259,6 +265,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener,DfxPipeListener, V
                 }
                 btnNan.tag = false
                 btnNv.tag = true
+                DataAnalysisHelper.deviceState.m_gender = false
                 btnNan.setTextColor(getColor(R.color.black1))
                 btnNv.setTextColor(getColor(R.color.colorWhite))
                 saveBooleanBySharedPreferences(SEX_MAN,false)
@@ -269,6 +276,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener,DfxPipeListener, V
                 }
                 btnDongF.tag = true
                 btnXiF.tag = false
+                DataAnalysisHelper.deviceState.m_national = true
                 btnDongF.setTextColor(getColor(R.color.colorWhite))
                 btnXiF.setTextColor(getColor(R.color.black1))
                 saveBooleanBySharedPreferences(COUNTRY_CN,true)
@@ -279,6 +287,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener,DfxPipeListener, V
                 }
                 btnDongF.tag = false
                 btnXiF.tag = true
+                DataAnalysisHelper.deviceState.m_national = false
                 btnDongF.setTextColor(getColor(R.color.black1))
                 btnXiF.setTextColor(getColor(R.color.colorWhite))
                 saveBooleanBySharedPreferences(COUNTRY_CN,false)
@@ -413,39 +422,18 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener,DfxPipeListener, V
                 runOnUiThread {
                     // 人体数据： id & 信噪比 & 心跳 & 情绪值 & 低压 & 高压
                     val strPersonDataInfo =  "${result.measurementID}&${result.snr}&${result.heartRate}&${result.msi}&${result.bpDiastolic}&${result.bpSystolic}"
-                    BaseVolume.strPersonDataInfo = strPersonDataInfo
                     Loge("MenuSelectActivity","人体数据：id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}")
-                    measureReuslt.text = "id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}"
+//                    measureReuslt.text = "id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}"
+                    DataAnalysisHelper.deviceState.snr = "${result.snr}"
+                    DataAnalysisHelper.deviceState.HeartRate = "${result.heartRate}"
+                    DataAnalysisHelper.deviceState.E_Index = "${result.msi}"
                     updatePersonState()
 
                     if (result.resultIndex + 1 >= MeasurementActivity.TOTAL_NUMBER_CHUNKS) {
-                        Loge("MenuSelectActivity","人体数据：测量结束！")
-                        cancelled_tv.visibility = View.GONE
-                        trackerView.visibility = View.GONE
-//                        stopMeasurement(true)
-                        state = STATE.DONE
-                        cloudAnalyzer.stopAnalyzing()
-                        dfxPipe.stopCollect()
-                        if (dialog.isShowing) {
-                            dialog.dismiss()
-                        }
-                        progressBarWindowHint?.updateContent("Adjusting now, please wait a moment...")
-                        progressBarWindowHint?.onSelfShow()
+                        Loge("AutomaticActivity","人体数据：测量结束！开始计算身高体重")
 
-                        // 测试，跳过调节气压部分，直接进入自动模式
-                        SocketThreadManager.sharedInstance(mContext)?.StartSendData(BaseVolume.COMMAND_SET_MODE_AUTO)
+                        stopMeasurement(true)
 
-//                        // 计算身高体重
-//                        DataAnalysisHelper.getInstance(mContext!!)?.measureHeightWeight()
-//
-//                        // 根据男女，身高体重，获取气压表
-//                        val isMan = getBooleanBySharedPreferences(SEX_MAN)
-//                        val isCN = getBooleanBySharedPreferences(COUNTRY_CN)
-//                        val willCtrPressValue = DataAnalysisHelper.getInstance(mContext!!)?.getAutoCtrPressByPersonStyle(isMan,isCN)
-//                        // 设置气压，并提示用户，正在自动调整
-//                        val sendData = CreateCtrDataHelper.getCtrPressAllValueByPerson(willCtrPressValue!!)
-//                        SocketThreadManager.sharedInstance(mContext!!)?.StartSendDataByCan(sendData[0])
-//                        SocketThreadManager.sharedInstance(mContext!!)?.StartSendDataByCan(sendData[1])
                     }
 
                 }
@@ -633,6 +621,19 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener,DfxPipeListener, V
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (this::core.isInitialized) {
+            renderingVideoSink.start()
+        }
+        state = STATE.IDLE
+        if (trackerView.visibility == View.GONE) {
+            state = STATE.DONE
+            cloudAnalyzer.stopAnalyzing()
+            dfxPipe.stopCollect()
+        }
+    }
+
     override fun onNewIntent(intent: Intent?) {
         val configBundle = intent?.getBundleExtra(BundleUtils.DFX_BUNDLE_KEY)
         configBundle?.let {
@@ -645,6 +646,16 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener,DfxPipeListener, V
             trackerView.setMeasurementDuration(duration.toDouble())
         }
         super.onNewIntent(intent)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (state != STATE.UNKNOWN) {
+            stopMeasurement(true)
+            if (this::core.isInitialized) {
+                renderingVideoSink.stop()
+            }
+        }
     }
 
 

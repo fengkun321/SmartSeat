@@ -2,8 +2,6 @@ package com.smartCarSeatProject.tcpInfo;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Message;
 import android.util.Log;
 
 import com.smartCarSeatProject.data.BaseVolume;
@@ -14,12 +12,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-public class TaskCenter {
+public class LocTaskCenter {
 
     public int iConnectState = BaseVolume.TCP_CONNECT_STATE_DISCONNECT;
 
-    private static TaskCenter instance;
-    private static final String TAG = "TaskCenter";
+    private static LocTaskCenter instance;
+    private static final String TAG = "LocTaskCenter";
     //    Socket
     private Socket socket;
     //    IP地址
@@ -41,16 +39,16 @@ public class TaskCenter {
     private Context mContext;
 
     //    构造函数私有化
-    private TaskCenter(Context context) {
+    private LocTaskCenter(Context context) {
         super();
         this.mContext = context;
     }
     //    提供一个全局的静态方法
-    public static TaskCenter sharedCenter(Context mContext) {
+    public static LocTaskCenter sharedCenter(Context mContext) {
         if (instance == null) {
-            synchronized (TaskCenter.class) {
+            synchronized (LocTaskCenter.class) {
                 if (instance == null) {
-                    instance = new TaskCenter(mContext);
+                    instance = new LocTaskCenter(mContext);
                 }
             }
         }
@@ -71,8 +69,8 @@ public class TaskCenter {
                     socket = new Socket(ipAddress, port);
 //                    socket.setSoTimeout (10 * 1000 );//设置超时时间
                     if (isConnected()) {
-                        TaskCenter.sharedCenter(mContext).ipAddress = ipAddress;
-                        TaskCenter.sharedCenter(mContext).port = port;
+                        LocTaskCenter.sharedCenter(mContext).ipAddress = ipAddress;
+                        LocTaskCenter.sharedCenter(mContext).port = port;
                         if (connectedCallback != null) {
                             connectedCallback.callback();
                         }
@@ -81,7 +79,7 @@ public class TaskCenter {
                         Log.e(TAG,"连接成功");
                         iConnectState = BaseVolume.TCP_CONNECT_STATE_CONNECTED;
                         strOldBuffer = "";
-                        mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO)
+                        mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO_CAN2)
                                 .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
                                 .putExtra(BaseVolume.BROADCAST_TCP_STATUS,true));
                         receive();
@@ -91,7 +89,7 @@ public class TaskCenter {
                         Log.e(TAG,"连接失败");
                         iConnectState = BaseVolume.TCP_CONNECT_STATE_DISCONNECT;
                         // 局域网离线啦！
-                        mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO)
+                        mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO_CAN2)
                                 .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
                                 .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false)
                                 .putExtra(BaseVolume.BROADCAST_MSG,"连接失败"));
@@ -104,7 +102,7 @@ public class TaskCenter {
                     Log.e(TAG,"连接异常");
                     iConnectState = BaseVolume.TCP_CONNECT_STATE_DISCONNECT;
                     // 局域网离线啦！
-                    mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO)
+                    mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO_CAN2)
                             .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
                             .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false)
                             .putExtra(BaseVolume.BROADCAST_MSG,e.getMessage()));
@@ -167,9 +165,10 @@ public class TaskCenter {
                 if (size > 0) {
                     byte[] data = new byte[size];
                     System.arraycopy(buffer, 0, data, 0, size);
-                    String str = new String(data);
-                    Log.e(TAG, "接收局域网，数据：" + str);
-                    checkData(str);
+//                    String str = new String(data);
+                    String strHexData = BaseVolume.Companion.bytesToHexString(data);
+//                    Log.e(TAG, "接收局域网，数据：" + strHexData);
+                    checkData(strHexData);
                 }
                 else {
 //                    Log.e(TAG, "接收局域网，size："+size);
@@ -178,7 +177,7 @@ public class TaskCenter {
             catch (IOException e) {
                 Log.e(TAG,"连接异常e:"+e.getMessage());
                 // 局域网离线啦！
-                mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO)
+                mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO_CAN2)
                         .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
                         .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false)
                         .putExtra(BaseVolume.BROADCAST_MSG,e.getMessage()));
@@ -189,16 +188,33 @@ public class TaskCenter {
     private String strOldBuffer = "";
     private void checkData(String data) {
         strOldBuffer = strOldBuffer + data;
-        while ((strOldBuffer.indexOf(BaseVolume.COMMAND_END)) > 0) {
-            // 发现有数据尾\r\n，则说明存在有效数据
-            int iEndIndex = strOldBuffer.indexOf(BaseVolume.COMMAND_END);
-            if (iEndIndex >= 0) {
-                String strGood = strOldBuffer.substring(0,iEndIndex+2);// +2,是为了截取带包尾的完整数据
-//                Log.e("数据", "有效数据："+strGood);
-                // 解析数据
-                DataAnalysisHelper.Companion.getInstance(mContext).startDataAnalysis(strGood);
-                strOldBuffer = strOldBuffer.substring(iEndIndex+2);
+        // 做数据校验
+        while (strOldBuffer.length() >= 26) {
+            // 包头 08000002f5
+            boolean isHead = strOldBuffer.substring(0, 10).equalsIgnoreCase(BaseVolume.COMMAND_HEAD+BaseVolume.COMMAND_CAN_LOCATION_ID);
+            if (isHead) {
+                String strGood = strOldBuffer.substring(0,26);
+                Log.e(TAG, "Loc 电机有效数据："+strGood);
+                strOldBuffer = strOldBuffer.substring(2);
+            } else {
+                strOldBuffer = strOldBuffer.substring(2);
             }
+        }
+    }
+
+    private void analysisData(String strData) {
+        String strType = strData.substring(6,10);
+        // 数据气压数据
+        if (strType.equalsIgnoreCase(BaseVolume.COMMAND_CAN_1_4) ||
+                strType.equalsIgnoreCase(BaseVolume.COMMAND_CAN_5_8) ||
+                strType.equalsIgnoreCase(BaseVolume.COMMAND_CAN_9_12) ||
+                strType.equalsIgnoreCase(BaseVolume.COMMAND_CAN_13_16)) {
+            DataAnalysisHelper.Companion.getInstance(mContext).analysisPressValueByCan(strData);
+        }
+        // 通道状态
+        else if (strType.equalsIgnoreCase(BaseVolume.COMMAND_CAN_STATUS_1_8) ||
+                strType.equalsIgnoreCase(BaseVolume.COMMAND_CAN_STATUS_9_16)) {
+            DataAnalysisHelper.Companion.getInstance(mContext).analysisPressStatusByCan(strType);
         }
     }
 

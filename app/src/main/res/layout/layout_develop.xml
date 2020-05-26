@@ -197,7 +197,7 @@
                 <include android:id="@+id/includeA"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     layout="@layout/layout_a_pmcm"/>
 
                 <View
@@ -211,6 +211,19 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     layout="@layout/layout_people_info"/>
+
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorWhite"
+                    android:layout_margin="10dp"/>
+
+                <include
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:visibility="invisible"
+                    layout="@layout/layout_em_info"/>
 
                 <View
                     android:layout_width="0.5dp"
@@ -248,7 +261,7 @@
             <Button android:id="@+id/btnSaveA"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:background="@drawable/btn_on_press_bg"
                 android:text="Save Recog Data"
                 android:textAllCaps="false"
@@ -259,7 +272,7 @@
             <Button android:id="@+id/btnSaveAllData"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:background="@drawable/btn_on_press_bg"
                 android:text="Save Adjust Data"
                 android:textAllCaps="false"

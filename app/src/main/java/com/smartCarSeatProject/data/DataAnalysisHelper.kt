@@ -18,10 +18,10 @@ class DataAnalysisHelper{
 
     companion object {
         var deviceState = DeviceWorkInfo("")
-        var dataAnalysisHelper: DataAnalysisHelper? = null
+        lateinit var dataAnalysisHelper: DataAnalysisHelper
 
-        fun getInstance(con:Context): DataAnalysisHelper?{
-            if (dataAnalysisHelper == null) {
+        fun getInstance(con:Context): DataAnalysisHelper{
+            if (!this::dataAnalysisHelper.isInitialized) {
                 dataAnalysisHelper = DataAnalysisHelper("",con)
             }
             return dataAnalysisHelper
@@ -154,7 +154,7 @@ class DataAnalysisHelper{
 
         var strName = strInfoList[17]
         // hex转字节，然后转成String，存起来
-//        strName = String(BaseVolume.hexStringToBytes(strName)!!)
+        strName = String(BaseVolume.hexStringToBytes(strName)!!)
 
         var pressList:ArrayList<String> = arrayListOf()
         // 遍历数组，拿到8个气压值
@@ -337,7 +337,7 @@ class DataAnalysisHelper{
                 0.013437*deviceState.sensePressValueListl[10].toInt()
 
         // 身高
-        deviceState.nowWeight = 113.69-
+        deviceState.nowHeight = 113.69-
                 0.045598*deviceState.sensePressValueListl[0].toInt()+
                 0.050396*deviceState.sensePressValueListl[1].toInt()-
                 0.0031454*deviceState.sensePressValueListl[2].toInt()+
@@ -352,7 +352,7 @@ class DataAnalysisHelper{
 
         deviceState.nowBMI = (deviceState.nowWeight*1000)/ (deviceState.nowHeight*deviceState.nowHeight)
 
-        Log.e("DeviceWorkInfo","身高：${deviceState.nowHeight}，体重：${deviceState.nowWeight},BMI：${deviceState.nowBMI}")
+        Log.e("DeviceWorkInfo","计算数据：身高：${deviceState.nowHeight}，体重：${deviceState.nowWeight},BMI：${deviceState.nowBMI}")
 
     }
 
@@ -388,7 +388,7 @@ class DataAnalysisHelper{
         val dbManager = DBManager(context)
         val pressInfo = dbManager.queryLikeWeight(strTableName, nowWeight)
         for (city1 in pressInfo) {
-            Log.e("test2", "test2: cityInof:$city1")
+            Log.e("getPressInfo", "推荐数据表： pressInfo:$city1")
         }
         dbManager.closeDb()
         return if (pressInfo.size > 0) pressInfo[0] else null

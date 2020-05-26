@@ -132,7 +132,6 @@ class MyHisDateAdapter(internal var list: ArrayList<DevelopDataInfo>, internal v
         holder.m_tvAD_8!!.text = deviceInfo.p_adjust_cushion_8
 
         holder.m_tvLocation!!.text = deviceInfo.l_location
-        holder.m_tvMassage!!.text = deviceInfo.m_massage
 
 
         return convertView
