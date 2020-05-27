@@ -127,6 +127,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         myIntentFilter.addAction(BaseVolume.BROADCAST_FINISH_APPLICATION)
         myIntentFilter.addAction(BaseVolume.BROADCAST_TCP_INFO)
         myIntentFilter.addAction(BaseVolume.BROADCAST_TCP_INFO_CAN)
+        myIntentFilter.addAction(BaseVolume.BROADCAST_TCP_INFO_CAN2)
         myIntentFilter.addAction(BaseVolume.BROADCAST_SEND_INFO)
         myIntentFilter.addAction(BaseVolume.BROADCAST_RESULT_DATA_INFO)
         myIntentFilter.addAction(BaseVolume.BROADCAST_CTR_CALLBACK)
@@ -221,8 +222,19 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             }
             R.id.tvTitle -> {
                 // 计算身高体重
-                DataAnalysisHelper.getInstance(mContext).measureHeightWeight()
-                ToastMsg("计算结果，身高：${DataAnalysisHelper.deviceState.nowHeight}，体重：${DataAnalysisHelper.deviceState.nowWeight}")
+//                DataAnalysisHelper.getInstance(mContext).measureHeightWeight()
+//                ToastMsg("计算结果，身高：${DataAnalysisHelper.deviceState.nowHeight}，体重：${DataAnalysisHelper.deviceState.nowWeight}")
+
+                if (tvTitle.tag.toString().toBoolean()) {
+                    tvTitle.tag = false
+                    tracker_ui_view.visibility = View.GONE
+                    tracker_opengl_view.visibility = View.GONE
+                }
+                else {
+                    tvTitle.tag = true
+                    tracker_ui_view.visibility = View.VISIBLE
+                    tracker_opengl_view.visibility = View.VISIBLE
+                }
 
             }
         }

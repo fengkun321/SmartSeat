@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.format.DateUtils;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -98,6 +101,8 @@ public class ListViewActivity extends Activity {
 
 
     }
+
+
 
     private Handler handler=new Handler(){
         public void handleMessage(android.os.Message msg) {

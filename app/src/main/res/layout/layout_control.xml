@@ -61,6 +61,17 @@
                 android:visibility="visible"
                 android:gravity="center"/>
 
+            <TextView android:id="@+id/tvReLocConnect"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:text="Loc Reconnect"
+                android:textSize="20sp"
+                android:textColor="@color/colorWhite"
+                android:layout_toLeftOf="@+id/imgWIFI"
+                android:visibility="visible"
+                android:gravity="center"
+                android:layout_marginLeft="10dp"/>
+
             <TextView android:id="@+id/tvReDeviceConnect"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
@@ -85,64 +96,163 @@
 
     </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_marginLeft="20dp">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center">
-
-            <ImageView android:id="@+id/imgLeft0"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:src="@drawable/img_left_0"/>
-
-            <ImageView android:id="@+id/imgLeft1"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:src="@drawable/img_left_1_hui"/>
-
-            <ImageView android:id="@+id/imgLeft2"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:src="@drawable/img_left_2_hui"/>
-
-            <ImageView android:id="@+id/imgLeft3"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:src="@drawable/img_left_3_false"/>
-
-            <ImageView android:id="@+id/imgLeft4"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:src="@drawable/img_left_4_hui"/>
-
-        </LinearLayout>
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:layout_marginLeft="20dp">
 
-            <RelativeLayout android:id="@+id/container"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center">
+
+                <ImageView android:id="@+id/imgLeft0"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/img_left_0"/>
+
+                <ImageView android:id="@+id/imgLeft1"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/img_left_1_hui"/>
+
+                <ImageView android:id="@+id/imgLeft2"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/img_left_2_hui"/>
+
+                <ImageView android:id="@+id/imgLeft3"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/img_left_3_false"/>
+
+                <ImageView android:id="@+id/imgLeft4"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/img_left_4_hui"/>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:orientation="horizontal"
-                android:background="#fff"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="20dp">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            </RelativeLayout>
+                <RelativeLayout android:id="@+id/container"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal"
+                    android:background="#fff"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="20dp">
+
+                </RelativeLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+        // 心率
+            <LinearLayout android:id="@+id/llPersonInfo"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="left"
+                android:layout_toLeftOf="@+id/rlCamera"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="30dp">
+
+                <TextView android:id="@+id/tvHeight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="身高："
+                    android:textColor="@color/colorGreen"/>
+                <TextView android:id="@+id/tvWeight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="体重："
+                    android:textColor="@color/colorGreen"
+                    android:layout_marginTop="5dp"/>
+                <TextView android:id="@+id/tvHeart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="心跳："
+                    android:textColor="@color/colorGreen"
+                    android:layout_marginTop="5dp"/>
+                <TextView android:id="@+id/tvBPD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="舒张压："
+                    android:textColor="@color/colorGreen"
+                    android:layout_marginTop="5dp"/>
+                <TextView android:id="@+id/tvBPS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="收缩压："
+                    android:textColor="@color/colorGreen"
+                    android:layout_marginTop="5dp"/>
+                <TextView android:id="@+id/tvMSI"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="情绪值："
+                    android:textColor="@color/colorGreen"
+                    android:layout_marginTop="5dp"/>
+                <TextView android:id="@+id/tvSN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="信噪值："
+                    android:textColor="@color/colorGreen"
+                    android:layout_marginTop="5dp"/>
+
+            </LinearLayout>
+
+            <RelativeLayout android:id="@+id/rlCamera"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerHorizontal="true"
+                android:background="@color/colorWhite"
+                android:visibility="visible"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="70dp"
+                android:layout_marginBottom="30dp">
+
+
+                <ai.nuralogix.anurasdk.render.opengl.GLSurfaceViewTracker
+                    android:id="@+id/tracker_opengl_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible"/>
+
+                <ai.nuralogix.anurasdk.views.TrackerView
+                    android:id="@+id/tracker_ui_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible"/>
+
+                <TextView
+                    android:id="@+id/cancelled_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorAccent"
+                    android:text="123"
+                    android:textSize="15sp"
+                    android:visibility="visible"/>
+
+            </RelativeLayout>
+
+    </RelativeLayout>
+
+
 
 
 
