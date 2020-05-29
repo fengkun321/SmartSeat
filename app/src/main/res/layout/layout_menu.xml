@@ -74,17 +74,6 @@
                 android:gravity="center"
                 android:layout_marginLeft="10dp"/>
 
-            <TextView android:id="@+id/tvReDeviceConnect"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:text="Device Reconnect"
-                android:textSize="20sp"
-                android:textColor="@color/colorWhite"
-                android:layout_toLeftOf="@+id/imgWIFI"
-                android:visibility="visible"
-                android:gravity="center"
-                android:layout_marginLeft="10dp"/>
-
             <ImageView android:id="@+id/imgWIFI"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -114,7 +103,7 @@
             android:layout_marginTop="20dp"
             android:visibility="visible"/>
 
-        <RelativeLayout
+        <RelativeLayout android:id="@+id/rlCamera"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_centerHorizontal="true"
@@ -143,7 +132,7 @@
                 android:layout_centerHorizontal="true"
                 android:textAlignment="center"
                 android:textColor="@color/colorAccent"
-                android:text="123"
+                android:text=""
                 android:textSize="15sp"/>
 
         </RelativeLayout>
@@ -156,7 +145,7 @@
             android:layout_centerInParent="true"
             android:gravity="center"
             android:visibility="visible"
-            android:paddingTop="150dp">
+            android:paddingTop="130dp">
 
             <RelativeLayout
                 android:layout_width="wrap_content"

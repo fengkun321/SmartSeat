@@ -215,7 +215,7 @@ public class CanTaskCenter {
         // 通道状态
         else if (strType.equalsIgnoreCase(BaseVolume.COMMAND_CAN_STATUS_1_8) ||
                 strType.equalsIgnoreCase(BaseVolume.COMMAND_CAN_STATUS_9_16)) {
-            DataAnalysisHelper.Companion.getInstance(mContext).analysisPressStatusByCan(strType);
+            DataAnalysisHelper.Companion.getInstance(mContext).analysisPressStatusByCan(strData);
         }
     }
 

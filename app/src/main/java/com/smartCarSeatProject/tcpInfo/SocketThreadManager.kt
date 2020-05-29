@@ -6,7 +6,10 @@ import android.os.Handler
 import android.os.Message
 import android.util.Log
 import com.smartCarSeatProject.data.BaseVolume
-import java.util.HashMap
+import com.smartCarSeatProject.data.CreateCtrDataHelper
+import com.smartCarSeatProject.data.DataAnalysisHelper
+import com.smartCarSeatProject.data.DeviceWorkInfo
+import java.util.*
 
 
 class SocketThreadManager() {
@@ -23,33 +26,6 @@ class SocketThreadManager() {
         }
     }
 
-    /** 定时发送数据  */
-    private val runnableSendTime = object : Runnable {
-        override fun run() {
-            if (iSendCount > 3) {
-                // 连续发送4次都超时了，提示用户。
-                Log.e(TAG, "连续发送4次都超时了，提示用户！")
-                mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_SEND_INFO).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_SEND_DATA_TIME_OUT))
-                return
-            }
-            ++iSendCount
-            if (isDeviceConnected()) {
-//                Log.e(TAG, "发送数据：$strNowSendData")
-                TaskCenter.sharedCenter(mContext).sendHexText(strNowSendData)
-                handler.postDelayed(this, 5000)// 延时5秒后，重新发送
-            }
-        }
-    }
-
-    /**
-     * 创建Device连接
-     */
-    fun createDeviceSocket() {
-        if (TaskCenter.sharedCenter(mContext).iConnectState == BaseVolume.TCP_CONNECT_STATE_DISCONNECT) {
-            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_START))
-            TaskCenter.sharedCenter(mContext).connect(BaseVolume.HostIp,BaseVolume.HostListenningPort)
-        }
-    }
 
     /**
      * 创建Can盒 1控制气压的连接
@@ -76,7 +52,7 @@ class SocketThreadManager() {
     }
 
     fun isTCPAllConnected():Boolean {
-        return isCanConnected() && isCan2Connected() && isDeviceConnected()
+        return isCanConnected() && isCan2Connected()
     }
 
     fun isCanConnected():Boolean {
@@ -93,43 +69,28 @@ class SocketThreadManager() {
             return LocTaskCenter.sharedCenter(mContext).isConnected
     }
 
-    fun isDeviceConnected():Boolean {
-        if (TaskCenter.sharedCenter(mContext).iConnectState != BaseVolume.TCP_CONNECT_STATE_CONNECTED)
-            return false
-        else
-            return TaskCenter.sharedCenter(mContext).isConnected
-    }
 
 
     fun clearAllTCPClient() {
-        TaskCenter.sharedCenter(mContext).disconnect()
         CanTaskCenter.sharedCenter(mContext).disconnect()
         LocTaskCenter.sharedCenter(mContext).disconnect()
     }
 
-    /** 开始发送数据  */
-    fun StartSendData(strData: String) {
-        if (!isDeviceConnected()) {
-            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO)
+
+    /** 通过Can盒发送数据（不带超时机制） */
+    fun StartChangeModelByCan(strData: String) {
+        if (!isCanConnected()) {
+            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
                     .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
                     .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
             return
         }
-        mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_SEND_INFO)
-                .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_SEND_DATA_START))
-        iSendCount = 0
-        strNowSendData = strData
-        handler.post(runnableSendTime)
+        NowActionModel = Action_ChangModel
+        startTimeOut(false)
+        CanTaskCenter.sharedCenter(mContext).sendHexText(strData)
     }
 
-    /** 停止发送  */
-    fun StopSendData() {
-        handler.removeCallbacks(runnableSendTime)
-        mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_SEND_INFO)
-                .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_SEND_DATA_END))
-    }
-
-    /** 通过Can盒发送数据（不带超时机制） */
+    /** 通过Can盒调试通道气压（带保护机制：30秒后，如果还是调压模式，则强制切换到Normal模式） */
     fun StartSendDataByCan(strData: String) {
         if (!isCanConnected()) {
             mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
@@ -137,6 +98,11 @@ class SocketThreadManager() {
                     .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
             return
         }
+        // 先切换模式，则发调压指令
+//        val strData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_NORMAL,BaseVolume.COMMAND_CAN_MODEL_ADJUST)
+//        StartChangeModelByCan(strData)
+        NowActionModel = Action_CtrPress
+        startTimeOut(true)
         CanTaskCenter.sharedCenter(mContext).sendHexText(strData)
     }
 
@@ -157,6 +123,11 @@ class SocketThreadManager() {
         protected val TAG = "SocketThreadManager"
         lateinit var s_SocketManager: SocketThreadManager
         lateinit var mContext : Context
+        // 当前动作方式 切换模式
+        val Action_ChangModel = 111
+        // 控制气压
+        val Action_CtrPress = 222
+        var NowActionModel = Action_ChangModel
 
         fun sharedInstance(context: Context): SocketThreadManager {
             mContext = context
@@ -164,6 +135,28 @@ class SocketThreadManager() {
                 s_SocketManager = SocketThreadManager()
             }
             return s_SocketManager
+        }
+    }
+
+
+    var timer:Timer? = null
+    /**
+     * 开启/关闭计时器
+     */
+    fun startTimeOut(isRun : Boolean) {
+        if (isRun) {
+            timer?.cancel()
+            timer = null
+            timer = Timer()
+            timer?.schedule(object : TimerTask() {
+                override fun run() {
+                    Log.e(TAG, "30秒时间到！强制切换为Normal模式")
+                    StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
+                }
+            }, (30 * 1000))
+        }
+        else {
+            timer?.cancel()
         }
     }
 

@@ -292,31 +292,14 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
             if (action == BaseVolume.BROADCAST_RESULT_DATA_INFO) {
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
                 val deviceWorkInfo = intent.getSerializableExtra(BaseVolume.BROADCAST_MSG) as DeviceWorkInfo
-                // 座椅状态
-                if (strType.equals(BaseVolume.COMMAND_TYPE_SEAT_STATUS,true)) {
-                    val iSeatStatus = deviceWorkInfo?.seatStatus
-                }
                 // 气压
-                else if (strType.equals(BaseVolume.COMMAND_TYPE_PRESS,true)) {
+                if (strType.equals(BaseVolume.COMMAND_TYPE_PRESS,true)) {
                     updateSeatView()
-                }
-                // 男女,人种
-                else if (strType.equals(BaseVolume.COMMAND_TYPE_SEX,true)) {
-                    initData()
                 }
             }
             // 控制回调
             else if (action == BaseVolume.BROADCAST_CTR_CALLBACK) {
-                val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
-                val strMsg = intent.getStringExtra(BaseVolume.BROADCAST_MSG)
-                if (strType.equals(BaseVolume.COMMAND_TYPE_SEX,true)) {
-                    if (strMsg.equals(BaseVolume.COMMAND_ACK,true)) {
-//                        DataAnalysisHelper.deviceState.nowSex = if(isNan) 1 else 2
-//                        DataAnalysisHelper.deviceState.nowRace = if(isCN) 1 else 2
-//                        initData()
 
-                    }
-                }
             }
             // 暂停
             else if (action == BaseVolume.BROADCAST_SWITCH_PAUSE) {

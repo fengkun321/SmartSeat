@@ -6,10 +6,11 @@ import android.support.annotation.IntegerRes
 import android.util.Log
 import com.smartCarSeatProject.dao.DBManager
 import com.smartCarSeatProject.data.DataAnalysisHelper.Companion.deviceState
+import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 
 class DataAnalysisHelper{
     private var strData: String? = null
-    var context:Context? = null
+    lateinit var context:Context
 
     constructor(strID:String,context: Context) {
         deviceState = DeviceWorkInfo(strID)
@@ -29,143 +30,6 @@ class DataAnalysisHelper{
 
     }
 
-    /** 开始数据解析  */
-    fun startDataAnalysis(strData: String) {
-        this.strData = strData
-        val command_type = strData.substring(0,1)
-        val type = strData.substring(2,3)
-        val strContent = strData.substring(4,strData.indexOf(BaseVolume.COMMAND_END))
-        // 读取的返回
-        if (command_type.equals(BaseVolume.COMMAND_R,true)) {
-            // 座椅状态
-            if (type.equals(BaseVolume.COMMAND_TYPE_SEAT_STATUS,true)) {
-                SeatStatus(strContent)
-            }
-            // 数据表
-            else if (type.equals(BaseVolume.COMMAND_TYPE_SQL_CTR,true)) {
-                SQLCtrlInfoAnalysis(strContent)
-            }
-            // 性别
-            else if (type.equals(BaseVolume.COMMAND_TYPE_SEX,true)) {
-                SexAnalySis(strContent)
-            }
-
-        }
-        // 设置的返回
-        else if (command_type.equals(BaseVolume.COMMAND_W,true)){
-            // 座椅状态
-            if (type.equals(BaseVolume.COMMAND_TYPE_SEAT_STATUS,true)) {
-                context?.sendBroadcast(Intent(BaseVolume.BROADCAST_CTR_CALLBACK)
-                        .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_SEAT_STATUS)
-                        .putExtra(BaseVolume.BROADCAST_MSG,strContent))
-            }
-            // 数据表
-            else if (type.equals(BaseVolume.COMMAND_TYPE_SQL_CTR,true)) {
-                context?.sendBroadcast(Intent(BaseVolume.BROADCAST_CTR_CALLBACK)
-                        .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_SQL_CTR)
-                        .putExtra(BaseVolume.BROADCAST_MSG,strContent))
-            }
-            // 气压值
-            else if (type.equals(BaseVolume.COMMAND_TYPE_PRESS,true)) {
-                context?.sendBroadcast(Intent(BaseVolume.BROADCAST_CTR_CALLBACK)
-                        .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_PRESS)
-                        .putExtra(BaseVolume.BROADCAST_MSG,strContent))
-            }
-            // 性别，人种
-            else if (type.equals(BaseVolume.COMMAND_TYPE_SEX,true)) {
-                context?.sendBroadcast(Intent(BaseVolume.BROADCAST_CTR_CALLBACK)
-                        .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_SEX)
-                        .putExtra(BaseVolume.BROADCAST_MSG,strContent))
-            }
-        }
-        // 主动上报的数据
-        else if (command_type.equals(BaseVolume.COMMAND_S,true)){
-            // 座椅状态
-            if (type.equals(BaseVolume.COMMAND_TYPE_SEAT_STATUS,true)) {
-                SeatStatus(strContent)
-            }
-            // 气压值
-            else if (type.equals(BaseVolume.COMMAND_TYPE_PRESS,true)) {
-                PressValue(strContent)
-            }
-        }
-    }
-
-    /** 性别解析 */
-    fun SexAnalySis(strContent:String) {
-        val strInfoList = strContent.split(",")
-        context?.sendBroadcast(Intent(BaseVolume.BROADCAST_RESULT_DATA_INFO)
-                .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_SEX)
-                .putExtra(BaseVolume.BROADCAST_MSG,deviceState))
-    }
-
-    /** 座椅状态 */
-    fun SeatStatus(strContent: String) {
-
-        deviceState.seatStatus = strContent .toInt()
-        Log.e("座椅状态 ", "接收到座椅状态值："+ deviceState.seatStatus)
-        context?.sendBroadcast(Intent(BaseVolume.BROADCAST_RESULT_DATA_INFO)
-                .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_SEAT_STATUS)
-                .putExtra(BaseVolume.BROADCAST_MSG,deviceState))
-    }
-
-    /** 当前气压值变化 */
-    fun PressValue(strContent: String) {
-        // 属于在开发者模式下，调整到了初始气压值
-        if (strContent.length == 1) {
-            context?.sendBroadcast(Intent(BaseVolume.BROADCAST_RESULT_DATA_INFO)
-                    .putExtra(BaseVolume.BROADCAST_MSG,deviceState)
-                    .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_INIT_VALUE_BY_DEVELOP))
-            return
-        }
-        val pressValues = strContent.split(",")
-        deviceState.controlPressValueList.clear()
-        deviceState.sensePressValueListl.clear()
-        // 前8个是设置气压
-        for (iIndex in 0..7) {
-            deviceState.controlPressValueList.add(pressValues[iIndex])
-        }
-        // 前三个也是传感气压
-        deviceState.sensePressValueListl.add(pressValues[0])
-        deviceState.sensePressValueListl.add(pressValues[1])
-        deviceState.sensePressValueListl.add(pressValues[2])
-
-        // 后8个是传感气压
-        for (iIndex in 8..15) {
-            deviceState.sensePressValueListl.add(pressValues[iIndex])
-        }
-
-        context?.sendBroadcast(Intent(BaseVolume.BROADCAST_RESULT_DATA_INFO)
-                .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_PRESS)
-                .putExtra(BaseVolume.BROADCAST_MSG,deviceState))
-    }
-
-    /** 数据表解析 */
-    fun SQLCtrlInfoAnalysis(strContent: String) {
-        val strInfoList = strContent.split(",")
-        val iKey = strInfoList[0] .toInt()
-        // 没有数据
-        if (iKey == -1) {
-            context?.sendBroadcast(Intent(BaseVolume.BROADCAST_RESULT_DATA_INFO)
-                    .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_SQL_CTR)
-                    .putExtra(BaseVolume.BROADCAST_MSG,deviceState))
-            return
-        }
-
-        var strName = strInfoList[17]
-        // hex转字节，然后转成String，存起来
-        strName = String(BaseVolume.hexStringToBytes(strName)!!)
-
-        var pressList:ArrayList<String> = arrayListOf()
-        // 遍历数组，拿到8个气压值
-        for (i in 1..16) {
-            pressList.add(strInfoList[i])
-        }
-
-        context?.sendBroadcast(Intent(BaseVolume.BROADCAST_RESULT_DATA_INFO)
-                .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_SQL_CTR)
-                .putExtra(BaseVolume.BROADCAST_MSG,deviceState))
-    }
 
     /**
      * 根据Can返回的数据，解析当前气压值
@@ -230,24 +94,20 @@ class DataAnalysisHelper{
     fun analysisPressStatusByCan(strData:String) {
         val strType= strData.substring(6,10)
         val strContent= strData.substring(10,14)
-        val iChannelStatus1_4 = strContent.substring(0,2).toInt()
-        val iChannelStatus5_8 = strContent.substring(2).toInt()
+
+        val iChannelStatus1_4 = Integer.parseInt(strContent.substring(0,2),16);
+        val iChannelStatus5_8 = Integer.parseInt(strContent.substring(2,4),16);
         // 通道1-8
         if (strType == BaseVolume.COMMAND_CAN_STATUS_1_8) {
 
             val iChannel1 = iChannelStatus1_4 and 0x03
-            val iChannel2 = iChannelStatus1_4 and 0x0c
-            val iChannel3 = iChannelStatus1_4 and 0x30
-            val iChannel4 = iChannelStatus1_4 and 0xc0
+            val iChannel2 = iChannelStatus1_4 and 0x0c shr 2
+            val iChannel3 = iChannelStatus1_4 and 0x30 shr 4
+            val iChannel4 = iChannelStatus1_4 and 0xc0 shr 6
             val iChannel5 = iChannelStatus5_8 and 0x03
-            val iChannel6 = iChannelStatus5_8 and 0x0c
-            val iChannel7 = iChannelStatus5_8 and 0x30
-            val iChannel8 = iChannelStatus5_8 and 0xc0
-
-            deviceState.sensePressStatusList[0] = iChannel1
-            deviceState.sensePressStatusList[1] = iChannel2
-            deviceState.sensePressStatusList[2] = iChannel3
-
+            val iChannel6 = iChannelStatus5_8 and 0x0c shr 2
+            val iChannel7 = iChannelStatus5_8 and 0x30 shr 4
+            val iChannel8 = iChannelStatus5_8 and 0xc0 shr 6
             deviceState.controlPressStatusList[0] = iChannel1
             deviceState.controlPressStatusList[1] = iChannel2
             deviceState.controlPressStatusList[2] = iChannel3
@@ -261,22 +121,22 @@ class DataAnalysisHelper{
         else if (strType == BaseVolume.COMMAND_CAN_STATUS_9_16) {
 
             val iChannel9 = iChannelStatus1_4 and 0x03
-            val iChannel10 = iChannelStatus1_4 and 0x0c
-            val iChannel11 = iChannelStatus1_4 and 0x30
-            val iChannel12 = iChannelStatus1_4 and 0xc0
+            val iChannel10 = iChannelStatus1_4 and 0x0c shr 2
+            val iChannel11 = iChannelStatus1_4 and 0x30 shr 4
+            val iChannel12 = iChannelStatus1_4 and 0xc0 shr 6
             val iChannel13 = iChannelStatus5_8 and 0x03
-            val iChannel14 = iChannelStatus5_8 and 0x0c
-            val iChannel15 = iChannelStatus5_8 and 0x30
-            val iChannel16 = iChannelStatus5_8 and 0xc0
+            val iChannel14 = iChannelStatus5_8 and 0x0c shr 2
+            val iChannel15 = iChannelStatus5_8 and 0x30 shr 4
+            val iChannel16 = iChannelStatus5_8 and 0xc0 shr 6
 
-            deviceState.sensePressStatusList[3] = iChannel9
-            deviceState.sensePressStatusList[4] = iChannel10
-            deviceState.sensePressStatusList[5] = iChannel11
-            deviceState.sensePressStatusList[6] = iChannel12
-            deviceState.sensePressStatusList[7] = iChannel13
-            deviceState.sensePressStatusList[8] = iChannel14
-            deviceState.sensePressStatusList[9] = iChannel15
-            deviceState.sensePressStatusList[10] = iChannel16
+            deviceState.sensePressStatusList[0] = iChannel9
+            deviceState.sensePressStatusList[1] = iChannel10
+            deviceState.sensePressStatusList[2] = iChannel11
+            deviceState.sensePressStatusList[3] = iChannel12
+            deviceState.sensePressStatusList[4] = iChannel13
+            deviceState.sensePressStatusList[5] = iChannel14
+            deviceState.sensePressStatusList[6] = iChannel15
+            deviceState.sensePressStatusList[7] = iChannel16
         }
 
 
@@ -292,69 +152,43 @@ class DataAnalysisHelper{
 
         Log.e("通道状态 ", strLog)
 
+
         context?.sendBroadcast(Intent(BaseVolume.BROADCAST_RESULT_DATA_INFO)
                 .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_CHANNEL_STATUS)
                 .putExtra(BaseVolume.BROADCAST_MSG,deviceState))
 
+//        var iSettedCountA = 0
+//        var iNormalCountA = 0
+//        for (iState in deviceState.sensePressStatusList) {
+//            if (iState == DeviceWorkInfo.STATUS_SETTING || iState == DeviceWorkInfo.STATUS_MASSAGE)
+//                return
+//            if (iState == DeviceWorkInfo.STATUS_SETTED)
+//                ++iSettedCountA
+//            if (iState == DeviceWorkInfo.STATUS_NORMAL)
+//                ++iNormalCountA
+//        }
+////
+//        var iSettedCountB = 0
+//        var iNormalCountB = 0
+//        for (iState in deviceState.controlPressStatusList) {
+//            if (iState == DeviceWorkInfo.STATUS_SETTING || iState == DeviceWorkInfo.STATUS_MASSAGE)
+//                return
+//            if (iState == DeviceWorkInfo.STATUS_SETTED)
+//                ++iSettedCountB
+//            if (iState == DeviceWorkInfo.STATUS_NORMAL)
+//                ++iNormalCountB
+//        }
+//
+//        // 如果是在调压
+//        if (SocketThreadManager.NowActionModel == SocketThreadManager.Action_CtrPress) {
+//            // 如果已经调完，且存在没切换到Normal的，则强制切换
+//            if (iSettedCountA > 0 || iSettedCountB > 0) {
+//                SocketThreadManager.sharedInstance(context).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
+//            }
+//        }
     }
 
-    /** 遍历所有通道状态，只要有一个在动作，就不能控制 */
-    fun getAllChannelStatus() : Int {
-        for (iNumber in 1 .. deviceState.controlPressStatusList.size) {
-            val it = deviceState.controlPressStatusList[iNumber-1]
-            if (it == DeviceWorkInfo.STATUS_SETTING)
-                return iNumber
-        }
 
-        for (iNumber in 1 .. deviceState.sensePressStatusList.size) {
-            val it = deviceState.sensePressStatusList[iNumber-1]
-            if (it == DeviceWorkInfo.STATUS_SETTING) {
-                // 传感气压的通道号，其实是1,2,3，9，10,11，12，13,14，15,16
-                var iTag = iNumber
-                if (iNumber > 3) {
-                    iTag += 5
-                }
-                return iNumber
-            }
-        }
-        return -1
-    }
-
-    /** 根据传感气压，计算身高体重 */
-    fun measureHeightWeight() {
-        // 体重
-        deviceState.nowWeight =  -43.107-
-                0.01886*deviceState.sensePressValueListl[0].toInt()+
-                0.053896*deviceState.sensePressValueListl[1].toInt()-
-                0.0030395*deviceState.sensePressValueListl[2].toInt()+
-                0.024802*deviceState.sensePressValueListl[3].toInt()-
-                0.030553*deviceState.sensePressValueListl[4].toInt()+
-                0.064134*deviceState.sensePressValueListl[5].toInt()+
-                0.029931*deviceState.sensePressValueListl[6].toInt()+
-                0.061179*deviceState.sensePressValueListl[7].toInt()-
-                0.034076*deviceState.sensePressValueListl[8].toInt()+
-                0.040492*deviceState.sensePressValueListl[9].toInt()-
-                0.013437*deviceState.sensePressValueListl[10].toInt()
-
-        // 身高
-        deviceState.nowHeight = 113.69-
-                0.045598*deviceState.sensePressValueListl[0].toInt()+
-                0.050396*deviceState.sensePressValueListl[1].toInt()-
-                0.0031454*deviceState.sensePressValueListl[2].toInt()+
-                0.022727*deviceState.sensePressValueListl[3].toInt()+
-                0.0068805*deviceState.sensePressValueListl[4].toInt()+
-                0.062379*deviceState.sensePressValueListl[5].toInt()-
-                0.001087*deviceState.sensePressValueListl[6].toInt()-
-                0.08063*deviceState.sensePressValueListl[7].toInt()+
-                0.021199*deviceState.sensePressValueListl[8].toInt()+
-                0.050612*deviceState.sensePressValueListl[9].toInt()-
-                0.00043809*deviceState.sensePressValueListl[10].toInt()
-
-        deviceState.nowBMI = (deviceState.nowWeight*1000)/ (deviceState.nowHeight*deviceState.nowHeight)
-
-        Log.e("DeviceWorkInfo","计算数据：身高：${deviceState.nowHeight}，体重：${deviceState.nowWeight},BMI：${deviceState.nowBMI}")
-
-    }
 
 
     // 人体气压查询表:男女2→国别2→胖瘦3
@@ -404,6 +238,24 @@ class DataAnalysisHelper{
         var iPressOut = deviceState.sensePressStatusList[5]+ deviceState.sensePressStatusList[7]
         if ((iPressInside > iPressOut - offset) and (iPressInside < iPressOut + offset)) {
             return false
+        }
+        return true
+    }
+
+    /** 判断A面座椅是否已经进入某模式 */
+    fun isCheckAllStateModeA(referState:Int):Boolean {
+        for (iState in deviceState.sensePressStatusList) {
+            if (iState != referState)
+                return false
+        }
+        return true
+    }
+
+    /** 判断B面座椅是否已经进入某模式 */
+    fun isCheckAllStateModeB(referState:Int):Boolean {
+        for (iState in deviceState.controlPressStatusList) {
+            if (iState != referState)
+                return false
         }
         return true
     }

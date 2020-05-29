@@ -779,12 +779,8 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
             if (action == BaseVolume.BROADCAST_RESULT_DATA_INFO) {
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
                 val deviceWorkInfo = intent.getSerializableExtra(BaseVolume.BROADCAST_MSG) as DeviceWorkInfo
-                // 座椅状态
-                if (strType.equals(BaseVolume.COMMAND_TYPE_SEAT_STATUS,true)) {
-                    val iSeatStatus = deviceWorkInfo?.seatStatus
-                }
                 // 气压
-                else if (strType.equals(BaseVolume.COMMAND_TYPE_PRESS,true)) {
+                if (strType.equals(BaseVolume.COMMAND_TYPE_PRESS,true)) {
                     // 当前是支撑调节界面，则更新控制气压
                     if (iNowShowPageNumber == 1) {
                         updateSeatView()

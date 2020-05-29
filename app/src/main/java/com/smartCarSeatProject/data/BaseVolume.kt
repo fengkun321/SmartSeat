@@ -68,7 +68,6 @@ class BaseVolume {
         const val BROADCAST_FINISH_APPLICATION = "BROADCAST_FINISH_APPLICATION"
         const val BROADCAST_RESET_ACTION = "BROADCAST_RESET_ACTION"
 
-        const val BROADCAST_TCP_INFO = "BROADCAST_TCP_INFO"
         const val BROADCAST_TCP_INFO_CAN = "BROADCAST_TCP_INFO_CAN"
         const val BROADCAST_TCP_INFO_CAN2 = "BROADCAST_TCP_INFO_CAN2"
         const val BROADCAST_TCP_CONNECT_START = "BROADCAST_TCP_START_CONNECT"
@@ -95,24 +94,6 @@ class BaseVolume {
         // 连接中
         const val TCP_CONNECT_STATE_CONNECTTING = 0
 
-
-        /** 读取座椅当前状态 */
-        const val COMMAND_READ_SEAT_STATUS = "R,1\r\n"
-
-        /** 设置座椅的状态-开始探测 */
-        const val COMMAND_SET_STATUS_PROBE = "W,1,0\r\n"
-        /** 设置座椅的状态-保压 */
-        const val COMMAND_SET_STATUS_KEEP = "W,1,1\r\n"
-        /** 设置座椅的状态-重置 */
-        const val COMMAND_SET_STATUS_RESET = "W,1,2\r\n"
-
-        /** 设置座椅的模式-自动 */
-        const val COMMAND_SET_MODE_AUTO = "W,5,1\r\n"
-        /** 设置座椅的模式-手动 */
-        const val COMMAND_SET_MODE_MANUAL = "W,5,2\r\n"
-        /** 设置座椅的模式-开发者 */
-        const val COMMAND_SET_MODE_DEVELOP = "W,5,3\r\n"
-
         /** Can盒的数据头 */
         const val COMMAND_HEAD = "080000"
         const val COMMAND_CAN_1_4 = "0201"
@@ -130,6 +111,21 @@ class BaseVolume {
         val COMMAND_CTR_9_12 = "03dd"
         val COMMAND_CTR_13_16 = "03ee"
 
+        /** 切换模式 */
+        const val COMMAND_CAN_MODEL_ID = "03aa"
+        const val COMMAND_CAN_MODEL_MASG_OFF = "000"
+        const val COMMAND_CAN_MODEL_MASG_1 = "001"
+        const val COMMAND_CAN_MODEL_MASG_2 = "010"
+        const val COMMAND_CAN_MODEL_MASG_3 = "011"
+        const val COMMAND_CAN_MODEL_ADJUST = "100"
+        const val COMMAND_CAN_MODEL_NORMAL = "101"
+        const val COMMAND_CAN_MODEL_NOTUSED = "111"
+
+        // AB都为调压模式
+        const val COMMAND_CAN_MODEL_ADJUST_A_B = COMMAND_HEAD+COMMAND_CAN_MODEL_ID+"0000000090000000"
+        // AB都为普通模式
+        const val COMMAND_CAN_MODEL_NORMAL_A_B = COMMAND_HEAD+COMMAND_CAN_MODEL_ID+"00000000b4000000"
+
         /** 电机位置1-6 结构：包头+ID+数据 */
         const val COMMAND_CAN_LOCATION_ID = "02f5"
         const val COMMAND_CAN_LOCATION_1 = COMMAND_HEAD+COMMAND_CAN_LOCATION_ID+"1100000000000000"
@@ -141,38 +137,12 @@ class BaseVolume {
         // 每次发完位置后，要再发一条清零指令才会动作
         const val COMMAND_CAN_LOCATION_0 = COMMAND_HEAD+COMMAND_CAN_LOCATION_ID+"0000000000000000"
 
-        /** 通道状态 */
-        const val CHANNEL_STATUS = "CHANNEL_STATUS"
-
-        /** 数据尾 */
-        const val COMMAND_END = "\r\n"
-        /** 命令类型：主动上报 */
-        const val COMMAND_S = "S"
-        /** 命令类型：设置 */
-        const val COMMAND_W = "W"
-        /** 命令类型：读取 */
-        const val COMMAND_R = "R"
-        /** 操作结果：成功 */
-        const val COMMAND_ACK = "ACK"
-        /** 分隔符 */
-        const val COMMAND_FenGe = ","
-
-        /** 指令：座椅状态 */
-        const val COMMAND_TYPE_SEAT_STATUS = "1"
-        /** 指令：数据库相关 */
-        const val COMMAND_TYPE_SQL_CTR = "2"
         /** 指令：气压相关 */
         const val COMMAND_TYPE_PRESS = "3"
-        /** 指令：性别 */
-        const val COMMAND_TYPE_SEX = "4"
         /** 指令：座椅模式 */
         const val COMMAND_TYPE_SEX_MODE = "5"
         /** 指令：通道状态 */
         const val COMMAND_TYPE_CHANNEL_STATUS = "6"
-
-        /** 开发者模式下，恢复到了初始气压值 */
-        const val COMMAND_INIT_VALUE_BY_DEVELOP = "COMMAND_INIT_VALUE_BY_DEVELOP"
-
         /**
          * 16进制字符串 转换成byte字节数组
          * @param hexString 16进制字符串
@@ -346,8 +316,30 @@ class BaseVolume {
         }
 
 
-
-
+        /**
+         * 二进制转16进制
+         * @param bString
+         * @return
+         */
+        fun binaryString2hexString(bString: String): String {
+            if (bString == null || bString == "" || bString.length % 8 != 0) return "00"
+            val tmp = StringBuffer()
+            var iTmp = 0
+            var i = 0
+            while (i < bString.length) {
+                iTmp = 0
+                for (j in 0..3) {
+                    iTmp += bString.substring(i + j, i + j + 1).toInt() shl 4 - j - 1
+                }
+                tmp.append(Integer.toHexString(iTmp))
+                i += 4
+            }
+            var str = tmp.toString()
+            if (str.length < 2) {
+                str = "0$str"
+            }
+            return str
+        }
     }
 
 

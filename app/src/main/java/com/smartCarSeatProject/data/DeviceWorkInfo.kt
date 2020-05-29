@@ -9,9 +9,7 @@ class DeviceWorkInfo : Serializable{
 
     var strID = ""
     // 座椅当前状态
-    var seatStatus = SeatStatus.press_unknown.iValue
-//    var seatStatus = SeatStatus.press_automatic.iValue // 自动状态
-//    var seatStatus = SeatStatus.press_automatic_manual.iValue // 手动状态
+    var seatStatus = SeatStatus.press_wait_reserve.iValue
     // 控制气压8个（其中前三个，也是传感气压）
     var controlPressValueList :ArrayList<String> = arrayListOf("0","0","0","0","0","0","0","0")
     // 传感气压11个
@@ -64,7 +62,7 @@ class DeviceWorkInfo : Serializable{
 
     // 8个传感气压的状态
     var controlPressStatusList = arrayListOf<Int>()
-    // 11个传感气压的状态
+    // 8个传感气压的状态
     var sensePressStatusList = arrayListOf<Int>()
 
 
@@ -82,14 +80,12 @@ class DeviceWorkInfo : Serializable{
         }
         for (i in 1..8) {
             controlPressValueList.add("255")
-            recog_back_A_valueList.add("255")
-            recog_back_B_valueList.add("255")
+            recog_back_A_valueList.add("0")
+            recog_back_B_valueList.add("0")
             controlPressStatusList.add(STATUS_NORMAL)
         }
 
-        seatStatus = SeatStatus.press_unknown.iValue
-//        seatStatus = SeatStatus.press_automatic.iValue // 自动状态
-//        seatStatus = SeatStatus.press_automatic_manual.iValue // 手动状态
+        seatStatus = SeatStatus.press_wait_reserve.iValue
 
     }
 
@@ -107,15 +103,56 @@ class DeviceWorkInfo : Serializable{
         }
     }
 
+    /** 根据传感气压，计算身高体重 */
+    fun measureHeightWeight(iSensePressValueListl : ArrayList<Int>) {
+        // 体重
+        nowWeight =  -43.107-
+                0.01886* iSensePressValueListl[0]+
+                0.053896* iSensePressValueListl[1]-
+                0.0030395* iSensePressValueListl[2]+
+                0.024802* iSensePressValueListl[3]-
+                0.030553* iSensePressValueListl[4]+
+                0.064134* iSensePressValueListl[5]+
+                0.029931* iSensePressValueListl[6]+
+                0.061179* iSensePressValueListl[7]-
+                0.034076* iSensePressValueListl[8]+
+                0.040492* iSensePressValueListl[9]-
+                0.013437* iSensePressValueListl[10]
+
+        // 身高
+        nowHeight = 113.69-
+                0.045598* iSensePressValueListl[0]+
+                0.050396* iSensePressValueListl[1]-
+                0.0031454* iSensePressValueListl[2]+
+                0.022727* iSensePressValueListl[3]+
+                0.0068805* iSensePressValueListl[4]+
+                0.062379* iSensePressValueListl[5]-
+                0.001087* iSensePressValueListl[6]-
+                0.08063* iSensePressValueListl[7]+
+                0.021199* iSensePressValueListl[8]+
+                0.050612* iSensePressValueListl[9]-
+                0.00043809* iSensePressValueListl[10]
+
+        DataAnalysisHelper.deviceState.nowBMI = (DataAnalysisHelper.deviceState.nowWeight*1000)/ (DataAnalysisHelper.deviceState.nowHeight* DataAnalysisHelper.deviceState.nowHeight)
+
+        Log.e("DeviceWorkInfo","计算数据：身高：${DataAnalysisHelper.deviceState.nowHeight}，体重：${DataAnalysisHelper.deviceState.nowWeight},BMI：${DataAnalysisHelper.deviceState.nowBMI}")
+
+        // 缓存数据
+        saveRecogPressValue(iSensePressValueListl)
+
+    }
+
     /**
      * 保存当前16个传感器所有的值，用于收集数据！
       */
-    fun saveRecogPressValue() {
+    fun saveRecogPressValue(iStatDataList:ArrayList<Int>) {
 
-        recog_back_B_valueList.addAll(controlPressValueList)
+        for (i in 0 .. 2) {
+            recog_back_B_valueList[i] = iStatDataList[i].toString()
+        }
 
-        for (i in 3..10) {
-            recog_back_A_valueList.add(sensePressValueListl[i])
+        for (i in 3 until iStatDataList.size) {
+            recog_back_A_valueList[i-3] = iStatDataList[i].toString()
         }
 
     }

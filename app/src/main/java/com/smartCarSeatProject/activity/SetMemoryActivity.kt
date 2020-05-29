@@ -48,7 +48,7 @@ class SetMemoryActivity: BaseActivity() {
             nowSelectMemory = list[i]
             val strSendDataList = CreateCtrDataHelper.getCtrPressBy16Manual(nowSelectMemory)
             strSendDataList.forEach {
-                SocketThreadManager.sharedInstance(this@SetMemoryActivity).StartSendData(it)
+
             }
 
         }
@@ -98,14 +98,7 @@ class SetMemoryActivity: BaseActivity() {
             if (action == BaseVolume.BROADCAST_CTR_CALLBACK) {
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
                 val strMsg = intent.getStringExtra(BaseVolume.BROADCAST_MSG)
-                if (strType.equals(BaseVolume.COMMAND_TYPE_SQL_CTR,true)) {
 
-                }
-                else if (strType.equals(BaseVolume.COMMAND_TYPE_PRESS,true)) {
-                    if (strMsg.equals(BaseVolume.COMMAND_ACK,true)) {
-                        MainControlActivity.getInstance()?.ReturnBack("SetMemoryActivity")
-                    }
-                }
             }
         }
     }

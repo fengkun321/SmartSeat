@@ -118,6 +118,7 @@
                     android:background="@color/colorWhite"
                     android:padding="5dp"
                     android:hint=""
+                    android:text="1000"
                     android:singleLine="true"
                     android:inputType="number"
                     android:gravity="center_vertical"/>
@@ -145,6 +146,7 @@
                     android:padding="5dp"
                     android:hint=""
                     android:singleLine="true"
+                    android:text="1000"
                     android:inputType="number"
                     android:gravity="center_vertical"/>
 
@@ -170,6 +172,7 @@
                     android:background="@color/colorWhite"
                     android:padding="5dp"
                     android:hint=""
+                    android:text="0"
                     android:singleLine="true"
                     android:inputType="number"
                     android:gravity="center_vertical"/>

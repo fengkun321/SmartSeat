@@ -25,12 +25,6 @@ open class BaseActivity : AppCompatActivity(){
     protected var loadingDialog:LoadingDialog? = null
     // 自定义进度条
     var progressBarWindowHint: ProgressBarWindowHint? = null
-    // 确认保压/重置
-//    var sureKeepOrResetWindowHint : SureOperWindowHint? = null
-    // 提示入座
-    var areaSeatWindowHint : AreaAddWindowHint? = null
-    // 开始检测
-    var startCheckPeopleWindowHint : AreaAddWindowHint? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -39,38 +33,6 @@ open class BaseActivity : AppCompatActivity(){
         mContext = this
         loadingDialog = LoadingDialog(this, R.style.LoadingDialogStyle)
         progressBarWindowHint = ProgressBarWindowHint(this,R.style.Dialogstyle,"")
-//        sureKeepOrResetWindowHint = SureOperWindowHint(this,R.style.Dialogstyle,"System",
-//                object : SureOperWindowHint.PeriodListener {
-//                    override fun btnRightListener() {
-//                        // 重置
-//                        SocketThreadManager.sharedInstance(this@BaseActivity)?.StartSendData(BaseVolume.COMMAND_SET_STATUS_RESET)
-//                    }
-//                    override fun btnLeftListener() {
-//                        // 保压
-//                        SocketThreadManager.sharedInstance(this@BaseActivity)?.StartSendData(BaseVolume.COMMAND_SET_STATUS_KEEP)
-//                    }
-//                },"The seats are currently unoccupied","Keep","Reset")
-
-//        progressBarWindowHint!!.setOnDismissListener {
-//            progressBarWindowHint!!.onStopProgress()
-//        }
-
-        areaSeatWindowHint = AreaAddWindowHint(this,R.style.Dialogstyle,"System",
-                object : AreaAddWindowHint.PeriodListener {
-                    override fun refreshListener(string: String) {
-
-                    }
-                },"The seats are free. Please take a seat!",true)
-
-        startCheckPeopleWindowHint = AreaAddWindowHint(this,R.style.Dialogstyle,"System",
-                object : AreaAddWindowHint.PeriodListener {
-                    override fun refreshListener(string: String) {
-                        // 通知座椅开始探测
-                        SocketThreadManager.sharedInstance(this@BaseActivity)?.StartSendData(BaseVolume.COMMAND_SET_STATUS_PROBE)
-                    }
-                },"keep driving position, ready for recognization",false)
-
-
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN) //隐藏状态栏
 //        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN) //显示状态栏
@@ -131,13 +93,6 @@ open class BaseActivity : AppCompatActivity(){
         return pref!!.getInt(strKey,-1)
     }
 
-    /** 判断是否可以控制（前提是，所以气袋都没有在工作） */
-    fun isCanControl():Boolean{
-        val iCanCtr = DataAnalysisHelper.getInstance(this)!!.getAllChannelStatus()
-        if (iCanCtr > 0)
-            ToastMsg("气袋$iCanCtr ,正在工作，不能控制！")
-        return iCanCtr > 0
-    }
 
     var timer = Timer()
 
@@ -152,8 +107,7 @@ open class BaseActivity : AppCompatActivity(){
         timer = Timer()
         timer.schedule(object : TimerTask() {
             override fun run() {
-                SocketThreadManager.sharedInstance(this@BaseActivity).StartSendData(BaseVolume.COMMAND_SET_STATUS_RESET)
-                MainControlActivity.getInstance()?.finish()
+//                MainControlActivity.getInstance()?.finish()
             }
         }, 1000 * 60) // 设定指定的时间time,此处为60秒
     }

@@ -83,8 +83,6 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
             tvReDeviceConnect.visibility = View.GONE
             if (!SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.isCanConnected()!!)
                 tvReCanConnect.visibility = View.VISIBLE
-            if (!SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.isDeviceConnected()!!)
-                tvReDeviceConnect.visibility = View.VISIBLE
         }
 
         // 人体采集相关
@@ -224,7 +222,6 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         myIntentFilter.addAction(BaseVolume.BROADCAST_RESULT_DATA_INFO)
         myIntentFilter.addAction(BaseVolume.BROADCAST_CTR_CALLBACK)
         myIntentFilter.addAction(BaseVolume.BROADCAST_SEND_INFO)
-        myIntentFilter.addAction(BaseVolume.BROADCAST_TCP_INFO)
         myIntentFilter.addAction(BaseVolume.BROADCAST_TCP_INFO_CAN)
         // 注册广播
         registerReceiver(myNetReceiver, myIntentFilter)
@@ -242,7 +239,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
         val iNowValue = tvBValueList[iTag].text.toString().toInt()
         val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iNowValue)
-        SocketThreadManager.sharedInstance(this@DevelopmentActivity).StartSendData(strSendData)
+        SocketThreadManager.sharedInstance(this@DevelopmentActivity).StartSendDataByCan(strSendData)
     }
 
     /** 加号的点击时间 */
@@ -257,7 +254,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
         val iNowValue = tvBValueList[iTag].text.toString().toInt()
         val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iNowValue)
-        SocketThreadManager.sharedInstance(this@DevelopmentActivity).StartSendData(strSendData)
+        SocketThreadManager.sharedInstance(this@DevelopmentActivity).StartSendDataByCan(strSendData)
 
     }
 
@@ -275,7 +272,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
             var iTag = seekBar?.tag  as Int
             iTag += 1
             val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iProcess)
-            SocketThreadManager.sharedInstance(this@DevelopmentActivity).StartSendData(strSendData)
+            SocketThreadManager.sharedInstance(this@DevelopmentActivity).StartSendDataByCan(strSendData)
         }
     }
 
@@ -317,11 +314,8 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
             else if (action == BaseVolume.BROADCAST_RESULT_DATA_INFO) {
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
                 val deviceWorkInfo = intent.getSerializableExtra(BaseVolume.BROADCAST_MSG) as DeviceWorkInfo
-                // 座椅状态
-                if (strType.equals(BaseVolume.COMMAND_TYPE_SEAT_STATUS,true)) {
-                }
                 // 气压
-                else if (strType.equals(BaseVolume.COMMAND_TYPE_PRESS,true)) {
+                if (strType.equals(BaseVolume.COMMAND_TYPE_PRESS,true)) {
                     // 控制气压8个
                     val controlPressList = deviceWorkInfo?.controlPressValueList
                     // 传感气压11个
@@ -344,51 +338,11 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         }
                     }
                 }
-                // 座椅恢复到初始气压值
-                else if (strType.equals(BaseVolume.COMMAND_INIT_VALUE_BY_DEVELOP,true)) {
-                    includeA.tvInitValue.text = "Recovery is complete！"
-                    includeA.tvInitValue.setTextColor(resources.getColor(R.color.colorGreen))
-
-                    // 保存体征按钮可用！
-                    btnSaveA.isEnabled = true
-                    btnSaveA.setTextColor(resources.getColor(R.color.colorWhite))
-
-                }
             }
             // 控制回调
             else if (action == BaseVolume.BROADCAST_CTR_CALLBACK) {
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
                 val strMsg = intent.getStringExtra(BaseVolume.BROADCAST_MSG)
-                // 停止定时发送
-                SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.StopSendData()
-            }
-            else if (action == BaseVolume.BROADCAST_TCP_INFO) {
-                val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
-                // 开始连接
-                if (strType.equals(BaseVolume.BROADCAST_TCP_CONNECT_START)) {
-                    loadingDialog?.show()
-                    ToastMsg("Connecting....")
-                }
-                // 连接结果
-                else if (strType.equals(BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)) {
-                    val isConnected = intent.getBooleanExtra(BaseVolume.BROADCAST_TCP_STATUS,false)
-                    val strMsg = intent.getStringExtra(BaseVolume.BROADCAST_MSG)
-                    loadingDialog?.dismiss()
-                    if (!isConnected) {
-                        tvReDeviceConnect.visibility = View.VISIBLE
-                        ToastMsg("Connect Fail！$strMsg")
-                    }
-                    else {
-                        tvReDeviceConnect.visibility = View.GONE
-                        if (SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.isCanConnected()!!) {
-                            tvReCanConnect.visibility = View.GONE
-                        }
-                        else {
-                            tvReCanConnect.visibility = View.VISIBLE
-                        }
-                        ToastMsg("Connection successful！")
-                    }
-                }
             }
             else if (action == BaseVolume.BROADCAST_TCP_INFO_CAN) {
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
@@ -407,12 +361,6 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     }
                     else {
                         tvReCanConnect.visibility = View.GONE
-                        if (SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.isDeviceConnected()!!) {
-                            tvReDeviceConnect.visibility = View.GONE
-                        }
-                        else {
-                            tvReDeviceConnect.visibility = View.VISIBLE
-                        }
                         ToastMsg("Can Connection successful！")
                     }
                 }
@@ -436,8 +384,6 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 startActivity(Intent(this, HistoryDataShowActivity::class.java))
             R.id.llParent ->
                 hideSoftInput(p0?.windowToken)
-            R.id.tvReDeviceConnect ->
-                SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.createDeviceSocket()
             R.id.tvReCanConnect ->
                 SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.createCanSocket()
             R.id.rlLocation ->
@@ -473,20 +419,20 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
     fun setLocationData (number: Int) {
         when(number) {
             0 ->
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_1)
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_1)
             1 ->
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_2)
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_2)
             2 ->
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_3)
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_3)
             3 ->
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_4)
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_4)
             4 ->
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_5)
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_5)
             5 ->
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_6)
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_6)
         }
         // 每次发完位置后，要再发一条清零指令才会动作
-        SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_LOCATION_0)
+        SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_0)
 
     }
 
@@ -522,9 +468,11 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         // 发指令，设置16个气压
         val NowSendDataList = CreateCtrDataHelper.getAllPressValueBy16(strVA,strVSeat,strVB)
         NowSendDataList.forEach {
-            SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.StartSendData(it)
+            SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.StartSendDataByCan(it)
         }
 
+//        val NowSendData = CreateCtrDataHelper.getCtrPressBy16DevelopO(strVA,strVSeat,strVB)
+//        SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.StartSendData(NowSendData)
 
     }
 

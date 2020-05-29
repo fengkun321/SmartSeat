@@ -1297,7 +1297,7 @@ BMI=体重（kg）/身高（m）的平方。&lt;br/&gt;&lt;br/&gt;
     <string name="SKIP">"跳过"</string>
 
     <!-- Choose a well-lit area that maximizes lighting onto your face and minimizes any backlighting. Make sure the phone and face are on the same level. -->
-    <string name="INSTRUCTION_1">"选择光线充足的地方，舒适地坐下并确保手机和面部位于同一水平"</string>
+    <string name="INSTRUCTION_1">"选择光线充足的地方，舒适地坐下并确保屏幕和面部位于同一水平"</string>
 
     <!-- Minimize movement by keeping your face within the displayed circle and aligning your chin above the red mark. -->
     <string name="INSTRUCTION_2">"确保光线均匀地分布在面部
@@ -1329,7 +1329,7 @@ BMI=体重（kg）/身高（m）的平方。&lt;br/&gt;&lt;br/&gt;
     <!-- Anura won’t work well if: The face is not facing the camera The distance is too far or too close to the camera -->
     <string name="INSTRUCTION_6">"以下情况可能导致心魔镜无法正常操作：
 
-面部没有朝向手机，距离太远或太近"</string>
+面部没有朝向屏幕，距离太远或太近"</string>
 
     <!-- Guest -->
     <string name="GUEST">"访客"</string>
@@ -1348,9 +1348,9 @@ BMI=体重（kg）/身高（m）的平方。&lt;br/&gt;&lt;br/&gt;
     <string name="Complete_Profile_Begin">完成个人资料</string>
     <string name="anura_bundle">hCdq7ZoOZ+s=]UoKDFjHqPnzZTpd5g3NSZg==]Qxmvh2izNUxGs6SJ5Ub9yOSUxo04q8f0/kL/yP4hoFo=</string>
     <string name="PRESS_BACK">再按一次退出</string>
-    <string name="Error_Measurement_Constraint_Distance_Too_Far">请把面部与手机的距离拉近一点，并保持在白色脸型轮廓内</string>
+    <string name="Error_Measurement_Constraint_Distance_Too_Far">请把面部与屏幕的距离拉近一点，并保持在白色脸型轮廓内</string>
     <string name="Warning_Measurement_Constraint_Distance_Face_Off_Target">偏离目标区域，请把脸紧贴合圆圈</string>
-    <string name="Warning_Measurement_Constraint_Distance_Too_Far">请把面部与手机的距离拉近一点，并保持在白色脸型轮廓内</string>
+    <string name="Warning_Measurement_Constraint_Distance_Too_Far">请把面部与屏幕的距离拉近一点，并保持在白色脸型轮廓内</string>
 
     <string name="API_ERROR_UNVERIFIED_ACCOUNT">"账户尚未验证，请按照验证邮件中的说明激活您的帐户"</string>
     <string name="API_ERROR_LOGIN_METHOD">"请用手机号登录"</string>

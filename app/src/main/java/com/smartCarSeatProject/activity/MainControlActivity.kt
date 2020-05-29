@@ -76,14 +76,8 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         initUI()
         reciverBand()
 
-        switchActivityByNumber(NowShowViewNumber)
 
-        // Number = 3，wifi设置界面
-//        if (NowShowViewNumber == 3)
-//            switchActivityByNumber(NowShowViewNumber)
-//        // 如果处于某种模式，则根据座椅状态，显示不同提醒或界面
-//        else
-//            checkSeatStatus()
+        switchActivityByNumber(NowShowViewNumber)
 
         updatePersonState()
 
@@ -91,7 +85,6 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         AnuLogUtil.setShowLog(BuildConfig.DEBUG)
         MNNMonitor.setMonitorEnable(false)
         initNuralogixInfo()
-
 
     }
 
@@ -110,9 +103,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
     }
 
 
-    /**
-     * 同级函数，类似于静态属性
-     */
+
     companion object {
         private var mainControlActivity : MainControlActivity? = null
         fun getInstance():MainControlActivity?{
@@ -123,7 +114,6 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
     fun initUI() {
         tvReCanConnect.setOnClickListener(this)
         tvReLocConnect.setOnClickListener(this)
-        tvReDeviceConnect.setOnClickListener(this)
         imgClose.setOnClickListener(this)
         imgReset.setOnClickListener(this)
         imgLeft0.setOnClickListener(this)
@@ -132,37 +122,11 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         imgLeft3.setOnClickListener(this)
         imgLeft4.setOnClickListener(this)
 
-        if (SocketThreadManager.sharedInstance(this@MainControlActivity)?.isTCPAllConnected()!!) {
-            imgWIFI.visibility = View.VISIBLE
-            imgReset.visibility = View.VISIBLE
-            tvReCanConnect.visibility = View.GONE
-            tvReDeviceConnect.visibility = View.GONE
-            imgLeft4.setImageResource(R.drawable.img_left_4)
-            imgLeft4.isEnabled = true
-        }
-        else {
-
-            tvReCanConnect.visibility = View.GONE
-            tvReDeviceConnect.visibility = View.GONE
-            imgWIFI.visibility = View.GONE
-            imgReset.visibility = View.GONE
-
-            if (!SocketThreadManager.sharedInstance(this@MainControlActivity)?.isCanConnected()!!)
-                tvReCanConnect.visibility = View.VISIBLE
-            if (!SocketThreadManager.sharedInstance(this@MainControlActivity)?.isDeviceConnected()!!)
-                tvReDeviceConnect.visibility = View.VISIBLE
-
-            imgLeft4.setImageResource(R.drawable.img_left_4_hui)
-            imgLeft4.isEnabled = false
-        }
-
-
     }
 
     /** 监听广播  */
     private fun reciverBand() {
         val myIntentFilter = IntentFilter()
-        myIntentFilter.addAction(BaseVolume.BROADCAST_TCP_INFO)
         myIntentFilter.addAction(BaseVolume.BROADCAST_TCP_INFO_CAN)
         myIntentFilter.addAction(BaseVolume.BROADCAST_SEND_INFO)
         myIntentFilter.addAction(BaseVolume.BROADCAST_RESULT_DATA_INFO)
@@ -197,51 +161,25 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
             R.id.imgLeft0 ->
                 finish()
             R.id.imgLeft1 -> {
-                // 已经在自动模式下，则直接进入
-//                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue ||
-//                        DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_reserve.iValue) {
-//                    switchActivityByNumber(1)
-//                }
-//                else
-//                    SocketThreadManager.sharedInstance(this@MainControlActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_AUTO)
                 switchActivityByNumber(1)
             }
             R.id.imgLeft2 -> {
-                // 已经在手动模式下，则直接进入
-//                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic_manual.iValue) {
-//                    switchActivityByNumber(2)
-//                }
-//                else
-//                    SocketThreadManager.sharedInstance(this@MainControlActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_MANUAL)
                 switchActivityByNumber(2)
             }
             R.id.imgLeft3 -> {
 //                rlCamera.x = rlCamera.x + 300
 //                rlCamera.y = rlCamera.y + 300
                 switchActivityByNumber(3)
-
             }
 
             R.id.imgLeft4 -> {
 //                rlCamera.x = rlCamera.x - 300
 //                rlCamera.y = rlCamera.y - 300
-                // 已经在开发者模式下，则直接进入
-                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.develop.iValue) {
-                    val intent = Intent()
-                    intent.setClass(this@MainControlActivity,DevelopmentActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-                else {
-                    SocketThreadManager.sharedInstance(this@MainControlActivity)?.StartSendData(BaseVolume.COMMAND_SET_MODE_DEVELOP)
-                }
+                changeSeatState(SeatStatus.develop.iValue)
             }
 
             R.id.tvReCanConnect -> {
                 SocketThreadManager.sharedInstance(this@MainControlActivity)?.createCanSocket()
-            }
-            R.id.tvReDeviceConnect -> {
-                SocketThreadManager.sharedInstance(this@MainControlActivity)?.createDeviceSocket()
             }
             R.id.tvReLocConnect -> {
                 SocketThreadManager.sharedInstance(this@MainControlActivity)?.createLocSocket()
@@ -280,65 +218,20 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         val intent1 = Intent()
         when (number) {
             1 -> {
-
-                llAllLogo.visibility = View.GONE
-
-                imgLeft1.setImageResource(R.drawable.img_left_1)
                 keyActivity = "AutomaticActivity"
                 intent1.setClass(this, AutomaticActivity::class.java!!)
-
-                loadingDialog?.dismiss()
-
-                imgLeft1.setImageResource(R.drawable.img_left_1)
-                imgLeft2.setImageResource(R.drawable.img_left_2_false)
-                imgLeft4.setImageResource(R.drawable.img_left_4)
-                imgLeft1.isEnabled = true
-                imgLeft2.isEnabled = true
-                imgLeft4.isEnabled = true
+                changeSeatState(SeatStatus.press_automatic.iValue)
 
             }
             2 -> {
-
-                llAllLogo.visibility = View.GONE
-                setValueBufferByChannel.clear()
-                imgLeft1.setImageResource(R.drawable.img_left_1_false)
-                imgLeft2.setImageResource(R.drawable.img_left_2)
-                imgLeft4.setImageResource(R.drawable.img_left_4)
-                imgLeft1.isEnabled = true
-                imgLeft2.isEnabled = true
-                imgLeft4.isEnabled = true
-
                 keyActivity = "ManualActivity"
                 intent1.setClass(this, ManualActivity::class.java!!)
+                changeSeatState(SeatStatus.press_manual.iValue)
             }
             3 -> {
-                llAllLogo.visibility = View.GONE
-                // 小于自动模式，则都不能用
-                if (DataAnalysisHelper.deviceState.seatStatus <= SeatStatus.press_auto_probe.iValue) {
-                    imgLeft1.setImageResource(R.drawable.img_left_1_hui)
-                    imgLeft2.setImageResource(R.drawable.img_left_2_hui)
-                    imgLeft4.setImageResource(R.drawable.img_left_4_hui)
-                    imgLeft1.isEnabled = false
-                    imgLeft2.isEnabled = false
-                    imgLeft4.isEnabled = false
-                }
-                // 座椅自动或手动或开发者模式
-                else if (DataAnalysisHelper.deviceState.seatStatus >= SeatStatus.press_automatic.iValue ){
-                    imgLeft1.setImageResource(R.drawable.img_left_1_false)
-                    imgLeft2.setImageResource(R.drawable.img_left_2_false)
-                    imgLeft4.setImageResource(R.drawable.img_left_4)
-                    imgLeft1.isEnabled = true
-                    imgLeft2.isEnabled = true
-                    imgLeft4.isEnabled = true
-                }
-                imgLeft3.setImageResource(R.drawable.img_left_3)
                 keyActivity = "SetWifiActivity"
                 intent1.setClass(this, SetWifiActivity::class.java!!)
-            }
-            4 -> {
-                imgLeft4.setImageResource(R.drawable.img_left_4)
-                keyActivity = "DevelopmentActivity"
-                intent1.setClass(this, DevelopmentActivity::class.java!!)
+                changeSeatState(-1)
             }
 
         }
@@ -368,6 +261,69 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
             viewGroup?.removeView(nowView)
         }
         container.addView(hashMapViews.get(keyActivity), ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT)
+
+
+
+    }
+
+    /**
+     * 切换座椅状态 -1:不改变座椅状态，仅更新UI
+     */
+    fun changeSeatState(iState : Int) {
+        if (iState != -1) {
+            DataAnalysisHelper.deviceState.seatStatus = iState
+            // 通知上层
+            sendBroadcast(Intent(BaseVolume.COMMAND_TYPE_SEX_MODE))
+        }
+        imgLeft1.setImageResource(R.drawable.img_left_1_hui)
+        imgLeft2.setImageResource(R.drawable.img_left_2_hui)
+        imgLeft4.setImageResource(R.drawable.img_left_4_hui)
+        imgLeft1.isEnabled = false
+        imgLeft2.isEnabled = false
+        imgLeft4.isEnabled = false
+
+        // 座椅没有初始化完，或前面流程没跑完，其他按钮都是灰的，不能点
+        if (iState < SeatStatus.press_normal.iValue) {
+
+        }
+        // 默认状态
+        else if (iState == SeatStatus.press_normal.iValue) {
+            imgLeft1.isEnabled = true
+            imgLeft2.isEnabled = true
+            imgLeft4.isEnabled = true
+            imgLeft1.setImageResource(R.drawable.img_left_1_false)
+            imgLeft2.setImageResource(R.drawable.img_left_2_false)
+            imgLeft4.setImageResource(R.drawable.img_left_4)
+        }
+        // 座椅自动模式
+        else if (iState == SeatStatus.press_automatic.iValue){
+            imgLeft1.isEnabled = true
+            imgLeft2.isEnabled = true
+            imgLeft4.isEnabled = true
+            imgLeft1.setImageResource(R.drawable.img_left_1)
+            imgLeft2.setImageResource(R.drawable.img_left_2_false)
+            imgLeft4.setImageResource(R.drawable.img_left_4)
+        }
+        // 手动模式
+        else if (iState == SeatStatus.press_manual.iValue){
+            imgLeft1.isEnabled = true
+            imgLeft2.isEnabled = true
+            imgLeft4.isEnabled = true
+            imgLeft1.setImageResource(R.drawable.img_left_1_false)
+            imgLeft2.setImageResource(R.drawable.img_left_2)
+            imgLeft4.setImageResource(R.drawable.img_left_4)
+        }
+        // 开发者模式
+        else if (iState == SeatStatus.develop.iValue){
+            imgLeft1.isEnabled = true
+            imgLeft2.isEnabled = true
+            imgLeft4.isEnabled = true
+            imgLeft1.setImageResource(R.drawable.img_left_1_false)
+            imgLeft2.setImageResource(R.drawable.img_left_2_false)
+            imgLeft4.setImageResource(R.drawable.img_left_4)
+            startActivity(Intent(this,DevelopmentActivity::class.java))
+            finish()
+        }
 
     }
 
@@ -404,52 +360,8 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
     private val myNetReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
-            if (action == BaseVolume.BROADCAST_TCP_INFO) {
-                val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
-                // 开始连接
-                if (strType.equals(BaseVolume.BROADCAST_TCP_CONNECT_START)) {
-                    loadingDialog?.show()
-                    ToastMsg("Connecting！")
-                }
-                // 连接结果
-                else if (strType.equals(BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)) {
-                    val isConnected = intent.getBooleanExtra(BaseVolume.BROADCAST_TCP_STATUS, false)
-                    val strMsg = intent.getStringExtra(BaseVolume.BROADCAST_MSG)
-                    if (!isConnected) {
-                        imgWIFI.visibility = View.GONE
-                        imgReset.visibility = View.GONE
-                        tvReDeviceConnect.visibility = View.VISIBLE
-                        imgLeft1.setImageResource(R.drawable.img_left_1_hui)
-                        imgLeft1.isEnabled = false
-                        imgLeft2.setImageResource(R.drawable.img_left_2_hui)
-                        imgLeft2.isEnabled = false
-                        imgLeft4.setImageResource(R.drawable.img_left_4_hui)
-                        imgLeft4.isEnabled = false
-                    } else {
-                        imgReset.visibility = View.VISIBLE
-                        imgLeft4.setImageResource(R.drawable.img_left_4)
-                        imgLeft4.isEnabled = true
 
-                        imgWIFI.visibility = View.VISIBLE
-                        tvReDeviceConnect.visibility = View.GONE
-
-                        tvReCanConnect.visibility = View.GONE
-                        tvReLocConnect.visibility = View.GONE
-                        if (!SocketThreadManager.sharedInstance(this@MainControlActivity).isCanConnected()) {
-                            imgWIFI.visibility = View.GONE
-                            tvReCanConnect.visibility = View.VISIBLE
-                        }
-                        if (!SocketThreadManager.sharedInstance(this@MainControlActivity).isCan2Connected()) {
-                            imgWIFI.visibility = View.GONE
-                            tvReLocConnect.visibility = View.VISIBLE
-                        }
-
-                    }
-                    loadingDialog?.dismiss()
-
-                }
-            }
-            else if (action == BaseVolume.BROADCAST_TCP_INFO_CAN) {
+            if (action == BaseVolume.BROADCAST_TCP_INFO_CAN) {
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
                 // 开始连接
                 if (strType.equals(BaseVolume.BROADCAST_TCP_CONNECT_START)) {
@@ -469,11 +381,6 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                         tvReCanConnect.visibility = View.GONE
 
                         tvReLocConnect.visibility = View.GONE
-                        tvReDeviceConnect.visibility = View.GONE
-                        if (!SocketThreadManager.sharedInstance(this@MainControlActivity).isDeviceConnected()) {
-                            imgWIFI.visibility = View.GONE
-                            tvReDeviceConnect.visibility = View.VISIBLE
-                        }
                         if (!SocketThreadManager.sharedInstance(this@MainControlActivity).isCan2Connected()) {
                             imgWIFI.visibility = View.GONE
                             tvReLocConnect.visibility = View.VISIBLE
@@ -493,13 +400,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                 else {
                     imgWIFI.visibility = View.VISIBLE
                     tvReLocConnect.visibility = View.GONE
-
-                    tvReDeviceConnect.visibility = View.GONE
                     tvReCanConnect.visibility = View.GONE
-                    if (!SocketThreadManager.sharedInstance(this@MainControlActivity).isDeviceConnected()) {
-                        imgWIFI.visibility = View.GONE
-                        tvReDeviceConnect.visibility = View.VISIBLE
-                    }
                     if (!SocketThreadManager.sharedInstance(this@MainControlActivity).isCanConnected()) {
                         imgWIFI.visibility = View.GONE
                         tvReCanConnect.visibility = View.VISIBLE
@@ -529,80 +430,10 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
             else if (action == BaseVolume.BROADCAST_RESULT_DATA_INFO) {
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
                 val deviceWorkInfo = intent.getSerializableExtra(BaseVolume.BROADCAST_MSG) as DeviceWorkInfo
-                if (strType.equals(BaseVolume.COMMAND_TYPE_SEAT_STATUS,true)) {
-                    checkSeatStatus()
-                }
             }
         }
     }
 
-    fun checkSeatStatus() {
-        // 状态未知，回退到主页面
-        if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_unknown.iValue) {
-            finish()
-        }
-        // 状态未达到预设值，提示用户等待
-        else if (DataAnalysisHelper.deviceState.seatStatus < SeatStatus.press_reserve.iValue) {
-            finish()
-        }
-        // 座椅已经达到预设值，提示用户调整坐姿！
-        else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_reserve.iValue){
-            finish()
-        }
-        // 正在探测
-        else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue){
-            finish()
-        }
-        // 座椅自动模式正常运行，则其他功能都可以用
-        else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue){
-            progressBarWindowHint?.onSelfDismiss()
-            startCheckPeopleWindowHint?.dismiss()
-            areaSeatWindowHint?.dismiss()
-
-            ToastMsg("Automatic mode！")
-            loadingDialog?.dismiss()
-
-            imgLeft1.setImageResource(R.drawable.img_left_1)
-            imgLeft2.setImageResource(R.drawable.img_left_2_false)
-            imgLeft1.isEnabled = true
-            imgLeft2.isEnabled = true
-
-            switchActivityByNumber(1)
-        }
-        // 座椅手动模式运行
-        else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic_manual.iValue){
-            ToastMsg("Manual mode！")
-            loadingDialog?.dismiss()
-            progressBarWindowHint?.onSelfDismiss()
-            startCheckPeopleWindowHint?.dismiss()
-            areaSeatWindowHint?.dismiss()
-            imgLeft1.setImageResource(R.drawable.img_left_1_false)
-            imgLeft2.setImageResource(R.drawable.img_left_2)
-            imgLeft1.isEnabled = true
-            imgLeft2.isEnabled = true
-            switchActivityByNumber(2)
-        }
-        // 开发者模式
-        else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.develop.iValue) {
-            ToastMsg("Developer model！")
-            progressBarWindowHint?.onSelfDismiss()
-            startCheckPeopleWindowHint?.dismiss()
-            areaSeatWindowHint?.dismiss()
-            loadingDialog?.dismiss()
-            val intent = Intent()
-            intent.setClass(this@MainControlActivity,DevelopmentActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-        // 临时自检
-        else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.short_check.iValue) {
-            loadingDialog?.dismiss()
-            progressBarWindowHint?.onSelfDismiss()
-            startCheckPeopleWindowHint?.dismiss()
-            areaSeatWindowHint?.show()
-        }
-
-    }
 
     /** 初始化人体采集 */
     fun initNuralogixInfo() {
