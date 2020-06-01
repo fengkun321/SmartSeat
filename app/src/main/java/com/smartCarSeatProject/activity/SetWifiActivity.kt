@@ -37,6 +37,8 @@ class SetWifiActivity: BaseActivity() {
         initUI()
         reciverBand()
 
+        initWifiData()
+
     }
 
     fun initUI() {
@@ -108,7 +110,7 @@ class SetWifiActivity: BaseActivity() {
     @Override
     override fun onResume() {
         super.onResume()
-        initWifiData()
+
     }
 
     private fun initWifiData() {

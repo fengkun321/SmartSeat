@@ -22,9 +22,13 @@ open class BaseActivity : AppCompatActivity(){
 
     protected lateinit var mContext:Context
     // 加载转圈
-    protected var loadingDialog:LoadingDialog? = null
+    lateinit var loadingDialog:LoadingDialog
     // 自定义进度条
-    var progressBarWindowHint: ProgressBarWindowHint? = null
+    lateinit var progressBarWindowHint: ProgressBarWindowHint
+    // 是否在控制
+    var isControlPressAction = false
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

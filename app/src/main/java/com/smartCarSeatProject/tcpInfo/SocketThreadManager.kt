@@ -79,31 +79,28 @@ class SocketThreadManager() {
 
     /** 通过Can盒发送数据（不带超时机制） */
     fun StartChangeModelByCan(strData: String) {
-        if (!isCanConnected()) {
-            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
-                    .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
-                    .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
-            return
-        }
-        NowActionModel = Action_ChangModel
-        startTimeOut(false)
-        CanTaskCenter.sharedCenter(mContext).sendHexText(strData)
+//        if (!isCanConnected()) {
+//            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
+//                    .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
+//                    .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
+//            return
+//        }
+//        NowActionModel = Action_ChangModel
+//        startTimeOut(false)
+//        CanTaskCenter.sharedCenter(mContext).sendHexText(strData)
     }
 
     /** 通过Can盒调试通道气压（带保护机制：30秒后，如果还是调压模式，则强制切换到Normal模式） */
     fun StartSendDataByCan(strData: String) {
-        if (!isCanConnected()) {
-            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
-                    .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
-                    .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
-            return
-        }
-        // 先切换模式，则发调压指令
-//        val strData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_NORMAL,BaseVolume.COMMAND_CAN_MODEL_ADJUST)
-//        StartChangeModelByCan(strData)
-        NowActionModel = Action_CtrPress
-        startTimeOut(true)
-        CanTaskCenter.sharedCenter(mContext).sendHexText(strData)
+//        if (!isCanConnected()) {
+//            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
+//                    .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
+//                    .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
+//            return
+//        }
+//        NowActionModel = Action_CtrPress
+//        startTimeOut(true)
+//        CanTaskCenter.sharedCenter(mContext).sendHexText(strData)
     }
 
     /** 通过Can盒 2发送数据（调节位置） */

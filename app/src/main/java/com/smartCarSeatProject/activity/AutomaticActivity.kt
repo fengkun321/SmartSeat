@@ -169,8 +169,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
         val myIntentFilter = IntentFilter()
         myIntentFilter.addAction(BaseVolume.BROADCAST_RESULT_DATA_INFO)
         myIntentFilter.addAction(BaseVolume.BROADCAST_CTR_CALLBACK)
-        myIntentFilter.addAction(BaseVolume.BROADCAST_SWITCH_RESUME)
-        myIntentFilter.addAction(BaseVolume.BROADCAST_SWITCH_PAUSE)
+        myIntentFilter.addAction(BaseVolume.BROADCAST_AUTO_MODEL)
         // 注册广播
         registerReceiver(myNetReceiver, myIntentFilter)
     }
@@ -187,16 +186,24 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
         // 体压自适应启动
         if (cbAutoTiYa.isChecked) {
             // 根据男女，身高体重，获取气压表
-            val isMan = getBooleanBySharedPreferences(SEX_MAN)
-            val isCN = getBooleanBySharedPreferences(COUNTRY_CN)
-            val willCtrPressValue = DataAnalysisHelper.getInstance(mContext)?.getAutoCtrPressByPersonStyle(isMan,isCN)
+            val isMan = DataAnalysisHelper.deviceState.m_gender
+            val isCN = DataAnalysisHelper.deviceState.m_national
             // 设置气压，并提示用户，正在自动调整
+            val willCtrPressValue = DataAnalysisHelper.getInstance(mContext)?.getAutoCtrPressByPersonStyle(isMan,isCN)
+            loadingDialog.showAndMsg("正在调整...")
             val sendData = CreateCtrDataHelper.getCtrPressAllValueByPerson(willCtrPressValue!!)
+            // 只调整B面的，所以将A面设为normal，B面设为adjust
+            isControlPressAction = true
+            SocketThreadManager.sharedInstance(mContext)?.StartChangeModelByCan(CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_NORMAL,BaseVolume.COMMAND_CAN_MODEL_ADJUST))
             SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan(sendData[0])
             SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan(sendData[1])
         }
-
-
+        // 位置自适应
+        if (cbAutoWeiZhi.isChecked) {
+        }
+        // 健康自适应
+        if (cbJianKang.isChecked) {
+        }
 
     }
 
@@ -277,8 +284,6 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
         }
 
         onAutoSetPressByStatus()
-//        val strSendData = CreateCtrDataHelper.getCtrPeopleInfo(isNan,isCN)
-//        SocketThreadManager.sharedInstance(this)?.StartSendData(strSendData)
 
     }
 
@@ -292,8 +297,33 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
             if (action == BaseVolume.BROADCAST_RESULT_DATA_INFO) {
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
                 val deviceWorkInfo = intent.getSerializableExtra(BaseVolume.BROADCAST_MSG) as DeviceWorkInfo
-                // 气压
-                if (strType.equals(BaseVolume.COMMAND_TYPE_PRESS,true)) {
+                // 通道状态
+                if (strType == BaseVolume.COMMAND_TYPE_CHANNEL_STATUS) {
+                    // 自动模式
+                    if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue && isControlPressAction) {
+                        var iSettedCount = 0
+                        var iNormalCount = 0
+                        for (iState in DataAnalysisHelper.deviceState.controlPressStatusList) {
+                            if (iState == DeviceWorkInfo.STATUS_SETTING)
+                                return
+                            if (iState == DeviceWorkInfo.STATUS_SETTED)
+                                ++iSettedCount
+                            if (iState == DeviceWorkInfo.STATUS_NORMAL)
+                                ++iNormalCount
+                        }
+                        if (iSettedCount > 0) {
+                            // 恢复Normal
+                            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
+                        }
+                        // 已经全部恢复到Normal，则将座椅切到恢复成功状态
+                        if (iNormalCount == 8) {
+                            isControlPressAction = false
+                            SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+                        }
+                    }
+                }
+                // 气压值
+                else if (strType == BaseVolume.COMMAND_TYPE_PRESS) {
                     updateSeatView()
                 }
             }
@@ -301,13 +331,9 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
             else if (action == BaseVolume.BROADCAST_CTR_CALLBACK) {
 
             }
-            // 暂停
-            else if (action == BaseVolume.BROADCAST_SWITCH_PAUSE) {
-//                onPauseCamera()
-            }
-            // 展示
-            else if (action == BaseVolume.BROADCAST_SWITCH_RESUME) {
-//                onResumeCamera()
+            // 自动调整座椅气压和位置
+            else if (action == BaseVolume.BROADCAST_AUTO_MODEL) {
+//                onAutoSetPressByStatus()
             }
         }
     }

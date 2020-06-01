@@ -82,8 +82,7 @@ class BaseVolume {
         const val BROADCAST_GOBACK_MENU = "BROADCAST_GOBACK_MENU"
         const val BROADCAST_MSG = "BROADCAST_MSG"
         const val BROADCAST_TYPE = "BROADCAST_TYPE"
-        const val BROADCAST_SWITCH_RESUME = "BROADCAST_SWITCH_RESUME"
-        const val BROADCAST_SWITCH_PAUSE = "BROADCAST_SWITCH_PAUSE"
+        const val BROADCAST_AUTO_MODEL = "BROADCAST_AUTO_MODEL"
 
         // 连接已断开
         const val TCP_CONNECT_STATE_DISCONNECT = -1

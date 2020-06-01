@@ -70,10 +70,10 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         initUI()
         reciverBand()
 
-        btn1.isEnabled = false
-        btn2.isEnabled = false
+        btn1.isEnabled = true
+        btn2.isEnabled = true
         btn3.isEnabled = true
-        btn4.isEnabled = false
+        btn4.isEnabled = true
 
         val isMan = getBooleanBySharedPreferences(SEX_MAN)
         val isCN = getBooleanBySharedPreferences(COUNTRY_CN)
@@ -85,9 +85,9 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         MNNMonitor.setMonitorEnable(false)
         copyFileOrDir("r21r23h-8.dat")
         // 自动开始采集
-        IS_START_AUTOFACE = false
+        IS_START_AUTOFACE = true
         initNuralogixInfo()
-        rlCamera.visibility = View.GONE
+        rlCamera.visibility = View.VISIBLE
 
     }
 
@@ -201,10 +201,10 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
     fun gotoMainControlActivity(iNumber:Int) {
         when(iNumber) {
             1 -> {
-                changeSeatState(SeatStatus.press_automatic.iValue)
+//                changeSeatState(SeatStatus.press_automatic.iValue)
             }
             2 -> {
-                changeSeatState(SeatStatus.press_manual.iValue)
+//                changeSeatState(SeatStatus.press_manual.iValue)
             }
             3 -> {
             }
@@ -215,8 +215,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             }
         }
         isControlShow = true
-        val intent = Intent()
-        intent.setClass(this,MainControlActivity::class.java)
+        val intent = Intent(this,MainControlActivity::class.java)
         intent.putExtra("iNumber",iNumber)
         startActivity(intent)
     }
@@ -242,7 +241,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     // 2G网络
                 } else {
                     // 网络断开了
-                    SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.clearAllTCPClient()
+                    SocketThreadManager.sharedInstance(this@MenuSelectActivity).clearAllTCPClient()
                 }
             }
             else if (action == BaseVolume.BROADCAST_FINISH_APPLICATION) {
@@ -279,20 +278,22 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         ToastMsg("Can Connection successful！")
                     }
                     OnStartLoadData(isConnected)
-                    changeSeatState(-1)
-                    // 判断座椅状态 待初始化：先发调压模式，再调整气压
-                    if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_wait_reserve.iValue) {
+//                    changeSeatState(-1)
+//                    // 判断座椅状态 待初始化：先发调压模式，再调整气压
+//                    if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_wait_reserve.iValue) {
+////                    val strModelData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_NORMAL,BaseVolume.COMMAND_CAN_MODEL_ADJUST)
+//                        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_ADJUST_A_B)
+//                        // 座椅AB面气压恢复初始化！
+//                        val sendDataList = CreateCtrDataHelper.getAllPressValueBy16("1000","1000","0")
+//                        sendDataList.forEach {
+//                            SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(it)
+//                        }
+//                        // 切换到正在初始化模式
+//                        changeSeatState(SeatStatus.press_resume_reserve.iValue)
+//                    }
 
-//                    val strModelData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_NORMAL,BaseVolume.COMMAND_CAN_MODEL_ADJUST)
-                        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_ADJUST_A_B)
-                        // 座椅AB面气压恢复初始化！
-                        val sendDataList = CreateCtrDataHelper.getAllPressValueBy16("1000","1000","0")
-                        sendDataList.forEach {
-                            SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(it)
-                        }
-                        // 切换到正在初始化模式
-                        changeSeatState(SeatStatus.press_resume_reserve.iValue)
-                    }
+                    // 测试阶段，A面气袋有问题，所以直接进入初始化完成！fixme
+                    changeSeatState(SeatStatus.press_reserve.iValue)
 
                 }
 
@@ -342,7 +343,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
                 val deviceWorkInfo = intent.getSerializableExtra(BaseVolume.BROADCAST_MSG) as DeviceWorkInfo
                 // 通道状态
-                if (action == BaseVolume.COMMAND_TYPE_CHANNEL_STATUS) {
+                if (strType == BaseVolume.COMMAND_TYPE_CHANNEL_STATUS) {
                     // 正在初始化
                     if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_resume_reserve.iValue) {
                         var iSettedCount = 0
@@ -365,16 +366,17 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         }
                         if (iSettedCount > 0) {
                             // 恢复Normal
-//                            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
+                            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
                         }
                         // 已经全部恢复到Normal，则将座椅切到恢复成功状态
                         if (iNormalCount == 16) {
+                            SocketThreadManager.sharedInstance(this@MenuSelectActivity).startTimeOut(false)
                             changeSeatState(SeatStatus.press_reserve.iValue)
                         }
                     }
                 }
                 // 气压值
-                else if (action == BaseVolume.COMMAND_TYPE_PRESS) {
+                else if (strType == BaseVolume.COMMAND_TYPE_PRESS) {
                     // 座椅正在检测人体，则收集A面气压值
                     if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue) {
                         statPressABufferListByProbe.add(DataAnalysisHelper.deviceState.sensePressValueListl)
@@ -412,17 +414,17 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         btn3.isEnabled = true
         btn4.isEnabled = false
         // 座椅等待恢复
-        if (iState ==  SeatStatus.press_wait_reserve.iValue) {
+        if (DataAnalysisHelper.deviceState.seatStatus ==  SeatStatus.press_wait_reserve.iValue) {
 
         }
         // 座椅正在恢复 
-        else if (iState ==  SeatStatus.press_resume_reserve.iValue) {
+        else if (DataAnalysisHelper.deviceState.seatStatus ==  SeatStatus.press_resume_reserve.iValue) {
             ToastMsg("Initializing...")
             progressBarWindowHint?.updateContent("Initializing...")
             progressBarWindowHint?.onSelfShow()
         }
         // 座椅恢复成功，可以检测了！！！！
-        else if (iState == SeatStatus.press_reserve.iValue){
+        else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_reserve.iValue){
             btn4.isEnabled = true
             loadingDialog?.dismiss()
             progressBarWindowHint?.onSelfDismiss()
@@ -431,7 +433,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             changeSeatState(SeatStatus.press_auto_probe.iValue)
         }
         // 正在探测，则开始采集人体数据
-        else if (iState == SeatStatus.press_auto_probe.iValue) {
+        else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue) {
             btn4.isEnabled = true
             loadingDialog?.dismiss()
             progressBarWindowHint?.onSelfDismiss()
@@ -448,7 +450,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
         }
         // 默认模式，即人体数据采集完成，身高体重也都算出来啦！
-        else if (iState == SeatStatus.press_normal.iValue) {
+        else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_normal.iValue) {
             btn1.isEnabled = true
             btn2.isEnabled = true
             btn3.isEnabled = true
@@ -457,7 +459,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             progressBarWindowHint?.onSelfDismiss()
         }
         // 座椅自动模式
-        else if (iState == SeatStatus.press_automatic.iValue){
+        else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue){
             imgRun1.visibility = View.VISIBLE
             btn1.isEnabled = true
             btn2.isEnabled = true
@@ -468,7 +470,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             ToastMsg("Automatic mode！")
         }
         // 手动模式
-        else if (iState == SeatStatus.press_manual.iValue){
+        else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_manual.iValue){
             imgRun2.visibility = View.VISIBLE
             btn1.isEnabled = true
             btn2.isEnabled = true
@@ -478,7 +480,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             progressBarWindowHint?.onSelfDismiss()
         }
         // 开发者模式
-        else if (iState == SeatStatus.develop.iValue) {
+        else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.develop.iValue) {
             btn1.isEnabled = true
             btn2.isEnabled = true
             btn3.isEnabled = true
@@ -759,10 +761,10 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                             // 计算身高体重
                             // 1,将收集的A面气压集合取平均值
                             val iSize = statPressABufferListByProbe.size
-                            var iSumList = arrayListOf<Int>(0,0,0,0,0,0,0,0,0,0)
+                            var iSumList = arrayListOf<Int>(0,0,0,0,0,0,0,0,0,0,0)
                             // 先把所有集合的每个字段相加
                             statPressABufferListByProbe.forEach { it0 ->
-                                for (iNumber in 0 until 10) {
+                                for (iNumber in 0 .. 10) {
                                     iSumList[iNumber] += (it0[iNumber].toInt())
                                 }
                             }

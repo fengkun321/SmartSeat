@@ -37,23 +37,25 @@ class DataAnalysisHelper{
     fun analysisPressValueByCan(strData:String) {
         val strType= strData.substring(6,10)
         val strContent= strData.substring(10)
-        // 前4个，其中1-3，既是传感气压也是控制气压
+        // 1-3，控制气压
         if (strType == BaseVolume.COMMAND_CAN_1_4) {
-            for (iIndex in 0..2) {
-                val strValue = Integer.parseInt(strContent.substring(iIndex*4, (iIndex+1)*4), 16).toString()
-                deviceState.sensePressValueListl.set(iIndex,strValue)
-            }
             for (iIndex in 0..3) {
                 val strValue = Integer.parseInt(strContent.substring(iIndex*4, (iIndex+1)*4), 16).toString()
                 deviceState.controlPressValueList.set(iIndex,strValue)
             }
         }
-        // 5-8，控制气压
+        // 5-8，其中6,7,8，既是传感气压也是控制气压
         else if (strType == BaseVolume.COMMAND_CAN_5_8) {
             for (iIndex in 0..3) {
                 val strValue = Integer.parseInt(strContent.substring(iIndex*4, (iIndex+1)*4), 16).toString()
                 deviceState.controlPressValueList.set(iIndex+4,strValue)
             }
+            // 传感气压
+            for (iIndex in 1..3) {
+                val strValue = Integer.parseInt(strContent.substring(iIndex*4, (iIndex+1)*4), 16).toString()
+                deviceState.sensePressValueListl.set(iIndex-1,strValue)
+            }
+
         }
         // 9-12，传感气压
         else if (strType == BaseVolume.COMMAND_CAN_9_12) {

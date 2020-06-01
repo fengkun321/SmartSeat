@@ -148,7 +148,7 @@ class DeviceWorkInfo : Serializable{
     fun saveRecogPressValue(iStatDataList:ArrayList<Int>) {
 
         for (i in 0 .. 2) {
-            recog_back_B_valueList[i] = iStatDataList[i].toString()
+            recog_back_B_valueList[5+i] = iStatDataList[i].toString()
         }
 
         for (i in 3 until iStatDataList.size) {

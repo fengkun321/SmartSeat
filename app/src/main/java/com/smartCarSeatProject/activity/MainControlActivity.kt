@@ -61,6 +61,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
 
     // 设置过的通道的值
     var setValueBufferByChannel = HashMap<Int,String>()
+    var cameraIsStart = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +76,11 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
 
         initUI()
         reciverBand()
+
+//        if (NowShowViewNumber == 1)
+//            cameraIsStart = true
+//        else
+//            cameraIsStart = false
 
 
         switchActivityByNumber(NowShowViewNumber)
@@ -161,10 +167,21 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
             R.id.imgLeft0 ->
                 finish()
             R.id.imgLeft1 -> {
-                switchActivityByNumber(1)
+                if (NowShowViewNumber != 1) {
+                    SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
+                    switchActivityByNumber(1)
+                    sendBroadcast(Intent(BaseVolume.BROADCAST_AUTO_MODEL))
+                }
+                if (!cameraIsStart) {
+                    onResumeCamera()
+                }
             }
             R.id.imgLeft2 -> {
-                switchActivityByNumber(2)
+                if (NowShowViewNumber != 2) {
+                    SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
+                    switchActivityByNumber(2)
+                }
+
             }
             R.id.imgLeft3 -> {
 //                rlCamera.x = rlCamera.x + 300
@@ -213,22 +230,26 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
 
     private fun switchActivityByNumber(number: Int) {
         NowShowViewNumber = number
+        imgLeft1.setImageResource(R.drawable.img_left_1_false)
+        imgLeft2.setImageResource(R.drawable.img_left_2_false)
         imgLeft3.setImageResource(R.drawable.img_left_3_false)
         var keyActivity = ""
         val intent1 = Intent()
         when (number) {
             1 -> {
+                imgLeft1.setImageResource(R.drawable.img_left_1)
                 keyActivity = "AutomaticActivity"
                 intent1.setClass(this, AutomaticActivity::class.java!!)
                 changeSeatState(SeatStatus.press_automatic.iValue)
-
             }
             2 -> {
+                imgLeft2.setImageResource(R.drawable.img_left_2)
                 keyActivity = "ManualActivity"
                 intent1.setClass(this, ManualActivity::class.java!!)
                 changeSeatState(SeatStatus.press_manual.iValue)
             }
             3 -> {
+                imgLeft3.setImageResource(R.drawable.img_left_3)
                 keyActivity = "SetWifiActivity"
                 intent1.setClass(this, SetWifiActivity::class.java!!)
                 changeSeatState(-1)
@@ -283,11 +304,11 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         imgLeft4.isEnabled = false
 
         // 座椅没有初始化完，或前面流程没跑完，其他按钮都是灰的，不能点
-        if (iState < SeatStatus.press_normal.iValue) {
+        if (DataAnalysisHelper.deviceState.seatStatus < SeatStatus.press_normal.iValue) {
 
         }
         // 默认状态
-        else if (iState == SeatStatus.press_normal.iValue) {
+        else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_normal.iValue) {
             imgLeft1.isEnabled = true
             imgLeft2.isEnabled = true
             imgLeft4.isEnabled = true
@@ -296,25 +317,31 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
             imgLeft4.setImageResource(R.drawable.img_left_4)
         }
         // 座椅自动模式
-        else if (iState == SeatStatus.press_automatic.iValue){
-            imgLeft1.isEnabled = true
-            imgLeft2.isEnabled = true
-            imgLeft4.isEnabled = true
-            imgLeft1.setImageResource(R.drawable.img_left_1)
-            imgLeft2.setImageResource(R.drawable.img_left_2_false)
-            imgLeft4.setImageResource(R.drawable.img_left_4)
-        }
-        // 手动模式
-        else if (iState == SeatStatus.press_manual.iValue){
+        else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue){
             imgLeft1.isEnabled = true
             imgLeft2.isEnabled = true
             imgLeft4.isEnabled = true
             imgLeft1.setImageResource(R.drawable.img_left_1_false)
-            imgLeft2.setImageResource(R.drawable.img_left_2)
+            imgLeft2.setImageResource(R.drawable.img_left_2_false)
             imgLeft4.setImageResource(R.drawable.img_left_4)
+            if (NowShowViewNumber == 1) {
+                imgLeft1.setImageResource(R.drawable.img_left_1)
+            }
+        }
+        // 手动模式
+        else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_manual.iValue){
+            imgLeft1.isEnabled = true
+            imgLeft2.isEnabled = true
+            imgLeft4.isEnabled = true
+            imgLeft1.setImageResource(R.drawable.img_left_1_false)
+            imgLeft2.setImageResource(R.drawable.img_left_2_false)
+            imgLeft4.setImageResource(R.drawable.img_left_4)
+            if (NowShowViewNumber == 2) {
+                imgLeft2.setImageResource(R.drawable.img_left_2)
+            }
         }
         // 开发者模式
-        else if (iState == SeatStatus.develop.iValue){
+        else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.develop.iValue){
             imgLeft1.isEnabled = true
             imgLeft2.isEnabled = true
             imgLeft4.isEnabled = true
@@ -941,14 +968,17 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
     }
 
     fun onResumeCamera() {
-        if (this::core.isInitialized) {
-            renderingVideoSink.start()
-        }
-        state = STATE.IDLE
-        if (trackerView.visibility == View.GONE) {
-            state = STATE.DONE
-            cloudAnalyzer.stopAnalyzing()
-            dfxPipe.stopCollect()
+        if (NowShowViewNumber == 1) {
+            cameraIsStart = true
+            if (this::core.isInitialized) {
+                renderingVideoSink.start()
+            }
+            state = STATE.IDLE
+            if (trackerView.visibility == View.GONE) {
+                state = STATE.DONE
+                cloudAnalyzer.stopAnalyzing()
+                dfxPipe.stopCollect()
+            }
         }
     }
 
