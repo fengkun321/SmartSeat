@@ -88,7 +88,7 @@ class ProgressBarWindowHint : Dialog,DialogInterface.OnDismissListener{
             }
             progressBar!!.progress = iProcess
 
-            this.sendEmptyMessageDelayed(0,1000)
+            this.sendEmptyMessageDelayed(0,500)
         }
     }
 

@@ -87,7 +87,10 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         // 自动开始采集
         IS_START_AUTOFACE = true
         initNuralogixInfo()
-        rlCamera.visibility = View.VISIBLE
+        rlCamera.visibility = View.GONE
+
+        // 将座椅恢复到最初
+        changeSeatState(SeatStatus.press_wait_reserve.iValue)
 
     }
 
@@ -147,7 +150,9 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 val areaAddWindowHint = AreaAddWindowHint(this,R.style.Dialogstyle,"System",
                         object : AreaAddWindowHint.PeriodListener {
                             override fun refreshListener(string: String) {
+
                                 SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.clearAllTCPClient()
+                                finish()
                             }
                         },"Are you sure to exit the application?",false)
                 areaAddWindowHint?.show()
@@ -278,10 +283,9 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         ToastMsg("Can Connection successful！")
                     }
                     OnStartLoadData(isConnected)
-//                    changeSeatState(-1)
-//                    // 判断座椅状态 待初始化：先发调压模式，再调整气压
+                    changeSeatState(-1)
+                    // 判断座椅状态 待初始化：先发调压模式，再调整气压
 //                    if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_wait_reserve.iValue) {
-////                    val strModelData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_NORMAL,BaseVolume.COMMAND_CAN_MODEL_ADJUST)
 //                        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_ADJUST_A_B)
 //                        // 座椅AB面气压恢复初始化！
 //                        val sendDataList = CreateCtrDataHelper.getAllPressValueBy16("1000","1000","0")
@@ -292,8 +296,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 //                        changeSeatState(SeatStatus.press_resume_reserve.iValue)
 //                    }
 
-                    // 测试阶段，A面气袋有问题，所以直接进入初始化完成！fixme
-                    changeSeatState(SeatStatus.press_reserve.iValue)
+                    // 测试阶段，A面气袋有问题，所以直接进入默认状态！fixme
+                    changeSeatState(SeatStatus.press_normal.iValue)
 
                 }
 
@@ -346,32 +350,38 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 if (strType == BaseVolume.COMMAND_TYPE_CHANNEL_STATUS) {
                     // 正在初始化
                     if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_resume_reserve.iValue) {
-                        var iSettedCount = 0
-                        var iNormalCount = 0
+                        // 初始化控制A面所有，B面座垫678，通道充气，所以只需要判断678，abcdefgh这几个气袋
+
+                        var isAllNormal = true
+
+                        // A面所有气袋 abcdefgh
                         for (iState in DataAnalysisHelper.deviceState.sensePressStatusList) {
+                            // 正在充气，说明还没完成
                             if (iState == DeviceWorkInfo.STATUS_SETTING)
                                 return
                             if (iState == DeviceWorkInfo.STATUS_SETTED)
-                                ++iSettedCount
-                            if (iState == DeviceWorkInfo.STATUS_NORMAL)
-                                ++iNormalCount
+                                isAllNormal = false
                         }
-                        for (iState in DataAnalysisHelper.deviceState.controlPressStatusList) {
+                        for (iNumber in 5 .. 7) {
+                            val iState = DataAnalysisHelper.deviceState.controlPressStatusList[iNumber]
+                            // 正在充气，说明还没完成
                             if (iState == DeviceWorkInfo.STATUS_SETTING)
                                 return
                             if (iState == DeviceWorkInfo.STATUS_SETTED)
-                                ++iSettedCount
-                            if (iState == DeviceWorkInfo.STATUS_NORMAL)
-                                ++iNormalCount
+                                isAllNormal = false
                         }
-                        if (iSettedCount > 0) {
-                            // 恢复Normal
+
+                        // 全部恢复到Normal
+                        if (!isAllNormal) {
                             SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
                         }
                         // 已经全部恢复到Normal，则将座椅切到恢复成功状态
-                        if (iNormalCount == 16) {
-                            SocketThreadManager.sharedInstance(this@MenuSelectActivity).startTimeOut(false)
+                        else {
                             changeSeatState(SeatStatus.press_reserve.iValue)
+                            // 恢复Normal
+                            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
+                            SocketThreadManager.sharedInstance(this@MenuSelectActivity).startTimeOut(false)
+
                         }
                     }
                 }
@@ -440,6 +450,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             ToastMsg("Start collecting data！")
             // 同时收集A面气袋的数据 fixme
             statPressABufferListByProbe.clear()
+            stopMeasurement(true)
             // 启动摄像头！
             rlCamera.visibility = View.VISIBLE
             IS_START_AUTOFACE = true

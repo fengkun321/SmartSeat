@@ -25,8 +25,6 @@ open class BaseActivity : AppCompatActivity(){
     lateinit var loadingDialog:LoadingDialog
     // 自定义进度条
     lateinit var progressBarWindowHint: ProgressBarWindowHint
-    // 是否在控制
-    var isControlPressAction = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -16,8 +16,8 @@ class DeviceWorkInfo : Serializable{
     var sensePressValueListl :ArrayList<String> = arrayListOf("0","0","0","0","0","0","0","0","0","0","0")
 
     // 缓存刚识别到人体的数据
-    var recog_back_A_valueList = arrayListOf<String>()
-    var recog_back_B_valueList = arrayListOf<String>()
+    var recog_back_A_valueList = arrayListOf<String>() // 8个
+    var recog_back_B_valueList = arrayListOf<String>() // 8个
 
 
     // 位置调节
@@ -61,9 +61,9 @@ class DeviceWorkInfo : Serializable{
     }
 
     // 8个传感气压的状态
-    var controlPressStatusList = arrayListOf<Int>()
+    var controlPressStatusList = arrayListOf<Int>()// 8个
     // 8个传感气压的状态
-    var sensePressStatusList = arrayListOf<Int>()
+    var sensePressStatusList = arrayListOf<Int>()// 8个
 
 
 
@@ -76,16 +76,16 @@ class DeviceWorkInfo : Serializable{
 
         for (i in 1..11) {
             sensePressValueListl.add("255")
-            sensePressStatusList.add(STATUS_NORMAL)
         }
         for (i in 1..8) {
             controlPressValueList.add("255")
             recog_back_A_valueList.add("0")
             recog_back_B_valueList.add("0")
+            sensePressStatusList.add(STATUS_NORMAL)
             controlPressStatusList.add(STATUS_NORMAL)
         }
 
-        seatStatus = SeatStatus.press_wait_reserve.iValue
+//        seatStatus = SeatStatus.press_wait_reserve.iValue
 
     }
 
@@ -133,10 +133,16 @@ class DeviceWorkInfo : Serializable{
                 0.050612* iSensePressValueListl[9]-
                 0.00043809* iSensePressValueListl[10]
 
+
+
         DataAnalysisHelper.deviceState.nowBMI = (DataAnalysisHelper.deviceState.nowWeight*1000)/ (DataAnalysisHelper.deviceState.nowHeight* DataAnalysisHelper.deviceState.nowHeight)
 
         Log.e("DeviceWorkInfo","计算数据：身高：${DataAnalysisHelper.deviceState.nowHeight}，体重：${DataAnalysisHelper.deviceState.nowWeight},BMI：${DataAnalysisHelper.deviceState.nowBMI}")
 
+        val strWeight = String.format("%.2f",nowWeight)
+        val strHeight = String.format("%.2f",nowHeight)
+        nowWeight = strWeight.toDouble()
+        nowHeight = strHeight.toDouble()
         // 缓存数据
         saveRecogPressValue(iSensePressValueListl)
 
@@ -146,6 +152,9 @@ class DeviceWorkInfo : Serializable{
      * 保存当前16个传感器所有的值，用于收集数据！
       */
     fun saveRecogPressValue(iStatDataList:ArrayList<Int>) {
+
+        recog_back_B_valueList.clear()
+        recog_back_B_valueList.addAll(controlPressValueList)
 
         for (i in 0 .. 2) {
             recog_back_B_valueList[5+i] = iStatDataList[i].toString()

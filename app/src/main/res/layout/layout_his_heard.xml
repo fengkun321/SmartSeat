@@ -314,6 +314,57 @@
         android:gravity="center"
         android:textSize="13sp"
         android:textColor="@color/colorWhite"/>
+
+    // 心率
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="HeartRate"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        android:textColor="@color/colorWhite"/>
+
+    // 呼吸率
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="BreathRate"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        android:textColor="@color/colorWhite"/>
+
+    // 情绪值
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="E_Index"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        android:textColor="@color/colorWhite"/>
+
+    // 舒张压
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="Dia_BP"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        android:textColor="@color/colorWhite"/>
+
+    // 收缩压
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="Sys_BP"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+        android:textColor="@color/colorWhite"/>
+
     <TextView
         android:layout_width="70dp"
         android:layout_height="wrap_content"

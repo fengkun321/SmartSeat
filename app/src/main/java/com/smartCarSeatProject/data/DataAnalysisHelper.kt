@@ -13,7 +13,6 @@ class DataAnalysisHelper{
     lateinit var context:Context
 
     constructor(strID:String,context: Context) {
-        deviceState = DeviceWorkInfo(strID)
         this.context = context
     }
 
@@ -148,16 +147,23 @@ class DataAnalysisHelper{
             strLog += ""+(iNumber+1)+"："+ deviceState.controlPressStatusList[iNumber]+","
         }
 
-        for (iNumber in 3..10) {
-            strLog += ""+(iNumber+6)+"："+ deviceState.sensePressStatusList[iNumber]+","
+        for (iNumber in 0..7) {
+            strLog += ""+(iNumber+9)+"："+ deviceState.sensePressStatusList[iNumber]+","
         }
 
         Log.e("通道状态 ", strLog)
 
-
         context?.sendBroadcast(Intent(BaseVolume.BROADCAST_RESULT_DATA_INFO)
                 .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_CHANNEL_STATUS)
                 .putExtra(BaseVolume.BROADCAST_MSG,deviceState))
+
+//        if (SocketThreadManager.isCheckChannelState) {
+//            Log.e("通道状态 ", "抛到上层！")
+//            context?.sendBroadcast(Intent(BaseVolume.BROADCAST_RESULT_DATA_INFO)
+//                    .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_CHANNEL_STATUS)
+//                    .putExtra(BaseVolume.BROADCAST_MSG,deviceState))
+//        }
+
 
 //        var iSettedCountA = 0
 //        var iNormalCountA = 0
@@ -211,7 +217,7 @@ class DataAnalysisHelper{
         val nowWeight = deviceState.nowWeight
 
         iOne = if(isMan) 0 else 1
-        iTwo = if(isCN) 0 else 1
+//        iTwo = if(isCN) 0 else 1
 
         if (nowBMI <= 18.4 ) // 瘦
             iThree = 0
@@ -244,23 +250,6 @@ class DataAnalysisHelper{
         return true
     }
 
-    /** 判断A面座椅是否已经进入某模式 */
-    fun isCheckAllStateModeA(referState:Int):Boolean {
-        for (iState in deviceState.sensePressStatusList) {
-            if (iState != referState)
-                return false
-        }
-        return true
-    }
-
-    /** 判断B面座椅是否已经进入某模式 */
-    fun isCheckAllStateModeB(referState:Int):Boolean {
-        for (iState in deviceState.controlPressStatusList) {
-            if (iState != referState)
-                return false
-        }
-        return true
-    }
 
 
 

@@ -128,6 +128,18 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         imgLeft3.setOnClickListener(this)
         imgLeft4.setOnClickListener(this)
 
+        imgWIFI.visibility = View.VISIBLE
+        tvReCanConnect.visibility = View.GONE
+        tvReLocConnect.visibility = View.GONE
+        if (SocketThreadManager.sharedInstance(this@MainControlActivity).isCanConnected()) {
+            imgWIFI.visibility = View.GONE
+            tvReCanConnect.visibility = View.VISIBLE
+        }
+        if (SocketThreadManager.sharedInstance(this@MainControlActivity).isCan2Connected()) {
+            imgWIFI.visibility = View.GONE
+            tvReLocConnect.visibility = View.VISIBLE
+        }
+
     }
 
     /** 监听广播  */
@@ -170,7 +182,6 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                 if (NowShowViewNumber != 1) {
                     SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
                     switchActivityByNumber(1)
-                    sendBroadcast(Intent(BaseVolume.BROADCAST_AUTO_MODEL))
                 }
                 if (!cameraIsStart) {
                     onResumeCamera()
@@ -283,6 +294,9 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         }
         container.addView(hashMapViews.get(keyActivity), ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT)
 
+        if (number == 1) {
+            sendBroadcast(Intent(BaseVolume.BROADCAST_AUTO_MODEL))
+        }
 
 
     }

@@ -159,48 +159,48 @@ public class DevelopInfoDao {
 			command.setP_recog_back_H(p_recog_back_H);
 
 			// 识别后坐垫3组
-			String p_recog_cushion_1 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_recog_cushion_1));
-			String p_recog_cushion_2 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_recog_cushion_2));
-			String p_recog_cushion_3 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_recog_cushion_3));
+			String p_recog_cushion_6= cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_recog_cushion_6));
+			String p_recog_cushion_7 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_recog_cushion_7));
+			String p_recog_cushion_8 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_recog_cushion_8));
 
-			command.setP_recog_cushion_1(p_recog_cushion_1);
-			command.setP_recog_cushion_2(p_recog_cushion_2);
-			command.setP_recog_cushion_3(p_recog_cushion_3);
+			command.setP_recog_cushion_6(p_recog_cushion_6);
+			command.setP_recog_cushion_7(p_recog_cushion_7);
+			command.setP_recog_cushion_8(p_recog_cushion_8);
 
 			// 识别后靠背B面5组
+			String p_recog_back_1 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_recog_back_1));
+			String p_recog_back_2 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_recog_back_2));
+			String p_recog_back_3 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_recog_back_3));
 			String p_recog_back_4 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_recog_back_4));
 			String p_recog_back_5 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_recog_back_5));
-			String p_recog_back_6 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_recog_back_6));
-			String p_recog_back_7 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_recog_back_7));
-			String p_recog_back_8 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_recog_back_8));
 
+			command.setP_recog_back_1(p_recog_back_1);
+			command.setP_recog_back_2(p_recog_back_2);
+			command.setP_recog_back_3(p_recog_back_3);
 			command.setP_recog_back_4(p_recog_back_4);
 			command.setP_recog_back_5(p_recog_back_5);
-			command.setP_recog_back_6(p_recog_back_6);
-			command.setP_recog_back_7(p_recog_back_7);
-			command.setP_recog_back_8(p_recog_back_8);
 
 			// 调节后坐垫3组
-			String p_adjust_cushion_1 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_adjust_cushion_1));
-			String p_adjust_cushion_2 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_adjust_cushion_2));
-			String p_adjust_cushion_3 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_adjust_cushion_3));
-			command.setP_adjust_cushion_1(p_adjust_cushion_1);
-			command.setP_adjust_cushion_2(p_adjust_cushion_2);
-			command.setP_adjust_cushion_3(p_adjust_cushion_3);
-
-
-			// 调节后靠背B面5组
-			String p_adjust_cushion_4 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_adjust_cushion_4));
-			String p_adjust_cushion_5 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_adjust_cushion_5));
 			String p_adjust_cushion_6 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_adjust_cushion_6));
 			String p_adjust_cushion_7 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_adjust_cushion_7));
 			String p_adjust_cushion_8 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_adjust_cushion_8));
-
-			command.setP_adjust_cushion_4(p_adjust_cushion_4);
-			command.setP_adjust_cushion_5(p_adjust_cushion_5);
 			command.setP_adjust_cushion_6(p_adjust_cushion_6);
 			command.setP_adjust_cushion_7(p_adjust_cushion_7);
 			command.setP_adjust_cushion_8(p_adjust_cushion_8);
+
+
+			// 调节后靠背B面5组
+			String p_adjust_cushion_1 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_adjust_cushion_1));
+			String p_adjust_cushion_2 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_adjust_cushion_2));
+			String p_adjust_cushion_3 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_adjust_cushion_3));
+			String p_adjust_cushion_4 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_adjust_cushion_4));
+			String p_adjust_cushion_5 = cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.p_adjust_cushion_5));
+
+			command.setP_adjust_cushion_1(p_adjust_cushion_1);
+			command.setP_adjust_cushion_2(p_adjust_cushion_2);
+			command.setP_adjust_cushion_3(p_adjust_cushion_3);
+			command.setP_adjust_cushion_4(p_adjust_cushion_4);
+			command.setP_adjust_cushion_5(p_adjust_cushion_5);
 
 			// 人员-性别
 			String m_gender =  cursor.getString(cursor.getColumnIndex(DBContent.DeviceInfo.Columns.m_gender));
@@ -236,7 +236,7 @@ public class DevelopInfoDao {
 			command.setStrPSInfo(strPSInfo);
 			command.setSaveTime(saveTime);
 			command.setDataType(dataType);
-			command.setL_location(locationCtr);
+			command.l_location = locationCtr;
 			command.setHeartRate(HeartRate);
 			command.setBreathRate(BreathRate);
 			command.setE_Index(E_Index);
@@ -265,14 +265,14 @@ public class DevelopInfoDao {
 			initialValues.put(DBContent.DeviceInfo.Columns.p_recog_back_F, temp.getP_recog_back_F());
 			initialValues.put(DBContent.DeviceInfo.Columns.p_recog_back_G, temp.getP_recog_back_G());
 			initialValues.put(DBContent.DeviceInfo.Columns.p_recog_back_H, temp.getP_recog_back_H());
-			initialValues.put(DBContent.DeviceInfo.Columns.p_recog_cushion_1, temp.getP_recog_cushion_1());
-			initialValues.put(DBContent.DeviceInfo.Columns.p_recog_cushion_2, temp.getP_recog_cushion_2());
-			initialValues.put(DBContent.DeviceInfo.Columns.p_recog_cushion_3, temp.getP_recog_cushion_3());
+			initialValues.put(DBContent.DeviceInfo.Columns.p_recog_cushion_6, temp.getP_recog_cushion_6());
+			initialValues.put(DBContent.DeviceInfo.Columns.p_recog_cushion_7, temp.getP_recog_cushion_7());
+			initialValues.put(DBContent.DeviceInfo.Columns.p_recog_cushion_8, temp.getP_recog_cushion_8());
+			initialValues.put(DBContent.DeviceInfo.Columns.p_recog_back_1, temp.getP_recog_back_1());
+			initialValues.put(DBContent.DeviceInfo.Columns.p_recog_back_2, temp.getP_recog_back_2());
+			initialValues.put(DBContent.DeviceInfo.Columns.p_recog_back_3, temp.getP_recog_back_3());
 			initialValues.put(DBContent.DeviceInfo.Columns.p_recog_back_4, temp.getP_recog_back_4());
 			initialValues.put(DBContent.DeviceInfo.Columns.p_recog_back_5, temp.getP_recog_back_5());
-			initialValues.put(DBContent.DeviceInfo.Columns.p_recog_back_6, temp.getP_recog_back_6());
-			initialValues.put(DBContent.DeviceInfo.Columns.p_recog_back_7, temp.getP_recog_back_7());
-			initialValues.put(DBContent.DeviceInfo.Columns.p_recog_back_8, temp.getP_recog_back_8());
 			initialValues.put(DBContent.DeviceInfo.Columns.p_adjust_cushion_1, temp.getP_adjust_cushion_1());
 			initialValues.put(DBContent.DeviceInfo.Columns.p_adjust_cushion_2, temp.getP_adjust_cushion_2());
 			initialValues.put(DBContent.DeviceInfo.Columns.p_adjust_cushion_3, temp.getP_adjust_cushion_3());
@@ -288,7 +288,7 @@ public class DevelopInfoDao {
 			initialValues.put(DBContent.DeviceInfo.Columns.strPSInfo, temp.getStrPSInfo());
 			initialValues.put(DBContent.DeviceInfo.Columns.saveTime, temp.getSaveTime());
 			initialValues.put(DBContent.DeviceInfo.Columns.dataType, temp.getDataType());
-			initialValues.put(DBContent.DeviceInfo.Columns.loactionCtr, temp.getL_location());
+			initialValues.put(DBContent.DeviceInfo.Columns.loactionCtr, temp.l_location);
 			initialValues.put(DBContent.DeviceInfo.Columns.HeartRate, temp.getHeartRate());
 			initialValues.put(DBContent.DeviceInfo.Columns.BreathRate, temp.getBreathRate());
 			initialValues.put(DBContent.DeviceInfo.Columns.Dia_BP, temp.getDia_BP());

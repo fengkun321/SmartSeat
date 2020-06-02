@@ -29,28 +29,28 @@ public class DBContent {
 			public static final String p_recog_back_H = "p_recog_back_H";
 
 			// 识别后坐垫3组
-			public static final String p_recog_cushion_1 = "p_recog_cushion_1";
-			public static final String p_recog_cushion_2 = "p_recog_cushion_2";
-			public static final String p_recog_cushion_3 = "p_recog_cushion_3";
+			public static final String p_recog_cushion_6 = "p_recog_cushion_6";
+			public static final String p_recog_cushion_7 = "p_recog_cushion_7";
+			public static final String p_recog_cushion_8 = "p_recog_cushion_8";
 
 			// 识别后靠背B面5组
+			public static final String p_recog_back_1 = "p_recog_back_1";
+			public static final String p_recog_back_2 = "p_recog_back_2";
+			public static final String p_recog_back_3 = "p_recog_back_3";
 			public static final String p_recog_back_4 = "p_recog_back_4";
 			public static final String p_recog_back_5 = "p_recog_back_5";
-			public static final String p_recog_back_6 = "p_recog_back_6";
-			public static final String p_recog_back_7 = "p_recog_back_7";
-			public static final String p_recog_back_8 = "p_recog_back_8";
 
 			// 调节后坐垫3组
-			public static final String p_adjust_cushion_1 = "p_adjust_cushion_1";
-			public static final String p_adjust_cushion_2 = "p_adjust_cushion_2";
-			public static final String p_adjust_cushion_3 = "p_adjust_cushion_3";
-
-			// 调节后靠背B面5组
-			public static final String p_adjust_cushion_4 = "p_adjust_cushion_4";
-			public static final String p_adjust_cushion_5 = "p_adjust_cushion_5";
 			public static final String p_adjust_cushion_6 = "p_adjust_cushion_6";
 			public static final String p_adjust_cushion_7 = "p_adjust_cushion_7";
 			public static final String p_adjust_cushion_8 = "p_adjust_cushion_8";
+
+			// 调节后靠背B面5组
+			public static final String p_adjust_cushion_1 = "p_adjust_cushion_1";
+			public static final String p_adjust_cushion_2 = "p_adjust_cushion_2";
+			public static final String p_adjust_cushion_3 = "p_adjust_cushion_3";
+			public static final String p_adjust_cushion_4 = "p_adjust_cushion_4";
+			public static final String p_adjust_cushion_5 = "p_adjust_cushion_5";
 
 			// 人员-性别
 			public static final String m_gender = "m_gender";
@@ -97,14 +97,16 @@ public class DBContent {
 	                "'"+ Columns.p_recog_back_F+"' TEXT NOT NULL ," +
 	                "'"+ Columns.p_recog_back_G+"' TEXT NOT NULL ," +
 	                "'"+ Columns.p_recog_back_H+"' TEXT NOT NULL ," +
-	                "'"+ Columns.p_recog_cushion_1+"' TEXT NOT NULL ," +
-	                "'"+ Columns.p_recog_cushion_2+"' TEXT NOT NULL ," +
-	                "'"+ Columns.p_recog_cushion_3+"' TEXT NOT NULL ," +
+	                "'"+ Columns.p_recog_back_1+"' TEXT NOT NULL ," +
+	                "'"+ Columns.p_recog_back_2+"' TEXT NOT NULL ," +
+	                "'"+ Columns.p_recog_back_3+"' TEXT NOT NULL ," +
 	                "'"+ Columns.p_recog_back_4+"' TEXT NOT NULL ," +
 	                "'"+ Columns.p_recog_back_5+"' TEXT NOT NULL ," +
-	                "'"+ Columns.p_recog_back_6+"' TEXT NOT NULL ," +
-	                "'"+ Columns.p_recog_back_7+"' TEXT NOT NULL ," +
-	                "'"+ Columns.p_recog_back_8+"' TEXT NOT NULL ," +
+
+                    "'"+ Columns.p_recog_cushion_6+"' TEXT NOT NULL ," +
+                    "'"+ Columns.p_recog_cushion_7+"' TEXT NOT NULL ," +
+                    "'"+ Columns.p_recog_cushion_8+"' TEXT NOT NULL ," +
+
 	                "'"+ Columns.p_adjust_cushion_1+"' TEXT NOT NULL ," +
 	                "'"+ Columns.p_adjust_cushion_2+"' TEXT NOT NULL ," +
 	                "'"+ Columns.p_adjust_cushion_3+"' TEXT NOT NULL ," +

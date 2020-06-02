@@ -110,14 +110,14 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         includeA.includeAGL.tvTitle.text = "G";includeA.includeAGR.tvTitle.text = "G"
         includeA.includeAHL.tvTitle.text = "H";includeA.includeAHR.tvTitle.text = "H"
 
-        includeA.includeASeat1.tvTitle.text = "1"
-        includeA.includeASeat2.tvTitle.text = "2"
-        includeA.includeASeat3.tvTitle.text = "3"
+        includeA.includeASeat6.tvTitle.text = "6"
+        includeA.includeASeat7.tvTitle.text = "7"
+        includeA.includeASeat8.tvTitle.text = "8"
 
         // A面的部分参数值(11个。座垫3+靠背左测8)
-        tvAValueList.add(includeA.includeASeat1.tvValueA)
-        tvAValueList.add(includeA.includeASeat2.tvValueA)
-        tvAValueList.add(includeA.includeASeat3.tvValueA)
+        tvAValueList.add(includeA.includeASeat6.tvValueA)
+        tvAValueList.add(includeA.includeASeat7.tvValueA)
+        tvAValueList.add(includeA.includeASeat8.tvValueA)
         tvAValueList.add(includeA.includeAAL.tvValueA)
         tvAValueList.add(includeA.includeABL.tvValueA)
         tvAValueList.add(includeA.includeACL.tvValueA)
@@ -141,13 +141,15 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         var iTag = 0
         bViewList.forEach {
 
+            ++iTag
+
             var btnJian = it.btnJian
             var btnJia = it.btnJia
             var tvValue = it.tvValueB
             var seekBar = it.seekBar
             var tvNumber = it.tvNumber
 
-            tvNumber.text = "${iTag+1}："
+            tvNumber.text = "${iTag}："
             btnJian.tag = iTag
             btnJia.tag = iTag
             tvValue.tag = iTag
@@ -167,7 +169,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
             tvBValueList.add(tvValue)
             seekBarList.add(seekBar)
 
-            iTag += 1
+
 
         }
 
@@ -238,8 +240,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
             seekBarList[iTag].progress = 0
 
         val iNowValue = tvBValueList[iTag].text.toString().toInt()
-        val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iNowValue)
-        SocketThreadManager.sharedInstance(this@DevelopmentActivity).StartSendDataByCan(strSendData)
+        controlPressValueByTag(iTag,iNowValue)
     }
 
     /** 加号的点击时间 */
@@ -253,8 +254,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
             seekBarList[iTag].progress = seekBarList[iTag].max
 
         val iNowValue = tvBValueList[iTag].text.toString().toInt()
-        val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iNowValue)
-        SocketThreadManager.sharedInstance(this@DevelopmentActivity).StartSendDataByCan(strSendData)
+        controlPressValueByTag(iTag,iNowValue)
 
     }
 
@@ -271,8 +271,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
             var iProcess = seekBar?.progress!! +BaseVolume.ProgressValueMin
             var iTag = seekBar?.tag  as Int
             iTag += 1
-            val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iProcess)
-            SocketThreadManager.sharedInstance(this@DevelopmentActivity).StartSendDataByCan(strSendData)
+            controlPressValueByTag(iTag,iProcess)
         }
     }
 
@@ -314,8 +313,42 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
             else if (action == BaseVolume.BROADCAST_RESULT_DATA_INFO) {
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
                 val deviceWorkInfo = intent.getSerializableExtra(BaseVolume.BROADCAST_MSG) as DeviceWorkInfo
+                // 通道状态
+                if (strType == BaseVolume.COMMAND_TYPE_CHANNEL_STATUS) {
+                    // 开发者模式
+                    if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.develop.iValue && SocketThreadManager.isCheckChannelState) {
+                        var iSettedCount = 0
+                        var iNormalCount = 0
+                        for (iState in DataAnalysisHelper.deviceState.controlPressStatusList) {
+                            if (iState == DeviceWorkInfo.STATUS_SETTING)
+                                return
+                            if (iState == DeviceWorkInfo.STATUS_SETTED)
+                                ++iSettedCount
+                            if (iState == DeviceWorkInfo.STATUS_NORMAL)
+                                ++iNormalCount
+                        }
+                        for (iState in DataAnalysisHelper.deviceState.sensePressStatusList) {
+                            if (iState == DeviceWorkInfo.STATUS_SETTING)
+                                return
+                            if (iState == DeviceWorkInfo.STATUS_SETTED)
+                                ++iSettedCount
+                            if (iState == DeviceWorkInfo.STATUS_NORMAL)
+                                ++iNormalCount
+                        }
+                        if (iSettedCount > 0) {
+                            // 恢复Normal
+                            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
+                        }
+                        // 已经全部恢复到Normal，则将座椅切到恢复成功状态
+                        if (iNormalCount == 19) {
+                            includeA.tvInitValue.text = "Initialization completed!"
+                            includeA.tvInitValue.setTextColor(resources.getColor(R.color.colorGreen))
+                            SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+                        }
+                    }
+                }
                 // 气压
-                if (strType.equals(BaseVolume.COMMAND_TYPE_PRESS,true)) {
+                else if (strType.equals(BaseVolume.COMMAND_TYPE_PRESS,true)) {
                     // 控制气压8个
                     val controlPressList = deviceWorkInfo?.controlPressValueList
                     // 传感气压11个
@@ -465,14 +498,13 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         initUIFromB()
 
         ToastMsg("Restoring initial value...")
+        // 将A面,B面设为adjust
+        SocketThreadManager.sharedInstance(mContext)?.StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_ADJUST_A_B)
         // 发指令，设置16个气压
         val NowSendDataList = CreateCtrDataHelper.getAllPressValueBy16(strVA,strVSeat,strVB)
         NowSendDataList.forEach {
             SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.StartSendDataByCan(it)
         }
-
-//        val NowSendData = CreateCtrDataHelper.getCtrPressBy16DevelopO(strVA,strVSeat,strVB)
-//        SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.StartSendData(NowSendData)
 
     }
 
@@ -544,16 +576,16 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         nowDevelopDataInfo?.p_recog_back_H =  includeA.includeAHL.tvValueA.text.toString()
 
         // 识别后坐垫3组
-        nowDevelopDataInfo?.p_recog_cushion_1 =  includeA.includeASeat1.tvValueA.text.toString()
-        nowDevelopDataInfo?.p_recog_cushion_2 =  includeA.includeASeat2.tvValueA.text.toString()
-        nowDevelopDataInfo?.p_recog_cushion_3 =  includeA.includeASeat3.tvValueA.text.toString()
+        nowDevelopDataInfo?.p_recog_cushion_6 =  includeA.includeASeat6.tvValueA.text.toString()
+        nowDevelopDataInfo?.p_recog_cushion_7 =  includeA.includeASeat7.tvValueA.text.toString()
+        nowDevelopDataInfo?.p_recog_cushion_7 =  includeA.includeASeat8.tvValueA.text.toString()
 
         // 识别后靠背B面5组
+        nowDevelopDataInfo?.p_recog_back_1 =  includeB.includeB1.tvValueB.text.toString()
+        nowDevelopDataInfo?.p_recog_back_2 =  includeB.includeB2.tvValueB.text.toString()
+        nowDevelopDataInfo?.p_recog_back_3 =  includeB.includeB3.tvValueB.text.toString()
         nowDevelopDataInfo?.p_recog_back_4 =  includeB.includeB4.tvValueB.text.toString()
         nowDevelopDataInfo?.p_recog_back_5 =  includeB.includeB5.tvValueB.text.toString()
-        nowDevelopDataInfo?.p_recog_back_6 =  includeB.includeB6.tvValueB.text.toString()
-        nowDevelopDataInfo?.p_recog_back_7 =  includeB.includeB7.tvValueB.text.toString()
-        nowDevelopDataInfo?.p_recog_back_8 =  includeB.includeB8.tvValueB.text.toString()
 
         ToastMsg("Adjust the pressure on B！")
         isSaveAData = true
@@ -589,6 +621,19 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
         initUIFromB()
 
+
+    }
+
+    /**
+     * 控制气压
+     * 先转换调压模式 A面normal，B面adjust
+     * 再发送数据
+     */
+    private fun controlPressValueByTag(iTag : Int,iPressValue:Int) {
+        // 只调整B面的，所以将A面设为normal，B面设为adjust
+        SocketThreadManager.sharedInstance(mContext)?.StartChangeModelByCan(CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_NORMAL,BaseVolume.COMMAND_CAN_MODEL_ADJUST))
+        val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iPressValue)
+        SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(strSendData)
 
     }
 

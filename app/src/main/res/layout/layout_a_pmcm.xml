@@ -216,26 +216,26 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cushion (1,2,3)"
+        android:text="Cushion (6,7,8)"
         android:textColor="@color/colorWhite"
         android:gravity="center"
         android:layout_marginTop="5dp"/>
 
-    <include android:id="@+id/includeASeat1"
+    <include android:id="@+id/includeASeat6"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         layout="@layout/layout_a_pmcm_child"
         android:layout_marginTop="5dp"/>
 
-    <include android:id="@+id/includeASeat2"
+    <include android:id="@+id/includeASeat7"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         layout="@layout/layout_a_pmcm_child"
         android:layout_marginTop="5dp"/>
 
-    <include android:id="@+id/includeASeat3"
+    <include android:id="@+id/includeASeat8"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

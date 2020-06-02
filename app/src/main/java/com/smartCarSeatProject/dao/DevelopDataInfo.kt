@@ -32,30 +32,31 @@ class DevelopDataInfo {
     var p_recog_back_H = "0"
 
     // 识别后坐垫3组
-    var p_recog_cushion_1 = "0"
-    var p_recog_cushion_2 = "0"
-    var p_recog_cushion_3 = "0"
+    var p_recog_cushion_6 = "0"
+    var p_recog_cushion_7 = "0"
+    var p_recog_cushion_8 = "0"
 
     // 识别后靠背B面5组
+    var p_recog_back_1 = "0"
+    var p_recog_back_2 = "0"
+    var p_recog_back_3 = "0"
     var p_recog_back_4 = "0"
     var p_recog_back_5 = "0"
-    var p_recog_back_6 = "0"
-    var p_recog_back_7 = "0"
-    var p_recog_back_8 = "0"
 
     // 调节后坐垫3组
-    var p_adjust_cushion_1 = "0"
-    var p_adjust_cushion_2 = "0"
-    var p_adjust_cushion_3 = "0"
-
-    // 调节后靠背B面5组
-    var p_adjust_cushion_4 = "0"
-    var p_adjust_cushion_5 = "0"
     var p_adjust_cushion_6 = "0"
     var p_adjust_cushion_7 = "0"
     var p_adjust_cushion_8 = "0"
 
+    // 调节后靠背B面5组
+    var p_adjust_cushion_1 = "0"
+    var p_adjust_cushion_2 = "0"
+    var p_adjust_cushion_3 = "0"
+    var p_adjust_cushion_4 = "0"
+    var p_adjust_cushion_5 = "0"
+
     // 位置调节
+    @JvmField
     var l_location = "1"
 
     // 人员-性别
@@ -105,28 +106,28 @@ class DevelopDataInfo {
         p_recog_back_H = "0"
 
         // 识别后坐垫3组
-        p_recog_cushion_1 = "0"
-        p_recog_cushion_2 = "0"
-        p_recog_cushion_3 = "0"
+        p_recog_cushion_6 = "0"
+        p_recog_cushion_7 = "0"
+        p_recog_cushion_8 = "0"
 
         // 识别后靠背B面5组
+        p_recog_back_1 = "0"
+        p_recog_back_2 = "0"
+        p_recog_back_3 = "0"
         p_recog_back_4 = "0"
         p_recog_back_5 = "0"
-        p_recog_back_6 = "0"
-        p_recog_back_7 = "0"
-        p_recog_back_8 = "0"
 
         // 调节后坐垫3组
-        p_adjust_cushion_1 = "0"
-        p_adjust_cushion_2 = "0"
-        p_adjust_cushion_3 = "0"
-
-        // 调节后靠背B面5组
-        p_adjust_cushion_4 = "0"
-        p_adjust_cushion_5 = "0"
         p_adjust_cushion_6 = "0"
         p_adjust_cushion_7 = "0"
         p_adjust_cushion_8 = "0"
+
+        // 调节后靠背B面5组
+        p_adjust_cushion_1 = "0"
+        p_adjust_cushion_2 = "0"
+        p_adjust_cushion_3 = "0"
+        p_adjust_cushion_4 = "0"
+        p_adjust_cushion_5 = "0"
 
         // 人员-性别
         m_gender = "1"
@@ -148,9 +149,6 @@ class DevelopDataInfo {
 
     }
 
-    override fun toString(): String {
-        return "DevelopDataInfo(iID=$iID, strName='$strName', p_init_back_A='$p_init_back_A', p_init_back_B='$p_init_back_B', p_init_cushion='$p_init_cushion', p_recog_back_A='$p_recog_back_A', p_recog_back_B='$p_recog_back_B', p_recog_back_C='$p_recog_back_C', p_recog_back_D='$p_recog_back_D', p_recog_back_E='$p_recog_back_E', p_recog_back_F='$p_recog_back_F', p_recog_back_G='$p_recog_back_G', p_recog_back_H='$p_recog_back_H', p_recog_cushion_1='$p_recog_cushion_1', p_recog_cushion_2='$p_recog_cushion_2', p_recog_cushion_3='$p_recog_cushion_3', p_recog_back_4='$p_recog_back_4', p_recog_back_5='$p_recog_back_5', p_recog_back_6='$p_recog_back_6', p_recog_back_7='$p_recog_back_7', p_recog_back_8='$p_recog_back_8', p_adjust_cushion_1='$p_adjust_cushion_1', p_adjust_cushion_2='$p_adjust_cushion_2', p_adjust_cushion_3='$p_adjust_cushion_3', p_adjust_cushion_4='$p_adjust_cushion_4', p_adjust_cushion_5='$p_adjust_cushion_5', p_adjust_cushion_6='$p_adjust_cushion_6', p_adjust_cushion_7='$p_adjust_cushion_7', p_adjust_cushion_8='$p_adjust_cushion_8', l_location='$l_location', m_gender='$m_gender', m_national='$m_national', m_weight='$m_weight', m_height='$m_height', strPSInfo='$strPSInfo', saveTime='$saveTime', dataType='$dataType', HeartRate='$HeartRate', BreathRate='$BreathRate', E_Index='$E_Index', Dia_BP='$Dia_BP', Sys_BP='$Sys_BP')"
-    }
 
 
 }

@@ -50,13 +50,10 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
     var drawableList = arrayListOf<GradientDrawable>()
     // 视图的集合
     var viewList = arrayListOf<TextView>()
-    var isFirst = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_automatic)
-
-        isFirst = true
 
         initUI()
         initData()
@@ -193,7 +190,6 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
             loadingDialog.showAndMsg("正在调整...")
             val sendData = CreateCtrDataHelper.getCtrPressAllValueByPerson(willCtrPressValue!!)
             // 只调整B面的，所以将A面设为normal，B面设为adjust
-            isControlPressAction = true
             SocketThreadManager.sharedInstance(mContext)?.StartChangeModelByCan(CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_NORMAL,BaseVolume.COMMAND_CAN_MODEL_ADJUST))
             SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan(sendData[0])
             SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan(sendData[1])
@@ -299,25 +295,25 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                 val deviceWorkInfo = intent.getSerializableExtra(BaseVolume.BROADCAST_MSG) as DeviceWorkInfo
                 // 通道状态
                 if (strType == BaseVolume.COMMAND_TYPE_CHANNEL_STATUS) {
-                    // 自动模式
-                    if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue && isControlPressAction) {
-                        var iSettedCount = 0
-                        var iNormalCount = 0
+                    // 自动模式控制B面所有气袋气压
+                    if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue && SocketThreadManager.isCheckChannelState) {
+                        var isAllNormal = true
+                        // B面所有气袋 12345678
                         for (iState in DataAnalysisHelper.deviceState.controlPressStatusList) {
+                            // 正在充气，说明还没完成
                             if (iState == DeviceWorkInfo.STATUS_SETTING)
                                 return
                             if (iState == DeviceWorkInfo.STATUS_SETTED)
-                                ++iSettedCount
-                            if (iState == DeviceWorkInfo.STATUS_NORMAL)
-                                ++iNormalCount
+                                isAllNormal = false
                         }
-                        if (iSettedCount > 0) {
-                            // 恢复Normal
+
+                        // 全部恢复到Normal
+                        if (!isAllNormal) {
                             SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
                         }
                         // 已经全部恢复到Normal，则将座椅切到恢复成功状态
-                        if (iNormalCount == 8) {
-                            isControlPressAction = false
+                        else {
+                            loadingDialog.dismiss()
                             SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
                         }
                     }
@@ -333,7 +329,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
             }
             // 自动调整座椅气压和位置
             else if (action == BaseVolume.BROADCAST_AUTO_MODEL) {
-//                onAutoSetPressByStatus()
+                onAutoSetPressByStatus()
             }
         }
     }

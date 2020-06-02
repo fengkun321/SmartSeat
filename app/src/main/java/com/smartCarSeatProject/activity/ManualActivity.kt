@@ -266,11 +266,9 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
      */
     private fun controlPressValueByTag(iTag : Int,iPressValue:Int) {
         // 只调整B面的，所以将A面设为normal，B面设为adjust
-        isControlPressAction = true
         SocketThreadManager.sharedInstance(mContext)?.StartChangeModelByCan(CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_NORMAL,BaseVolume.COMMAND_CAN_MODEL_ADJUST))
         val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iPressValue)
         SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(strSendData)
-
     }
 
 
@@ -701,22 +699,22 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
     // 根据序号更新值R
     fun updateRecogPressValueByNumber(iNumber : Int,strValue:String) {
         when(iNumber) {
-            6 ->
-                nowMemoryInfo.p_recog_cushion_1 = strValue
-            7 ->
-                nowMemoryInfo.p_recog_cushion_2 = strValue
-            8 ->
-                nowMemoryInfo.p_recog_cushion_3 = strValue
             1 ->
-                nowMemoryInfo.p_recog_back_4 = strValue
+                nowMemoryInfo.p_recog_back_1 = strValue
             2 ->
-                nowMemoryInfo.p_recog_back_5 = strValue
+                nowMemoryInfo.p_recog_back_2 = strValue
             3 ->
-                nowMemoryInfo.p_recog_back_6 = strValue
+                nowMemoryInfo.p_recog_back_3 = strValue
             4 ->
-                nowMemoryInfo.p_recog_back_7 = strValue
+                nowMemoryInfo.p_recog_back_4 = strValue
             5 ->
-                nowMemoryInfo.p_recog_back_8 = strValue
+                nowMemoryInfo.p_recog_back_5 = strValue
+            6 ->
+                nowMemoryInfo.p_recog_cushion_6 = strValue
+            7 ->
+                nowMemoryInfo.p_recog_cushion_7 = strValue
+            8 ->
+                nowMemoryInfo.p_recog_cushion_8 = strValue
             9 ->
                 nowMemoryInfo.p_recog_back_A = strValue
             10 ->
@@ -769,24 +767,20 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                 // 通道状态
                 if (strType == BaseVolume.COMMAND_TYPE_CHANNEL_STATUS) {
                     // 手动模式
-                    if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_manual.iValue && isControlPressAction) {
-                        var iSettedCount = 0
-                        var iNormalCount = 0
-                        for (iState in DataAnalysisHelper.deviceState.controlPressStatusList) {
-                            if (iState == DeviceWorkInfo.STATUS_SETTING)
-                                return
-                            if (iState == DeviceWorkInfo.STATUS_SETTED)
-                                ++iSettedCount
-                            if (iState == DeviceWorkInfo.STATUS_NORMAL)
-                                ++iNormalCount
+                    if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_manual.iValue && SocketThreadManager.isCheckChannelState) {
+                        // 判断当前控制的气袋状态
+                        if (iNowSelectNumber == -1) {
+                            return
                         }
-                        if (iSettedCount > 0) {
+                        val iCtrState = DataAnalysisHelper.deviceState.controlPressStatusList[iNowSelectNumber]
+                        if (iCtrState == DeviceWorkInfo.STATUS_SETTING) {
+                            return
+                        }
+                        else if (iCtrState == DeviceWorkInfo.STATUS_SETTED) {
                             // 恢复Normal
                             SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
                         }
-                        // 已经全部恢复到Normal，则将座椅切到恢复成功状态
-                        if (iNormalCount == 8) {
-                            isControlPressAction = false
+                        else if (iCtrState == DeviceWorkInfo.STATUS_NORMAL) {
                             SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
                             // 控制结束，将所有高亮按钮灰掉
                             changeSelectBtn(-1)

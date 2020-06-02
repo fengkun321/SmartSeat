@@ -79,28 +79,29 @@ class SocketThreadManager() {
 
     /** 通过Can盒发送数据（不带超时机制） */
     fun StartChangeModelByCan(strData: String) {
-//        if (!isCanConnected()) {
-//            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
-//                    .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
-//                    .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
-//            return
-//        }
-//        NowActionModel = Action_ChangModel
+        if (!isCanConnected()) {
+            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
+                    .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
+                    .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
+            return
+        }
+        NowActionModel = Action_ChangModel
 //        startTimeOut(false)
-//        CanTaskCenter.sharedCenter(mContext).sendHexText(strData)
+        CanTaskCenter.sharedCenter(mContext).sendHexText(strData)
     }
 
     /** 通过Can盒调试通道气压（带保护机制：30秒后，如果还是调压模式，则强制切换到Normal模式） */
     fun StartSendDataByCan(strData: String) {
-//        if (!isCanConnected()) {
-//            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
-//                    .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
-//                    .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
-//            return
-//        }
-//        NowActionModel = Action_CtrPress
-//        startTimeOut(true)
-//        CanTaskCenter.sharedCenter(mContext).sendHexText(strData)
+        if (!isCanConnected()) {
+            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
+                    .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
+                    .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
+            return
+        }
+        NowActionModel = Action_CtrPress
+        startCheckState(true)
+        startTimeOut(true)
+        CanTaskCenter.sharedCenter(mContext).sendHexText(strData)
     }
 
     /** 通过Can盒 2发送数据（调节位置） */
@@ -125,6 +126,8 @@ class SocketThreadManager() {
         // 控制气压
         val Action_CtrPress = 222
         var NowActionModel = Action_ChangModel
+        /** 是否允许上报状态 */
+        var isCheckChannelState = false
 
         fun sharedInstance(context: Context): SocketThreadManager {
             mContext = context
@@ -150,10 +153,36 @@ class SocketThreadManager() {
                     Log.e(TAG, "30秒时间到！强制切换为Normal模式")
                     StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
                 }
-            }, (30 * 1000))
+            }, (20 * 1000))
         }
         else {
+            isCheckChannelState = false
             timer?.cancel()
+        }
+    }
+
+
+    var checkStateTimer:Timer? = null
+    /**
+     * 由于通道状态更新频率过高，发指令时的状态不准确，所以需要延时n秒后再处理状态
+     * 开启/关闭计时器
+     */
+    fun startCheckState(isCheckState : Boolean) {
+        if (isCheckState) {
+            isCheckChannelState = false
+            checkStateTimer?.cancel()
+            checkStateTimer = null
+            checkStateTimer = Timer()
+            checkStateTimer?.schedule(object : TimerTask() {
+                override fun run() {
+                    Log.e(TAG, "指令发出，3秒后，再处理通道状态！")
+//                    isControlPressAction = true
+                    isCheckChannelState = true
+                }
+            }, (3 * 1000))
+        }
+        else {
+            checkStateTimer?.cancel()
         }
     }
 

@@ -12,6 +12,27 @@
         android:gravity="center"
         android:textColor="@color/colorWhite"/>
 
+    <include android:id="@+id/includeB1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        layout="@layout/layout_development_value"
+        android:layout_marginTop="3dp"/>
+
+    <include android:id="@+id/includeB2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        layout="@layout/layout_development_value"
+        android:layout_marginTop="3dp"/>
+
+    <include android:id="@+id/includeB3"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        layout="@layout/layout_development_value"
+        android:layout_marginTop="3dp"/>
+
     <include android:id="@+id/includeB4"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -24,6 +45,14 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         layout="@layout/layout_development_value"
+        android:layout_marginTop="3dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cushion (6,7,8)"
+        android:textColor="@color/colorWhite"
+        android:gravity="center"
         android:layout_marginTop="3dp"/>
 
     <include android:id="@+id/includeB6"
@@ -41,35 +70,6 @@
         android:layout_marginTop="3dp"/>
 
     <include android:id="@+id/includeB8"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        layout="@layout/layout_development_value"
-        android:layout_marginTop="3dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Cushion (1,2,3)"
-        android:textColor="@color/colorWhite"
-        android:gravity="center"
-        android:layout_marginTop="3dp"/>
-
-    <include android:id="@+id/includeB1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        layout="@layout/layout_development_value"
-        android:layout_marginTop="3dp"/>
-
-    <include android:id="@+id/includeB2"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        layout="@layout/layout_development_value"
-        android:layout_marginTop="3dp"/>
-
-    <include android:id="@+id/includeB3"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

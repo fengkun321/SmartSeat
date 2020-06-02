@@ -61,6 +61,8 @@ public class CanTaskCenter {
      * @param port       端口
      */
     public void connect(final String ipAddress, final int port) {
+        this.ipAddress = ipAddress;
+        this.port = port;
         iConnectState = BaseVolume.TCP_CONNECT_STATE_CONNECTTING;
         thread = new Thread(new Runnable() {
             @Override
@@ -176,11 +178,13 @@ public class CanTaskCenter {
             }
             catch (IOException e) {
                 Log.e(TAG,"连接异常e:"+e.getMessage());
+                disconnect();
+                connect();
                 // 局域网离线啦！
-                mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
-                        .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
-                        .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false)
-                        .putExtra(BaseVolume.BROADCAST_MSG,e.getMessage()));
+//                mContext.sendBroadcast(new Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
+//                        .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
+//                        .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false)
+//                        .putExtra(BaseVolume.BROADCAST_MSG,e.getMessage()));
             }
         }
     }

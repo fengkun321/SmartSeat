@@ -362,8 +362,58 @@
         android:textStyle="bold"
         android:gravity="center"
         android:textSize="13sp"
-
         android:textColor="@color/colorWhite"/>
+
+        // 心率
+        <TextView android:id="@+id/HeartRate"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="13sp"
+            android:textColor="@color/colorWhite"/>
+
+        // 呼吸率
+        <TextView android:id="@+id/BreathRate"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="13sp"
+            android:textColor="@color/colorWhite"/>
+
+        // 情绪值
+        <TextView android:id="@+id/E_Index"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="13sp"
+            android:textColor="@color/colorWhite"/>
+
+        // 舒张压
+        <TextView android:id="@+id/Dia_BP"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="13sp"
+            android:textColor="@color/colorWhite"/>
+
+        // 收缩压
+        <TextView android:id="@+id/Sys_BP"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="13sp"
+            android:textColor="@color/colorWhite"/>
+
     <TextView android:id="@+id/mMassage"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
