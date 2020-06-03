@@ -108,6 +108,7 @@ class CreateCtrDataHelper {
             return strSendData
         }
 
+
         /** 根据体重表，设置8路通道的气压值 */
         fun getCtrPressAllValueByPerson(controlPressInfo: ControlPressInfo):ArrayList<String>{
             var dataList = arrayListOf<String>()

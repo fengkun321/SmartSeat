@@ -131,11 +131,11 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         imgWIFI.visibility = View.VISIBLE
         tvReCanConnect.visibility = View.GONE
         tvReLocConnect.visibility = View.GONE
-        if (SocketThreadManager.sharedInstance(this@MainControlActivity).isCanConnected()) {
+        if (!SocketThreadManager.sharedInstance(this@MainControlActivity).isCanConnected()) {
             imgWIFI.visibility = View.GONE
             tvReCanConnect.visibility = View.VISIBLE
         }
-        if (SocketThreadManager.sharedInstance(this@MainControlActivity).isCan2Connected()) {
+        if (!SocketThreadManager.sharedInstance(this@MainControlActivity).isCan2Connected()) {
             imgWIFI.visibility = View.GONE
             tvReLocConnect.visibility = View.VISIBLE
         }
@@ -406,7 +406,6 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
                 // 开始连接
                 if (strType.equals(BaseVolume.BROADCAST_TCP_CONNECT_START)) {
-                    ToastMsg("Can,Connecting！")
                 }
                 // 连接结果
                 else if (strType.equals(BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)) {
@@ -430,24 +429,30 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                 }
             }
             else if (action == BaseVolume.BROADCAST_TCP_INFO_CAN2) {
-                val isConnected = intent.getBooleanExtra(BaseVolume.BROADCAST_TCP_STATUS, false)
-                val strMsg = intent.getStringExtra(BaseVolume.BROADCAST_MSG)
+                val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
+                // 开始连接
+                if (strType.equals(BaseVolume.BROADCAST_TCP_CONNECT_START)) {
+                }
+                // 连接结果
+                else if (strType.equals(BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)) {
+                    val isConnected = intent.getBooleanExtra(BaseVolume.BROADCAST_TCP_STATUS, false)
+                    val strMsg = intent.getStringExtra(BaseVolume.BROADCAST_MSG)
 
-                if (!isConnected) {
-                    tvReLocConnect.visibility = View.VISIBLE
-                    imgWIFI.visibility = View.GONE
-                    ToastMsg("Loc Connect Fail！$strMsg")
-                }
-                else {
-                    imgWIFI.visibility = View.VISIBLE
-                    tvReLocConnect.visibility = View.GONE
-                    tvReCanConnect.visibility = View.GONE
-                    if (!SocketThreadManager.sharedInstance(this@MainControlActivity).isCanConnected()) {
+                    if (!isConnected) {
+                        tvReLocConnect.visibility = View.VISIBLE
                         imgWIFI.visibility = View.GONE
-                        tvReCanConnect.visibility = View.VISIBLE
                     }
-                    ToastMsg("Loc Connection successful！")
+                    else {
+                        imgWIFI.visibility = View.VISIBLE
+                        tvReLocConnect.visibility = View.GONE
+                        tvReCanConnect.visibility = View.GONE
+                        if (!SocketThreadManager.sharedInstance(this@MainControlActivity).isCanConnected()) {
+                            imgWIFI.visibility = View.GONE
+                            tvReCanConnect.visibility = View.VISIBLE
+                        }
+                    }
                 }
+
             }
             else if (action == BaseVolume.BROADCAST_SEND_INFO) {
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)

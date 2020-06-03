@@ -19,7 +19,6 @@
             android:layout_marginBottom="-10dp"
             android:layout_marginTop="-90dp"/>
 
-
         <LinearLayout android:id="@+id/llBottomAnMo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,29 +27,69 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true">
 
-            <ImageView android:id="@+id/imgMo1"
+            <LinearLayout android:id="@+id/llMassageA"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/img_anmo_1_false"
-                android:tag="false"/>
+                android:orientation="horizontal"
+                android:gravity="center">
 
-            <ImageView android:id="@+id/imgMo2"
+                <ImageView android:id="@+id/imgMoA1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/img_anmo_1_false"
+                    android:tag="false"/>
+
+                <ImageView android:id="@+id/imgMoA2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/img_anmo_2_false"
+                    android:layout_marginLeft="20dp"
+                    android:tag="false"/>
+
+                <ImageView android:id="@+id/imgMoA3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/img_anmo_3_false"
+                    android:layout_marginLeft="20dp"
+                    android:tag="false"/>
+
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/llMassageB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/img_anmo_2_false"
-                android:layout_marginLeft="20dp"
-                android:tag="false"/>
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginLeft="10dp">
 
-            <ImageView android:id="@+id/imgMo3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/img_anmo_3_false"
-                android:layout_marginLeft="20dp"
-                android:tag="false"/>
+                <ImageView android:id="@+id/imgMoB1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/img_anmo_1_false"
+                    android:tag="false"/>
 
+                <ImageView android:id="@+id/imgMoB2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/img_anmo_2_false"
+                    android:layout_marginLeft="20dp"
+                    android:tag="false"/>
+
+                <ImageView android:id="@+id/imgMoB3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/img_anmo_3_false"
+                    android:layout_marginLeft="20dp"
+                    android:tag="false"/>
+
+            </LinearLayout>
 
 
         </LinearLayout>
+
+
+
+
 
 
     </RelativeLayout>

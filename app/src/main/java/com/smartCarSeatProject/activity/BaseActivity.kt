@@ -60,7 +60,7 @@ open class BaseActivity : AppCompatActivity(){
     }
 
     // 性别-男
-    val SEX_MAN = "SEX_MAN"
+//    val SEX_MAN = "SEX_MAN"
     // 国别-亚洲
     val COUNTRY_CN = "COUNTRY_CN"
     private val PREF_NAME = "SharedPreferencesInfo"

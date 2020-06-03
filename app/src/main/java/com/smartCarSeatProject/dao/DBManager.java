@@ -41,13 +41,13 @@ public class DBManager {
     }
 
     String[] columns = new String[]{"weight", "press1", "press2", "press3", "press4", "press5", "press6", "press7", "press8"};
-    String selection = "weight >= ?";
+    String selection = "weight <= ?";
     //查询
     public List<ControlPressInfo> queryLikeWeight(String strTableName, double iValue) {
         List<ControlPressInfo> list = new ArrayList<>();
         String[] selectionArgs = {iValue+""};
         try {
-            Cursor cursor = sqLiteDatabase.query(strTableName, columns, selection, selectionArgs, null, null, "weight asc");// 按照身高，升序排列，第一个就是最接近的
+            Cursor cursor = sqLiteDatabase.query(strTableName, columns, selection, selectionArgs, null, null, "weight asc");// 按照体重，升序排列，最后一个就是最接近的
             while (cursor != null && cursor.moveToNext()) {
                 int iWeight = cursor.getInt(cursor.getColumnIndex("weight"));
                 int iPress1 = cursor.getInt(cursor.getColumnIndex("press1"));
@@ -65,6 +65,28 @@ public class DBManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (list.size() == 0) {
+            try {
+                Cursor cursor = sqLiteDatabase.query(strTableName, columns, "weight >= ?", selectionArgs, null, null, "weight desc");// 按照体重，降序排列，最后一个就是最接近的
+                while (cursor != null && cursor.moveToNext()) {
+                    int iWeight = cursor.getInt(cursor.getColumnIndex("weight"));
+                    int iPress1 = cursor.getInt(cursor.getColumnIndex("press1"));
+                    int iPress2 = cursor.getInt(cursor.getColumnIndex("press2"));
+                    int iPress3 = cursor.getInt(cursor.getColumnIndex("press3"));
+                    int iPress4 = cursor.getInt(cursor.getColumnIndex("press4"));
+                    int iPress5 = cursor.getInt(cursor.getColumnIndex("press5"));
+                    int iPress6 = cursor.getInt(cursor.getColumnIndex("press6"));
+                    int iPress7 = cursor.getInt(cursor.getColumnIndex("press7"));
+                    int iPress8 = cursor.getInt(cursor.getColumnIndex("press8"));
+                    ControlPressInfo city = new ControlPressInfo(iWeight,iPress1,iPress2,iPress3,iPress4,iPress5,iPress6,iPress7,iPress8);
+                    list.add(city);
+                }
+                cursor.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         return list;
     }
 

@@ -26,6 +26,7 @@ import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.os.SystemClock
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.TextView
@@ -126,7 +127,8 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
     }
 
     fun initData() {
-        val isMan = getBooleanBySharedPreferences(SEX_MAN)
+//        val isMan = getBooleanBySharedPreferences(SEX_MAN)
+        val isMan = DataAnalysisHelper.deviceState.m_gender
         val isCN = getBooleanBySharedPreferences(COUNTRY_CN)
         btnNan.tag = isMan
         btnNv.tag = !isMan
@@ -189,6 +191,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
             val willCtrPressValue = DataAnalysisHelper.getInstance(mContext)?.getAutoCtrPressByPersonStyle(isMan,isCN)
             loadingDialog.showAndMsg("正在调整...")
             val sendData = CreateCtrDataHelper.getCtrPressAllValueByPerson(willCtrPressValue!!)
+            Log.e("DeviceWorkInfo","计算数据：自动设置B面的气压值：1-4:${sendData[0]} & 5-8:${sendData[1]}")
             // 只调整B面的，所以将A面设为normal，B面设为adjust
             SocketThreadManager.sharedInstance(mContext)?.StartChangeModelByCan(CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_NORMAL,BaseVolume.COMMAND_CAN_MODEL_ADJUST))
             SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan(sendData[0])
@@ -242,7 +245,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                 DataAnalysisHelper.deviceState.m_gender = true
                 btnNan.setTextColor(getColor(R.color.colorWhite))
                 btnNv.setTextColor(getColor(R.color.black1))
-                saveBooleanBySharedPreferences(SEX_MAN,true)
+//                saveBooleanBySharedPreferences(SEX_MAN,true)
             }
             R.id.btnNv ->{
                 if (btnNv.tag as Boolean) {
@@ -253,7 +256,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                 DataAnalysisHelper.deviceState.m_gender = false
                 btnNan.setTextColor(getColor(R.color.black1))
                 btnNv.setTextColor(getColor(R.color.colorWhite))
-                saveBooleanBySharedPreferences(SEX_MAN,false)
+//                saveBooleanBySharedPreferences(SEX_MAN,false)
             }
             R.id.btnDongF ->{
                 if (btnDongF.tag as Boolean) {

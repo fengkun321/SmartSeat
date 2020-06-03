@@ -17,9 +17,9 @@ class DevelopDataInfo {
     // 初始化A面8组气压
     var p_init_back_A = "1000"
     // 初始化靠背B面5组气压
-    var p_init_back_B = "0"
+    var p_init_back_B = "255"
     // 初始化坐垫3组气压
-    var p_init_cushion = "0"
+    var p_init_cushion = "1000"
 
     // 识别后靠背A面8组
     var p_recog_back_A = "0"
@@ -89,11 +89,11 @@ class DevelopDataInfo {
         strName = ""
 
         // 初始化A面8组气压
-        p_init_back_A = "0"
+        p_init_back_A = "1000"
         // 初始化靠背B面5组气压
-        p_init_back_B = "0"
+        p_init_back_B = "255"
         // 初始化坐垫3组气压
-        p_init_cushion = "0"
+        p_init_cushion = "1000"
 
         // 识别后靠背A面8组
         p_recog_back_A = "0"

@@ -105,6 +105,14 @@ class DeviceWorkInfo : Serializable{
 
     /** 根据传感气压，计算身高体重 */
     fun measureHeightWeight(iSensePressValueListl : ArrayList<Int>) {
+
+        var strSensePressInfo = ""
+        for (iNumber in 0 until iSensePressValueListl.size) {
+            strSensePressInfo += ""+(iNumber+1)+"："+ iSensePressValueListl[iNumber]+","
+        }
+
+        Log.e("DeviceWorkInfo","计算数据：获取当前A面的压力平均值：${strSensePressInfo}")
+
         // 体重
         nowWeight =  -43.107-
                 0.01886* iSensePressValueListl[0]+

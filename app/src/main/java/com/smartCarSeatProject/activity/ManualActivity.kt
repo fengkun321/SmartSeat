@@ -6,17 +6,16 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.RelativeLayout
-import android.widget.SeekBar
-import android.widget.TextView
+import android.widget.*
 import com.smartCarSeatProject.R
 import com.smartCarSeatProject.dao.DevelopDataInfo
 import com.smartCarSeatProject.dao.DevelopInfoDao
 import com.smartCarSeatProject.data.*
 import com.smartCarSeatProject.isometric.Color
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
+import com.smartCarSeatProject.utl.DateUtil
 import com.smartCarSeatProject.view.AreaAddWindowHint
 import com.smartCarSeatProject.view.AreaAddWindowHint.PeriodListener
 import com.smartCarSeatProject.view.SetValueAreaAddWindow
@@ -25,7 +24,6 @@ import kotlinx.android.synthetic.main.layout_auto_seat_transparent.view.*
 import kotlinx.android.synthetic.main.layout_manual.*
 import kotlinx.android.synthetic.main.layout_manual_heat.*
 import kotlinx.android.synthetic.main.layout_manual_heat.view.*
-import kotlinx.android.synthetic.main.layout_manual_location.*
 import kotlinx.android.synthetic.main.layout_manual_location.view.*
 import kotlinx.android.synthetic.main.layout_manual_prop.view.*
 import kotlinx.android.synthetic.main.layout_manual_prop.view.view0
@@ -39,10 +37,6 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_manual)
-
-//        A5AAACB3410C07E40509090D1D06010000000A000001000003050704000F000F00010000000000C5CCCA
-//        A5AAAC5B410601640305070400000F000F02000003040401000F003C037F0204040401000F003C047903030404000005003C057F00000000000005003CC5CCCA
-//        A5AAAC614101014F6666696365C5CCCA
 
         initUI()
         initSeatInfo()
@@ -150,6 +144,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
     var iNowSelectLocation = -1;
     var locationList = arrayListOf<TextView>()
     fun initLocationInfo() {
+        manualLocation.setOnClickListener(onClickLoactionListener)
         locationList.add(manualLocation.tvLoc1);locationList.add(manualLocation.tvLoc2);locationList.add(manualLocation.tvLoc3)
         locationList.add(manualLocation.tvLoc4);locationList.add(manualLocation.tvLoc5);locationList.add(manualLocation.tvLoc6)
         locationList.forEach {
@@ -183,9 +178,13 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
         initShapeBySense(manualHeat.autoSeat.viewL10)
         initShapeBySense(manualHeat.autoSeat.viewR10)
 
-        manualHeat.imgMo1.setOnClickListener(onClickAnMoListener)
-        manualHeat.imgMo2.setOnClickListener(onClickAnMoListener)
-        manualHeat.imgMo3.setOnClickListener(onClickAnMoListener)
+        manualHeat.imgMoA1.setOnClickListener(onClickAnMoListenerA)
+        manualHeat.imgMoA2.setOnClickListener(onClickAnMoListenerA)
+        manualHeat.imgMoA3.setOnClickListener(onClickAnMoListenerA)
+
+        manualHeat.imgMoB1.setOnClickListener(onClickAnMoListenerB)
+        manualHeat.imgMoB2.setOnClickListener(onClickAnMoListenerB)
+        manualHeat.imgMoB3.setOnClickListener(onClickAnMoListenerB)
 
         updateSenseSeatView()
 
@@ -271,7 +270,6 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
         SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(strSendData)
     }
 
-
     /** 位置调节 */
     val onClickLoactionListener = View.OnClickListener {
         val iTag = it.tag.toString().toInt()
@@ -281,6 +279,13 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
         locationList.forEach {
             it.setBackgroundColor(getColor(R.color.colorBlack))
         }
+        // 取消位置调节
+        if (iTag == -1) {
+            DataAnalysisHelper.deviceState.l_location = "0"
+            SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_0)
+            return@OnClickListener
+        }
+
         DataAnalysisHelper.deviceState.l_location = "${iTag+1}"
         locationList[iTag].setBackgroundColor(getColor(R.color.colorLightBlue))
         when(iTag) {
@@ -302,31 +307,76 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
 
     }
 
-    val onClickAnMoListener = View.OnClickListener {
-        if (it.tag.toString().toBoolean())
-            return@OnClickListener
-
-        imgMo1.setImageResource(R.drawable.img_anmo_1_false)
-        imgMo2.setImageResource(R.drawable.img_anmo_2_false)
-        imgMo3.setImageResource(R.drawable.img_anmo_3_false)
-        imgMo1.tag = false
-        imgMo2.tag = false
-        imgMo3.tag = false
-
-        when(it.id) {
-            R.id.imgMo1 -> {
-                imgMo1.tag = true
-                imgMo1.setImageResource(R.drawable.img_anmo_1)
-            }
-            R.id.imgMo2 -> {
-                imgMo2.tag = true
-                imgMo2.setImageResource(R.drawable.img_anmo_2)
-            }
-            R.id.imgMo3 -> {
-                imgMo3.tag = true
-                imgMo3.setImageResource(R.drawable.img_anmo_3)
+    val onClickAnMoListenerA = View.OnClickListener {
+        val isRun = it.tag.toString().toBoolean()
+        imgMoA1.tag = false
+        imgMoA2.tag = false
+        imgMoA3.tag = false
+        imgMoA1.setImageResource(R.drawable.img_anmo_1_false)
+        imgMoA2.setImageResource(R.drawable.img_anmo_2_false)
+        imgMoA3.setImageResource(R.drawable.img_anmo_3_false)
+        if (!isRun) {
+            it.tag = true
+            when(it.id) {
+                R.id.imgMoA1 -> imgMoA1.setImageResource(R.drawable.img_anmo_1)
+                R.id.imgMoA2 -> imgMoA2.setImageResource(R.drawable.img_anmo_2)
+                R.id.imgMoA3 -> imgMoA3.setImageResource(R.drawable.img_anmo_3)
             }
         }
+        checkMassageState()
+    }
+
+    val onClickAnMoListenerB = View.OnClickListener {
+        val isRun = it.tag.toString().toBoolean()
+        imgMoB1.tag = false
+        imgMoB2.tag = false
+        imgMoB3.tag = false
+        imgMoB1.setImageResource(R.drawable.img_anmo_1_false)
+        imgMoB2.setImageResource(R.drawable.img_anmo_2_false)
+        imgMoB3.setImageResource(R.drawable.img_anmo_3_false)
+        if (!isRun) {
+            it.tag = true
+            when(it.id) {
+                R.id.imgMoB1 -> imgMoB1.setImageResource(R.drawable.img_anmo_1)
+                R.id.imgMoB2 -> imgMoB2.setImageResource(R.drawable.img_anmo_2)
+                R.id.imgMoB3 -> imgMoB3.setImageResource(R.drawable.img_anmo_3)
+            }
+        }
+        checkMassageState()
+    }
+
+    /**
+     * 选择按摩方式
+     * A / B 面
+     * 按摩程度
+     * 是否按摩
+     */
+    private fun checkMassageState() {
+        var iNumberA = BaseVolume.COMMAND_CAN_MODEL_MASG_OFF
+        var iNumberB = BaseVolume.COMMAND_CAN_MODEL_MASG_OFF
+        if (imgMoA1.tag.toString().toBoolean()) {
+            iNumberA = BaseVolume.COMMAND_CAN_MODEL_MASG_1
+        }
+        if (imgMoA2.tag.toString().toBoolean()) {
+            iNumberA = BaseVolume.COMMAND_CAN_MODEL_MASG_2
+        }
+        if (imgMoA3.tag.toString().toBoolean()) {
+            iNumberA = BaseVolume.COMMAND_CAN_MODEL_MASG_3
+        }
+
+        if (imgMoB1.tag.toString().toBoolean()) {
+            iNumberB = BaseVolume.COMMAND_CAN_MODEL_MASG_1
+        }
+        if (imgMoB2.tag.toString().toBoolean()) {
+            iNumberB = BaseVolume.COMMAND_CAN_MODEL_MASG_2
+        }
+        if (imgMoB3.tag.toString().toBoolean()) {
+            iNumberB = BaseVolume.COMMAND_CAN_MODEL_MASG_3
+        }
+
+        val strSendData = CreateCtrDataHelper.getCtrModelAB(iNumberA,iNumberB)
+        Log.e("ManualActivity", "当前按摩指令：$strSendData")
+        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
 
     }
 
@@ -453,6 +503,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
             R.id.btnHeat -> {
                 switchCtrView(3)
             }
+
         }
     }
 
@@ -625,6 +676,9 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
 
                 // 位置
                 nowMemoryInfo.l_location = "位置"+deviceWorkInfo.l_location
+
+                // 时间
+                nowMemoryInfo.saveTime =  DateUtil.getNowDateTime()
 
                 // 控制数据
                 for (iNumber in 1..8) {

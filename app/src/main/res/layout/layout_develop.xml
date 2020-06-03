@@ -172,7 +172,7 @@
                     android:background="@color/colorWhite"
                     android:padding="5dp"
                     android:hint=""
-                    android:text="0"
+                    android:text="255"
                     android:singleLine="true"
                     android:inputType="number"
                     android:gravity="center_vertical"/>

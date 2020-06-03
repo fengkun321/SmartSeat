@@ -66,6 +66,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
     var tvJiaList : MutableList<Button> = ArrayList()
     var setValueDialog : SetValueAreaAddWindow? = null
     var nowDevelopDataInfo = DevelopDataInfo()
+    var iNowSelectNumber = -1;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,15 +142,13 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         var iTag = 0
         bViewList.forEach {
 
-            ++iTag
-
             var btnJian = it.btnJian
             var btnJia = it.btnJia
             var tvValue = it.tvValueB
             var seekBar = it.seekBar
             var tvNumber = it.tvNumber
 
-            tvNumber.text = "${iTag}："
+            tvNumber.text = "${iTag+1}："
             btnJian.tag = iTag
             btnJia.tag = iTag
             tvValue.tag = iTag
@@ -168,9 +167,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
             tvJiaList.add(btnJia)
             tvBValueList.add(tvValue)
             seekBarList.add(seekBar)
-
-
-
+            ++iTag
         }
 
         seekBarList.forEach {
@@ -270,7 +267,6 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
             var iProcess = seekBar?.progress!! +BaseVolume.ProgressValueMin
             var iTag = seekBar?.tag  as Int
-            iTag += 1
             controlPressValueByTag(iTag,iProcess)
         }
     }
@@ -317,33 +313,61 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 if (strType == BaseVolume.COMMAND_TYPE_CHANNEL_STATUS) {
                     // 开发者模式
                     if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.develop.iValue && SocketThreadManager.isCheckChannelState) {
-                        var iSettedCount = 0
-                        var iNormalCount = 0
-                        for (iState in DataAnalysisHelper.deviceState.controlPressStatusList) {
-                            if (iState == DeviceWorkInfo.STATUS_SETTING)
+                        // 正在恢复，则不能重复触发
+                        if (includeA.tvInitValue.text.toString().equals("Restoring initial value...",true)) {
+                            // 初始化控制A面所有，B面座垫678，通道充气，所以只需要判断678，abcdefgh这几个气袋
+                            var isAllNormal = true
+                            // A面所有气袋 abcdefgh
+                            for (iState in DataAnalysisHelper.deviceState.sensePressStatusList) {
+                                // 正在充气，说明还没完成
+                                if (iState == DeviceWorkInfo.STATUS_SETTING)
+                                    return
+                                if (iState == DeviceWorkInfo.STATUS_SETTED)
+                                    isAllNormal = false
+                            }
+                            for (iNumber in 5 .. 7) {
+                                val iState = DataAnalysisHelper.deviceState.controlPressStatusList[iNumber]
+                                // 正在充气，说明还没完成
+                                if (iState == DeviceWorkInfo.STATUS_SETTING)
+                                    return
+                                if (iState == DeviceWorkInfo.STATUS_SETTED)
+                                    isAllNormal = false
+                            }
+
+                            // 全部恢复到Normal
+                            if (!isAllNormal) {
+                                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
+                            }
+                            // 已经全部恢复到Normal，则将显示初始化完成
+                            else {
+                                // 保存体征按钮，可用
+                                btnSaveA.isEnabled = true
+                                btnSaveA.setTextColor(resources.getColor(R.color.colorWhite))
+                                includeA.tvInitValue.text = "Initialization completed!"
+                                includeA.tvInitValue.setTextColor(resources.getColor(R.color.colorGreen))
+                                SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+                            }
+                        }
+                        // 控制某路气袋的返回
+                        else {
+                            // 判断当前控制的气袋状态
+                            if (iNowSelectNumber == -1) {
                                 return
-                            if (iState == DeviceWorkInfo.STATUS_SETTED)
-                                ++iSettedCount
-                            if (iState == DeviceWorkInfo.STATUS_NORMAL)
-                                ++iNormalCount
-                        }
-                        for (iState in DataAnalysisHelper.deviceState.sensePressStatusList) {
-                            if (iState == DeviceWorkInfo.STATUS_SETTING)
+                            }
+                            val iCtrState = DataAnalysisHelper.deviceState.controlPressStatusList[iNowSelectNumber]
+                            if (iCtrState == DeviceWorkInfo.STATUS_SETTING) {
                                 return
-                            if (iState == DeviceWorkInfo.STATUS_SETTED)
-                                ++iSettedCount
-                            if (iState == DeviceWorkInfo.STATUS_NORMAL)
-                                ++iNormalCount
-                        }
-                        if (iSettedCount > 0) {
-                            // 恢复Normal
-                            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
-                        }
-                        // 已经全部恢复到Normal，则将座椅切到恢复成功状态
-                        if (iNormalCount == 19) {
-                            includeA.tvInitValue.text = "Initialization completed!"
-                            includeA.tvInitValue.setTextColor(resources.getColor(R.color.colorGreen))
-                            SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+                            }
+                            else if (iCtrState == DeviceWorkInfo.STATUS_SETTED) {
+                                // 恢复Normal
+                                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
+                            }
+                            else if (iCtrState == DeviceWorkInfo.STATUS_NORMAL) {
+
+                                iNowSelectNumber = -1
+                                SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+                            }
+
                         }
                     }
                 }
@@ -530,62 +554,61 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
             return
         }
 
-        nowDevelopDataInfo?.initData()
+        nowDevelopDataInfo.initData()
         //性别
         val sex =  findViewById<RadioButton>(rgSex.checkedRadioButtonId)
         //国家
         val nation = findViewById<RadioButton>(rgRace.checkedRadioButtonId)
 
         // 名称
-        nowDevelopDataInfo?.strName = edPS.text.toString()
+        nowDevelopDataInfo.strName = edPS.text.toString()
         //性别
-        nowDevelopDataInfo?.m_gender   = sex.text.toString()
+        nowDevelopDataInfo.m_gender   = sex.text.toString()
         //国家
-        nowDevelopDataInfo?.m_national = nation.text.toString()
+        nowDevelopDataInfo.m_national = nation.text.toString()
         // 人员-体重
-        nowDevelopDataInfo?.m_weight =  edWeight.text.toString()
+        nowDevelopDataInfo.m_weight =  edWeight.text.toString()
         // 人员-身高
-        nowDevelopDataInfo?.m_height =  edHeight.text.toString()
+        nowDevelopDataInfo.m_height =  edHeight.text.toString()
         // 备注
-        nowDevelopDataInfo?.strPSInfo =  edPS.text.toString()
-        // 时间
-        nowDevelopDataInfo?.saveTime =  DateUtil.getNowDateTime()
+        nowDevelopDataInfo.strPSInfo =  edPS.text.toString()
 
-        nowDevelopDataInfo?.HeartRate = tvXinLv.text.toString()
-        nowDevelopDataInfo?.BreathRate = tvHuXiLv.text.toString()
-        nowDevelopDataInfo?.E_Index = tvQingXu.text.toString()
-        nowDevelopDataInfo?.Dia_BP = tvShuZhang.text.toString()
-        nowDevelopDataInfo?.Sys_BP = tvShouSuo.text.toString()
-        nowDevelopDataInfo?.l_location = tvLocation.text.toString()
+
+        nowDevelopDataInfo.HeartRate = tvXinLv.text.toString()
+        nowDevelopDataInfo.BreathRate = tvHuXiLv.text.toString()
+        nowDevelopDataInfo.E_Index = tvQingXu.text.toString()
+        nowDevelopDataInfo.Dia_BP = tvShuZhang.text.toString()
+        nowDevelopDataInfo.Sys_BP = tvShouSuo.text.toString()
+        nowDevelopDataInfo.l_location = tvLocation.text.toString()
 
         // 初始化A面8组气压
-        nowDevelopDataInfo?.p_init_back_A = strVA
+        nowDevelopDataInfo.p_init_back_A = strVA
         // 初始化靠背B面5组气压
-        nowDevelopDataInfo?.p_init_back_B = strVB
+        nowDevelopDataInfo.p_init_back_B = strVB
         // 初始化坐垫3组气压
-        nowDevelopDataInfo?.p_init_cushion = strVSeat
+        nowDevelopDataInfo.p_init_cushion = strVSeat
 
         // 识别后靠背A面8组
-        nowDevelopDataInfo?.p_recog_back_A =  includeA.includeAAL.tvValueA.text.toString()
-        nowDevelopDataInfo?.p_recog_back_B =  includeA.includeABL.tvValueA.text.toString()
-        nowDevelopDataInfo?.p_recog_back_C =  includeA.includeACL.tvValueA.text.toString()
-        nowDevelopDataInfo?.p_recog_back_D =  includeA.includeADL.tvValueA.text.toString()
-        nowDevelopDataInfo?.p_recog_back_E =  includeA.includeAEL.tvValueA.text.toString()
-        nowDevelopDataInfo?.p_recog_back_F =  includeA.includeAFL.tvValueA.text.toString()
-        nowDevelopDataInfo?.p_recog_back_G =  includeA.includeAGL.tvValueA.text.toString()
-        nowDevelopDataInfo?.p_recog_back_H =  includeA.includeAHL.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_back_A =  includeA.includeAAL.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_back_B =  includeA.includeABL.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_back_C =  includeA.includeACL.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_back_D =  includeA.includeADL.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_back_E =  includeA.includeAEL.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_back_F =  includeA.includeAFL.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_back_G =  includeA.includeAGL.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_back_H =  includeA.includeAHL.tvValueA.text.toString()
 
         // 识别后坐垫3组
-        nowDevelopDataInfo?.p_recog_cushion_6 =  includeA.includeASeat6.tvValueA.text.toString()
-        nowDevelopDataInfo?.p_recog_cushion_7 =  includeA.includeASeat7.tvValueA.text.toString()
-        nowDevelopDataInfo?.p_recog_cushion_7 =  includeA.includeASeat8.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_cushion_6 =  includeA.includeASeat6.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_cushion_7 =  includeA.includeASeat7.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_cushion_8 =  includeA.includeASeat8.tvValueA.text.toString()
 
         // 识别后靠背B面5组
-        nowDevelopDataInfo?.p_recog_back_1 =  includeB.includeB1.tvValueB.text.toString()
-        nowDevelopDataInfo?.p_recog_back_2 =  includeB.includeB2.tvValueB.text.toString()
-        nowDevelopDataInfo?.p_recog_back_3 =  includeB.includeB3.tvValueB.text.toString()
-        nowDevelopDataInfo?.p_recog_back_4 =  includeB.includeB4.tvValueB.text.toString()
-        nowDevelopDataInfo?.p_recog_back_5 =  includeB.includeB5.tvValueB.text.toString()
+        nowDevelopDataInfo.p_recog_back_1 =  includeB.includeB1.tvValueB.text.toString()
+        nowDevelopDataInfo.p_recog_back_2 =  includeB.includeB2.tvValueB.text.toString()
+        nowDevelopDataInfo.p_recog_back_3 =  includeB.includeB3.tvValueB.text.toString()
+        nowDevelopDataInfo.p_recog_back_4 =  includeB.includeB4.tvValueB.text.toString()
+        nowDevelopDataInfo.p_recog_back_5 =  includeB.includeB5.tvValueB.text.toString()
 
         ToastMsg("Adjust the pressure on B！")
         isSaveAData = true
@@ -598,21 +621,23 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         // 保存数据库！
         val developInfoDao = DevelopInfoDao(this)
 
-        // 调节后坐垫3组
-        nowDevelopDataInfo?.p_adjust_cushion_1 =  includeB.includeB1.tvValueB.text.toString()
-        nowDevelopDataInfo?.p_adjust_cushion_2 =  includeB.includeB2.tvValueB.text.toString()
-        nowDevelopDataInfo?.p_adjust_cushion_3 =  includeB.includeB3.tvValueB.text.toString()
-
         // 调节后靠背B面组
-        nowDevelopDataInfo?.p_adjust_cushion_4 =  includeB.includeB4.tvValueB.text.toString()
-        nowDevelopDataInfo?.p_adjust_cushion_5 =  includeB.includeB5.tvValueB.text.toString()
-        nowDevelopDataInfo?.p_adjust_cushion_6 =  includeB.includeB6.tvValueB.text.toString()
-        nowDevelopDataInfo?.p_adjust_cushion_7 =  includeB.includeB7.tvValueB.text.toString()
-        nowDevelopDataInfo?.p_adjust_cushion_8 =  includeB.includeB8.tvValueB.text.toString()
+        nowDevelopDataInfo.p_adjust_cushion_1 =  includeB.includeB1.tvValueB.text.toString()
+        nowDevelopDataInfo.p_adjust_cushion_2 =  includeB.includeB2.tvValueB.text.toString()
+        nowDevelopDataInfo.p_adjust_cushion_3 =  includeB.includeB3.tvValueB.text.toString()
+        nowDevelopDataInfo.p_adjust_cushion_4 =  includeB.includeB4.tvValueB.text.toString()
+        nowDevelopDataInfo.p_adjust_cushion_5 =  includeB.includeB5.tvValueB.text.toString()
+        // 调节后坐垫3组
+        nowDevelopDataInfo.p_adjust_cushion_6 =  includeB.includeB6.tvValueB.text.toString()
+        nowDevelopDataInfo.p_adjust_cushion_7 =  includeB.includeB7.tvValueB.text.toString()
+        nowDevelopDataInfo.p_adjust_cushion_8 =  includeB.includeB8.tvValueB.text.toString()
         // 位置调节
-        nowDevelopDataInfo?.l_location = tvLocation.text.toString()
+        nowDevelopDataInfo.l_location = tvLocation.text.toString()
         // 数据类型
-        nowDevelopDataInfo?.dataType = DevelopDataInfo.DATA_TYPE_DEVELOP
+        nowDevelopDataInfo.dataType = DevelopDataInfo.DATA_TYPE_DEVELOP
+
+        // 时间
+        nowDevelopDataInfo.saveTime =  DateUtil.getNowDateTime()
 
         developInfoDao.insertSingleData(nowDevelopDataInfo)
         developInfoDao.closeDb()
@@ -630,6 +655,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
      * 再发送数据
      */
     private fun controlPressValueByTag(iTag : Int,iPressValue:Int) {
+        iNowSelectNumber = iTag
         // 只调整B面的，所以将A面设为normal，B面设为adjust
         SocketThreadManager.sharedInstance(mContext)?.StartChangeModelByCan(CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_NORMAL,BaseVolume.COMMAND_CAN_MODEL_ADJUST))
         val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iPressValue)
@@ -731,14 +757,14 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 runOnUiThread {
                     // 人体数据： id & 信噪比 & 心跳 & 情绪值 & 低压 & 高压
                     val strPersonDataInfo =  "${result.measurementID}&${result.snr}&${result.heartRate}&${result.msi}&${result.bpDiastolic}&${result.bpSystolic}"
-                    Loge("MenuSelectActivity","人体数据：id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}")
+                    Loge("MenuSelectActivity","人体数据：id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}&性别：${result.gender}")
                     tvXinLv.text = "${result.heartRate}"
                     tvHuXiLv.text = "0"
                     tvQingXu.text = "${result.msi}"
                     tvShuZhang.text = "${result.bpDiastolic}"
                     tvShouSuo.text = "${result.bpSystolic}"
                     if (result.resultIndex + 1 >= MeasurementActivity.TOTAL_NUMBER_CHUNKS) {
-                        Loge("MenuSelectActivity","人体数据：测量结束！开始计算身高体重")
+//                        Loge("MenuSelectActivity","人体数据：测量结束！开始计算身高体重")
                         stopMeasurement(true)
                     }
                 }

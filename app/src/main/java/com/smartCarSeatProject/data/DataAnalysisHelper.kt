@@ -200,7 +200,7 @@ class DataAnalysisHelper{
 
 
     // 人体气压查询表:男女2→国别2→胖瘦3
-    var bodyPressByType = arrayOf(
+    val bodyPressByType = arrayOf(
             // 男
             arrayOf(arrayListOf("t_body_1","t_body_2","t_body_3"),// 中国/瘦，匀称，胖
                     arrayListOf("t_body_4","t_body_5","t_body_6")),// 国外/瘦，匀称，胖,
@@ -233,7 +233,15 @@ class DataAnalysisHelper{
             Log.e("getPressInfo", "推荐数据表： pressInfo:$city1")
         }
         dbManager.closeDb()
-        return if (pressInfo.size > 0) pressInfo[0] else null
+
+        var controlPressInfo : ControlPressInfo? = null
+        if (pressInfo.size > 0) {
+            controlPressInfo = pressInfo[pressInfo.size - 1]
+            Log.e("DeviceWorkInfo","计算数据：推荐数据表的值：${controlPressInfo.toString()}")
+            return controlPressInfo
+        }
+        else
+            return null
 
     }
 

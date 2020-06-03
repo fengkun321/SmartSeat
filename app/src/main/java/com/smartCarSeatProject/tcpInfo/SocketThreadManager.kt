@@ -45,7 +45,7 @@ class SocketThreadManager() {
     fun createLocSocket() {
 
         if (LocTaskCenter.sharedCenter(mContext).iConnectState == BaseVolume.TCP_CONNECT_STATE_DISCONNECT) {
-            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_START))
+            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN2).putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_START))
             LocTaskCenter.sharedCenter(mContext).connect(BaseVolume.CanHostIp,BaseVolume.LocHostListenningPort)
         }
 

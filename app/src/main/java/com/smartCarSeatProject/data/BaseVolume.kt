@@ -58,9 +58,9 @@ class BaseVolume {
 //                13 to -35, 14 to -35, 15 to 70, 16 to -70)
 
 
-        var strSensorInitValue = ""
-        var strSeatInitValue = ""
-        var strAdjustInitialValue = ""
+        var strSensorInitValue = "1000"
+        var strSeatInitValue = "1000"
+        var strAdjustInitialValue = "255"
 
 
 
@@ -124,6 +124,10 @@ class BaseVolume {
         const val COMMAND_CAN_MODEL_ADJUST_A_B = COMMAND_HEAD+COMMAND_CAN_MODEL_ID+"0000000090000000"
         // AB都为普通模式
         const val COMMAND_CAN_MODEL_NORMAL_A_B = COMMAND_HEAD+COMMAND_CAN_MODEL_ID+"00000000b4000000"
+        // AB 全部泄气
+        const val COMMAND_CAN_ALL_DEFLATE_A_B = COMMAND_HEAD+COMMAND_CAN_MODEL_ID+"AAAAAAAAB6000000"
+        // AB 全部恢复
+        const val COMMAND_CAN_ALL_STOP_A_B = COMMAND_HEAD+COMMAND_CAN_MODEL_ID+"0000000000000000"
 
         /** 电机位置1-6 结构：包头+ID+数据 */
         const val COMMAND_CAN_LOCATION_ID = "02f5"
