@@ -33,7 +33,7 @@
                     android:text="区域1"
                     android:gravity="center"
                     android:clickable="true"
-                    android:tag="0"
+                    android:tag="false"
                     android:textColor="@color/colorWhite"/>
 
                 <View
@@ -48,7 +48,7 @@
                     android:background="@color/colorBlack"
                     android:text="区域3"
                     android:gravity="center"
-                    android:tag="2"
+                    android:tag="false"
                     android:textColor="@color/colorWhite"/>
 
                 <View
@@ -63,7 +63,7 @@
                     android:background="@color/colorBlack"
                     android:text="区域5"
                     android:gravity="center"
-                    android:tag="4"
+                    android:tag="false"
                     android:textColor="@color/colorWhite"/>
 
             </LinearLayout>
@@ -86,7 +86,7 @@
                     android:background="@color/colorBlack"
                     android:text="区域2"
                     android:gravity="center"
-                    android:tag="1"
+                    android:tag="false"
                     android:textColor="@color/colorWhite"/>
 
                 <View
@@ -101,7 +101,7 @@
                     android:background="@color/colorBlack"
                     android:text="区域4"
                     android:gravity="center"
-                    android:tag="3"
+                    android:tag="false"
                     android:textColor="@color/colorWhite"/>
 
                 <View
@@ -116,7 +116,7 @@
                     android:background="@color/colorBlack"
                     android:text="区域6"
                     android:gravity="center"
-                    android:tag="5"
+                    android:tag="false"
                     android:textColor="@color/colorWhite"/>
 
             </LinearLayout>

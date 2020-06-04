@@ -144,7 +144,6 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
     var iNowSelectLocation = -1;
     var locationList = arrayListOf<TextView>()
     fun initLocationInfo() {
-        manualLocation.setOnClickListener(onClickLoactionListener)
         locationList.add(manualLocation.tvLoc1);locationList.add(manualLocation.tvLoc2);locationList.add(manualLocation.tvLoc3)
         locationList.add(manualLocation.tvLoc4);locationList.add(manualLocation.tvLoc5);locationList.add(manualLocation.tvLoc6)
         locationList.forEach {
@@ -271,39 +270,54 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
     }
 
     /** 位置调节 */
-    val onClickLoactionListener = View.OnClickListener {
-        val iTag = it.tag.toString().toInt()
-        if (iTag == iNowSelectLocation) {
-            return@OnClickListener
-        }
+    val onClickLoactionListener = View.OnClickListener { it0 ->
+        val isRun = it0.tag.toString().toBoolean()
         locationList.forEach {
             it.setBackgroundColor(getColor(R.color.colorBlack))
         }
         // 取消位置调节
-        if (iTag == -1) {
+        if (isRun) {
             DataAnalysisHelper.deviceState.l_location = "0"
             SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_0)
             return@OnClickListener
         }
 
-        DataAnalysisHelper.deviceState.l_location = "${iTag+1}"
-        locationList[iTag].setBackgroundColor(getColor(R.color.colorLightBlue))
-        when(iTag) {
-            0 ->
+        var iLocNumber = -1
+        when(it0.id) {
+            R.id.tvLoc1 -> {
+                iLocNumber = 1
                 SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_1)
-            1 ->
+            }
+            R.id.tvLoc2 ->{
+                iLocNumber = 2
                 SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_2)
-            2 ->
+            }
+            R.id.tvLoc3 -> {
+                iLocNumber = 3
                 SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_3)
-            3 ->
+            }
+            R.id.tvLoc4 -> {
+                iLocNumber = 4
                 SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_4)
-            4 ->
+            }
+            R.id.tvLoc5 -> {
+                iLocNumber = 5
                 SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_5)
-            5 ->
+            }
+            R.id.tvLoc6 -> {
+                iLocNumber = 6
                 SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_6)
+            }
+
         }
         // 每次发完位置后，要再发一条清零指令才会动作
         SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_0)
+
+        it0.tag = !isRun
+
+        DataAnalysisHelper.deviceState.l_location = "$iLocNumber"
+        locationList[iLocNumber-1].setBackgroundColor(getColor(R.color.colorLightBlue))
+
 
     }
 

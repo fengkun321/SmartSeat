@@ -50,7 +50,6 @@ import com.smartCarSeatProject.utl.DateUtil
 import com.smartCarSeatProject.view.AddMenuWindowDialog
 import kotlinx.android.synthetic.main.layout_b_dmcm.*
 import kotlinx.android.synthetic.main.layout_develop.tvReCanConnect
-import kotlinx.android.synthetic.main.layout_develop.tvReDeviceConnect
 import kotlinx.android.synthetic.main.layout_em_info.*
 import org.json.JSONArray
 import org.opencv.core.Point
@@ -75,16 +74,16 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         initUI()
         reciverBand()
 
-        if (SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.isTCPAllConnected()!!) {
-            tvReCanConnect.visibility = View.GONE
-            tvReDeviceConnect.visibility = View.GONE
+        tvReCanConnect.visibility = View.GONE
+        tvReLocConnect.visibility = View.GONE
+        if (!SocketThreadManager.sharedInstance(mContext).isCanConnected()) {
+            tvReCanConnect.visibility = View.VISIBLE
         }
-        else {
-            tvReCanConnect.visibility = View.GONE
-            tvReDeviceConnect.visibility = View.GONE
-            if (!SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.isCanConnected()!!)
-                tvReCanConnect.visibility = View.VISIBLE
+
+        if (!SocketThreadManager.sharedInstance(mContext).isCan2Connected()) {
+            tvReLocConnect.visibility = View.VISIBLE
         }
+
 
         // 人体采集相关
         AnuLogUtil.setShowLog(BuildConfig.DEBUG)
@@ -175,7 +174,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         }
 
         tvReCanConnect.setOnClickListener(this)
-        tvReDeviceConnect.setOnClickListener(this)
+        tvReLocConnect.setOnClickListener(this)
 
         imgBack.setOnClickListener(this)
         btnInitValue.setOnClickListener(this)
@@ -222,6 +221,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         myIntentFilter.addAction(BaseVolume.BROADCAST_CTR_CALLBACK)
         myIntentFilter.addAction(BaseVolume.BROADCAST_SEND_INFO)
         myIntentFilter.addAction(BaseVolume.BROADCAST_TCP_INFO_CAN)
+        myIntentFilter.addAction(BaseVolume.BROADCAST_TCP_INFO_CAN2)
         // 注册广播
         registerReceiver(myNetReceiver, myIntentFilter)
     }
@@ -405,7 +405,6 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
                 // 开始连接
                 if (strType.equals(BaseVolume.BROADCAST_TCP_CONNECT_START)) {
-                    ToastMsg("Can,Connecting！")
                 }
                 // 连接结果
                 else if (strType.equals(BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)) {
@@ -413,12 +412,30 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     val strMsg = intent.getStringExtra(BaseVolume.BROADCAST_MSG)
 
                     if (!isConnected) {
-                        tvReCanConnect.visibility = View.VISIBLE
                         ToastMsg("Can Connect Fail！$strMsg")
+                        tvReCanConnect.visibility = View.VISIBLE
                     }
                     else {
                         tvReCanConnect.visibility = View.GONE
-                        ToastMsg("Can Connection successful！")
+                    }
+                }
+            }
+            else if (action == BaseVolume.BROADCAST_TCP_INFO_CAN2) {
+                val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
+                // 开始连接
+                if (strType.equals(BaseVolume.BROADCAST_TCP_CONNECT_START)) {
+                }
+                // 连接结果
+                else if (strType.equals(BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)) {
+                    val isConnected = intent.getBooleanExtra(BaseVolume.BROADCAST_TCP_STATUS, false)
+                    val strMsg = intent.getStringExtra(BaseVolume.BROADCAST_MSG)
+
+                    if (!isConnected) {
+                        ToastMsg("Can Connect Fail！$strMsg")
+                        tvReLocConnect.visibility = View.VISIBLE
+                    }
+                    else {
+                        tvReLocConnect.visibility = View.GONE
                     }
                 }
             }
@@ -442,7 +459,9 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
             R.id.llParent ->
                 hideSoftInput(p0?.windowToken)
             R.id.tvReCanConnect ->
-                SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.createCanSocket()
+                SocketThreadManager.sharedInstance(mContext).createCanSocket()
+            R.id.tvReLocConnect ->
+                SocketThreadManager.sharedInstance(mContext).createLocSocket()
             R.id.rlLocation ->
                 deviceSelectMenu(true,tvLocation.text.toString(),locationList)
 

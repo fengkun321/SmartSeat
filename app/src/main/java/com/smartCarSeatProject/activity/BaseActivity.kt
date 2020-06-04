@@ -25,6 +25,8 @@ open class BaseActivity : AppCompatActivity(){
     lateinit var loadingDialog:LoadingDialog
     // 自定义进度条
     lateinit var progressBarWindowHint: ProgressBarWindowHint
+    // 是否已经检测过人体数据
+    protected var isCheckedPersonInfo = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

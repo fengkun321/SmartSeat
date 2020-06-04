@@ -146,6 +146,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
     private fun reciverBand() {
         val myIntentFilter = IntentFilter()
         myIntentFilter.addAction(BaseVolume.BROADCAST_TCP_INFO_CAN)
+        myIntentFilter.addAction(BaseVolume.BROADCAST_TCP_INFO_CAN2)
         myIntentFilter.addAction(BaseVolume.BROADCAST_SEND_INFO)
         myIntentFilter.addAction(BaseVolume.BROADCAST_RESULT_DATA_INFO)
 
@@ -204,6 +205,8 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
 //                rlCamera.x = rlCamera.x - 300
 //                rlCamera.y = rlCamera.y - 300
                 changeSeatState(SeatStatus.develop.iValue)
+                startActivity(Intent(this,DevelopmentActivity::class.java))
+                finish()
             }
 
             R.id.tvReCanConnect -> {
@@ -318,8 +321,13 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         imgLeft4.isEnabled = false
 
         // 座椅没有初始化完，或前面流程没跑完，其他按钮都是灰的，不能点
-        if (DataAnalysisHelper.deviceState.seatStatus < SeatStatus.press_normal.iValue) {
+        if (DataAnalysisHelper.deviceState.seatStatus < SeatStatus.press_resume_reserve.iValue) {
 
+        }
+        // 正在检测
+        else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue) {
+            imgLeft4.isEnabled = true
+            imgLeft4.setImageResource(R.drawable.img_left_4)
         }
         // 默认状态
         else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_normal.iValue) {
@@ -356,14 +364,16 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         }
         // 开发者模式
         else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.develop.iValue){
-            imgLeft1.isEnabled = true
-            imgLeft2.isEnabled = true
+            if (isCheckedPersonInfo) {
+                imgLeft1.isEnabled = true
+                imgLeft2.isEnabled = true
+                imgLeft1.setImageResource(R.drawable.img_left_1_false)
+                imgLeft2.setImageResource(R.drawable.img_left_2_false)
+            }
+
             imgLeft4.isEnabled = true
-            imgLeft1.setImageResource(R.drawable.img_left_1_false)
-            imgLeft2.setImageResource(R.drawable.img_left_2_false)
             imgLeft4.setImageResource(R.drawable.img_left_4)
-            startActivity(Intent(this,DevelopmentActivity::class.java))
-            finish()
+
         }
 
     }

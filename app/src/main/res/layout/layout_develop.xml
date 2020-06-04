@@ -50,10 +50,10 @@
                 android:visibility="visible"
                 android:gravity="center"/>
 
-            <TextView android:id="@+id/tvReDeviceConnect"
+            <TextView android:id="@+id/tvReLocConnect"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
-                android:text="Device Reconnect"
+                android:text="Loc Reconnect"
                 android:textSize="20sp"
                 android:textColor="@color/colorWhite"
                 android:layout_toLeftOf="@+id/imgWIFI"

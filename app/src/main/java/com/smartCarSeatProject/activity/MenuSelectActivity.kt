@@ -60,6 +60,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
     var isControlShow = false
     // 是否在退出应用
     var isExitApplication = false
+
     // 检测人体的同时缓存A面气压值，用于后面的体重，身高计算
     var statPressABufferListByProbe = arrayListOf<ArrayList<String>>()
     // 流程：连接Can→ 调压模式，初始化 → 初始化完成后normal → 开始检测人体参数并缓存压力值 → 识别结束，计算身高体重 → 各个模式按钮亮起来！
@@ -173,14 +174,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                             override fun refreshListener(string: String) {
                                 // 将座椅恢复到最初
                                 changeSeatState(SeatStatus.press_wait_reserve.iValue)
-                                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_ADJUST_A_B)
-                                // 座椅AB面气压恢复初始化！
-                                val sendDataList = CreateCtrDataHelper.getAllPressValueBy16("1000","1000","255")
-                                sendDataList.forEach {
-                                    SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(it)
-                                }
-                                // 切换到正在初始化模式
-                                changeSeatState(SeatStatus.press_resume_reserve.iValue)
+                                defaultSeatState()
                             }
                         },"Are you sure to reset?",false)
                 areaAddWindowHint?.show()
@@ -232,6 +226,19 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 //                changeSeatState(SeatStatus.press_manual.iValue)
             }
             3 -> {
+//                if (isCheckedPersonInfo)
+//                    changeSeatState(SeatStatus.press_normal.iValue)
+//                else {
+//                    // 人体没检测，且连接断开，则恢复到待初始化
+//                    if (!SocketThreadManager.sharedInstance(mContext).isCanConnected()) {
+//                        changeSeatState(SeatStatus.press_wait_reserve.iValue)
+//                    }
+//                    else {
+//                        changeSeatState(SeatStatus.press_normal.iValue)
+//                    }
+//
+//                }
+
             }
             4 -> {
                 changeSeatState(SeatStatus.develop.iValue)
@@ -245,7 +252,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         startActivity(intent)
     }
 
-    /****
+    /**
      * 广播监听
      */
     private val myNetReceiver = object : BroadcastReceiver() {
@@ -285,14 +292,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             else if (action == BaseVolume.BROADCAST_RESET_ACTION) {
                 // 将座椅恢复到最初
                 changeSeatState(SeatStatus.press_wait_reserve.iValue)
-                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_ADJUST_A_B)
-                // 座椅AB面气压恢复初始化！
-                val sendDataList = CreateCtrDataHelper.getAllPressValueBy16("1000","1000","255")
-                sendDataList.forEach {
-                    SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(it)
-                }
-                // 切换到正在初始化模式
-                changeSeatState(SeatStatus.press_resume_reserve.iValue)
+                defaultSeatState()
             }
             else if (action == BaseVolume.BROADCAST_TCP_INFO_CAN) {
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
@@ -324,19 +324,12 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     OnStartLoadData(isConnected)
                     changeSeatState(-1)
                     // 判断座椅状态 待初始化：先发调压模式，再调整气压
-//                    if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_wait_reserve.iValue) {
-//                        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_ADJUST_A_B)
-//                        // 座椅AB面气压恢复初始化！
-//                        val sendDataList = CreateCtrDataHelper.getAllPressValueBy16("1000","1000","255")
-//                        sendDataList.forEach {
-//                            SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(it)
-//                        }
-//                        // 切换到正在初始化模式
-//                        changeSeatState(SeatStatus.press_resume_reserve.iValue)
-//                    }
+                    if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_wait_reserve.iValue) {
+                        defaultSeatState()
+                    }
 
                     // 测试阶段，A面气袋有问题，所以直接进入默认状态！fixme
-                    changeSeatState(SeatStatus.press_normal.iValue)
+//                    changeSeatState(SeatStatus.press_normal.iValue)
 
                 }
 
@@ -345,7 +338,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
                 // 开始连接
                 if (strType.equals(BaseVolume.BROADCAST_TCP_CONNECT_START)) {
-                    ToastMsg("Can,Connecting！")
+                    ToastMsg("Loc,Connecting！")
                 }
                 // 连接结果
                 else if (strType.equals(BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)) {
@@ -364,7 +357,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                             imgWIFI.visibility = View.GONE
                             tvReCanConnect.visibility = View.VISIBLE
                         }
-                        ToastMsg("Loc Connection successful！")
+//                        ToastMsg("Loc Connection successful！")
                     }
                 }
             }
@@ -475,6 +468,22 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
     }
 
     /**
+     * 将座椅恢复到正在初始化状态，并重新调压，检测
+     */
+    private fun defaultSeatState() {
+        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_ADJUST_A_B)
+        // 座椅AB面气压恢复初始化！
+        val sendDataList = CreateCtrDataHelper.getAllPressValueBy16("1000","1000","255")
+        sendDataList.forEach {
+            SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(it)
+        }
+        // 切换到正在初始化模式
+        changeSeatState(SeatStatus.press_resume_reserve.iValue)
+        isCheckedPersonInfo = false
+
+    }
+
+    /**
      * 切换座椅状态 -1:不改变座椅状态，仅更新UI
      */
     fun changeSeatState(iState : Int) {
@@ -558,8 +567,10 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         }
         // 开发者模式
         else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.develop.iValue) {
-            btn1.isEnabled = true
-            btn2.isEnabled = true
+            if (isCheckedPersonInfo) {
+                btn1.isEnabled = true
+                btn2.isEnabled = true
+            }
             btn3.isEnabled = true
             btn4.isEnabled = true
             imgRun4.visibility = View.VISIBLE
@@ -855,6 +866,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                             }
                             // 用拿到的平均值，计算身高体重,同时记录缓存
                             DataAnalysisHelper.deviceState.measureHeightWeight(iMeanList)
+                            isCheckedPersonInfo = true
 
                         }
                     }

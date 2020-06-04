@@ -107,7 +107,7 @@ class SocketThreadManager() {
     /** 通过Can盒 2发送数据（调节位置） */
     fun StartSendDataByCan2(strData: String) {
         if (!isCan2Connected()) {
-            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN)
+            mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_TCP_INFO_CAN2)
                     .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.BROADCAST_TCP_CONNECT_CALLBACK)
                     .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
             return
