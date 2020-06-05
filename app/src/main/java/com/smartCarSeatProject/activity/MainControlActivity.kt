@@ -7,7 +7,6 @@ import ai.nuralogix.anurasdk.camera.CameraAdapter
 import ai.nuralogix.anurasdk.config.DfxPipeConfiguration
 import ai.nuralogix.anurasdk.core.*
 import ai.nuralogix.anurasdk.error.AnuraError
-import ai.nuralogix.anurasdk.face.FaceTrackerAdapter
 import ai.nuralogix.anurasdk.network.DeepAffexDataSpec
 import ai.nuralogix.anurasdk.network.DeepFXClient
 import ai.nuralogix.anurasdk.render.Render
@@ -29,8 +28,6 @@ import android.support.v7.app.AlertDialog
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
 import com.ai.nuralogix.anura.sample.face.MNNFaceDetectorAdapter
@@ -111,7 +108,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
 
 
     companion object {
-        private var mainControlActivity : MainControlActivity? = null
+        lateinit var mainControlActivity : MainControlActivity
         fun getInstance():MainControlActivity?{
             return mainControlActivity
         }
@@ -149,6 +146,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         myIntentFilter.addAction(BaseVolume.BROADCAST_TCP_INFO_CAN2)
         myIntentFilter.addAction(BaseVolume.BROADCAST_SEND_INFO)
         myIntentFilter.addAction(BaseVolume.BROADCAST_RESULT_DATA_INFO)
+        myIntentFilter.addAction(BaseVolume.BROADCAST_NO_HAVE_PERSON)
 
         // 注册广播
         registerReceiver(myNetReceiver, myIntentFilter)
@@ -163,6 +161,9 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                                 finish()
                                 sendBroadcast(Intent(BaseVolume.BROADCAST_FINISH_APPLICATION))
                             }
+
+                            override fun cancelListener() {
+                            }
                         },"Are you sure to exit the application?",false)
                 areaAddWindowHint?.show()
             }
@@ -173,6 +174,9 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                                 finish()
                                 sendBroadcast(Intent(BaseVolume.BROADCAST_RESET_ACTION))
 //                                SocketThreadManager.sharedInstance(this@MainControlActivity)?.StartSendData(BaseVolume.COMMAND_SET_STATUS_RESET)
+                            }
+
+                            override fun cancelListener() {
                             }
                         },"Are you sure to reset?",false)
                 areaAddWindowHint?.show()
@@ -311,7 +315,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         if (iState != -1) {
             DataAnalysisHelper.deviceState.seatStatus = iState
             // 通知上层
-            sendBroadcast(Intent(BaseVolume.COMMAND_TYPE_SEX_MODE))
+            sendBroadcast(Intent(BaseVolume.COMMAND_TYPE_SEAT_MODE))
         }
         imgLeft1.setImageResource(R.drawable.img_left_1_hui)
         imgLeft2.setImageResource(R.drawable.img_left_2_hui)
@@ -487,6 +491,23 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
                 val deviceWorkInfo = intent.getSerializableExtra(BaseVolume.BROADCAST_MSG) as DeviceWorkInfo
             }
+            // 检测到无人
+            else if (action == BaseVolume.BROADCAST_NO_HAVE_PERSON) {
+                val areaAddWindowHint = AreaAddWindowHint(mContext,R.style.Dialogstyle,"System",
+                        object : AreaAddWindowHint.PeriodListener {
+                            override fun refreshListener(string: String) {
+                                // 继续保持
+                                startTimerHoldSeat(true)
+                            }
+
+                            override fun cancelListener() {
+                                // 座椅恢复默认状态
+                                finish()
+                                sendBroadcast(Intent(BaseVolume.BROADCAST_RESET_ACTION))
+                            }
+                        },"The seat is empty. Do you want to keep it?",false)
+                areaAddWindowHint?.show()
+            }
         }
     }
 
@@ -561,9 +582,9 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
 
         render.showFeatureRegion(showHistogramAndRegions)
 
-        var visageFaceTracker: FaceTrackerAdapter = MNNFaceDetectorAdapter(baseContext)
+        var visageFaceTracker = MNNFaceDetectorAdapter(baseContext)
         visageFaceTracker.setTrackingRegion(0, 0, MeasurementActivity.IMAGE_WIDTH.toInt(), MeasurementActivity.IMAGE_HEIGHT.toInt())
-
+        visageFaceTracker.setCheckPersionHaveListener(checkPersionHaveListener)
         cloudAnalyzerListener = object : CloudAnalyzerListener {
             override fun onStartAnalyzing() {
             }
@@ -678,6 +699,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
 
         trackerView.setMeasurementDuration(MeasurementActivity.MEASUREMENT_DURATION)
     }
+
 
     private fun startMeasurement() {
         if (lastStatus != ConstraintResult.ConstraintStatus.Good) {
@@ -997,17 +1019,18 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
     }
 
     fun onResumeCamera() {
-        if (NowShowViewNumber == 1) {
-            cameraIsStart = true
-            if (this::core.isInitialized) {
-                renderingVideoSink.start()
-            }
-            state = STATE.IDLE
-            if (trackerView.visibility == View.GONE) {
-                state = STATE.DONE
-                cloudAnalyzer.stopAnalyzing()
-                dfxPipe.stopCollect()
-            }
+//        if (NowShowViewNumber == 1) {
+//
+//        }
+        cameraIsStart = true
+        if (this::core.isInitialized) {
+            renderingVideoSink.start()
+        }
+        state = STATE.IDLE
+        if (trackerView.visibility == View.GONE) {
+            state = STATE.DONE
+            cloudAnalyzer.stopAnalyzing()
+            dfxPipe.stopCollect()
         }
     }
 

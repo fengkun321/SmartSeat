@@ -1,6 +1,8 @@
 package com.smartCarSeatProject.activity
 
+import ai.nuralogix.dfx.Face
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -10,8 +12,6 @@ import android.widget.Toast
 import com.smartCarSeatProject.R
 import com.smartCarSeatProject.data.BaseVolume
 import com.smartCarSeatProject.data.DataAnalysisHelper
-import com.smartCarSeatProject.tcpInfo.SocketThreadManager
-import com.smartCarSeatProject.view.AreaAddWindowHint
 import com.smartCarSeatProject.view.LoadingDialog
 import com.smartCarSeatProject.view.ProgressBarWindowHint
 import com.umeng.analytics.MobclickAgent
@@ -111,9 +111,26 @@ open class BaseActivity : AppCompatActivity(){
         timer = Timer()
         timer.schedule(object : TimerTask() {
             override fun run() {
-//                MainControlActivity.getInstance()?.finish()
+                if (DataAnalysisHelper.deviceState.isCheckHavePerson() || isCheckHaveFace ) {
+                    startTimerHoldSeat(true)
+                }
+                else {
+                    // 座椅和人脸同时没有检测到人，则提示用户，并重置座椅
+                    sendBroadcast(Intent(BaseVolume.BROADCAST_NO_HAVE_PERSON))
+                }
             }
-        }, 1000 * 60) // 设定指定的时间time,此处为60秒
+        }, 1000 * 30) // 设定指定的时间time,此处为60秒
+    }
+
+    protected var isCheckHaveFace = false
+    protected var checkPersionHaveListener = object :CheckPersionHaveListener {
+        override fun checkResult(isHaveFace: Boolean) {
+            Log.e("人脸检测", "checkPersionHaveListener：$isHaveFace")
+            isCheckHaveFace = isHaveFace
+        }
+    }
+    public interface CheckPersionHaveListener {
+        fun checkResult(isHaveFace:Boolean)
     }
 
 

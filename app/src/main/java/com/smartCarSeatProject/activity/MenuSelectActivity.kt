@@ -8,7 +8,6 @@ import ai.nuralogix.anurasdk.camera.CameraAdapter
 import ai.nuralogix.anurasdk.config.DfxPipeConfiguration
 import ai.nuralogix.anurasdk.core.*
 import ai.nuralogix.anurasdk.error.AnuraError
-import ai.nuralogix.anurasdk.face.FaceTrackerAdapter
 import ai.nuralogix.anurasdk.network.DeepAffexDataSpec
 import ai.nuralogix.anurasdk.network.DeepFXClient
 import ai.nuralogix.anurasdk.render.Render
@@ -27,7 +26,6 @@ import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.os.SystemClock
 import android.support.v7.app.AlertDialog
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.ai.nuralogix.anura.sample.face.MNNFaceDetectorAdapter
@@ -36,18 +34,13 @@ import com.alibaba.android.mnnkit.monitor.MNNMonitor
 import com.smartCarSeatProject.BuildConfig
 import com.smartCarSeatProject.R
 import com.smartCarSeatProject.data.*
-import com.smartCarSeatProject.data.SeatStatus.*
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import com.smartCarSeatProject.view.AreaAddWindowHint
-import com.smartCarSeatProject.view.SureOperWindowHint
 import com.smartCarSeatProject.wifiInfo.WIFIConnectionManager
 import kotlinx.android.synthetic.main.layout_menu.*
 import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import org.opencv.core.Point
 import java.io.*
-import kotlin.math.log
 
 
 class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, VideoSignalAnalysisListener, TrackerView.OnSizeChangedListener{
@@ -88,9 +81,9 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         MNNMonitor.setMonitorEnable(false)
         copyFileOrDir("r21r23h-8.dat")
         // 自动开始采集
-        IS_START_AUTOFACE = true
+        IS_START_AUTOFACE = false
         initNuralogixInfo()
-        rlCamera.visibility = View.GONE
+        rlCamera.visibility = View.INVISIBLE
 
         // 将座椅恢复到最初
         changeSeatState(SeatStatus.press_wait_reserve.iValue)
@@ -137,7 +130,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         myIntentFilter.addAction(BaseVolume.BROADCAST_CTR_CALLBACK)
         myIntentFilter.addAction(BaseVolume.BROADCAST_GOBACK_MENU)
         myIntentFilter.addAction(BaseVolume.BROADCAST_RESET_ACTION)
-        myIntentFilter.addAction(BaseVolume.COMMAND_TYPE_SEX_MODE)
+        myIntentFilter.addAction(BaseVolume.COMMAND_TYPE_SEAT_MODE)
+        myIntentFilter.addAction(BaseVolume.BROADCAST_NO_HAVE_PERSON)
 
         // 注册广播
         registerReceiver(myNetReceiver, myIntentFilter)
@@ -153,6 +147,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 val areaAddWindowHint = AreaAddWindowHint(this,R.style.Dialogstyle,"System",
                         object : AreaAddWindowHint.PeriodListener {
                             override fun refreshListener(string: String) {
+                                startTimerHoldSeat(false)
                                 // 如果连接已存在，则需要先泄气，再停止，最后断开连接，退出
                                 if (SocketThreadManager.sharedInstance(mContext).isCanConnected()) {
                                     loadingDialog.showAndMsg("请稍后...")
@@ -165,6 +160,9 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                                     System.exit(0)
                                 }
                             }
+
+                            override fun cancelListener() {
+                            }
                         },"Are you sure to exit the application?",false)
                 areaAddWindowHint?.show()
             }
@@ -175,6 +173,9 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                                 // 将座椅恢复到最初
                                 changeSeatState(SeatStatus.press_wait_reserve.iValue)
                                 defaultSeatState()
+                            }
+
+                            override fun cancelListener() {
                             }
                         },"Are you sure to reset?",false)
                 areaAddWindowHint?.show()
@@ -277,6 +278,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 }
             }
             else if (action == BaseVolume.BROADCAST_FINISH_APPLICATION) {
+                startTimerHoldSeat(false)
                 // 如果连接已存在，则需要先泄气，再停止，最后断开连接，退出
                 if (SocketThreadManager.sharedInstance(mContext).isCanConnected()) {
                     loadingDialog.showAndMsg("请稍后...")
@@ -456,13 +458,32 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             else if (action == BaseVolume.BROADCAST_CTR_CALLBACK) {
             }
             // 座椅状态切换
-            else if (action == BaseVolume.COMMAND_TYPE_SEX_MODE) {
+            else if (action == BaseVolume.COMMAND_TYPE_SEAT_MODE) {
                 changeSeatState(-1)
             }
             // 从控制页面返回到主页
             else if (action == BaseVolume.BROADCAST_GOBACK_MENU) {
                 isControlShow = false
 
+            }
+            // 检测到无人
+            else if (action == BaseVolume.BROADCAST_NO_HAVE_PERSON) {
+                if (isControlShow) {
+                    return
+                }
+                val areaAddWindowHint = AreaAddWindowHint(mContext,R.style.Dialogstyle,"System",
+                        object : AreaAddWindowHint.PeriodListener {
+                            override fun refreshListener(string: String) {
+                                // 继续保持
+                                startTimerHoldSeat(true)
+                            }
+                            override fun cancelListener() {
+                                // 将座椅恢复到最初
+                                changeSeatState(SeatStatus.press_wait_reserve.iValue)
+                                defaultSeatState()
+                            }
+                        },"The seat is empty. Do you want to keep it?",false)
+                areaAddWindowHint?.show()
             }
         }
     }
@@ -471,6 +492,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
      * 将座椅恢复到正在初始化状态，并重新调压，检测
      */
     private fun defaultSeatState() {
+        startTimerHoldSeat(false)
         SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_ADJUST_A_B)
         // 座椅AB面气压恢复初始化！
         val sendDataList = CreateCtrDataHelper.getAllPressValueBy16("1000","1000","255")
@@ -543,6 +565,10 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             btn4.isEnabled = true
             loadingDialog?.dismiss()
             progressBarWindowHint?.onSelfDismiss()
+
+            // 开启座椅检测
+            startTimerHoldSeat(true)
+
         }
         // 座椅自动模式
         else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue){
@@ -624,7 +650,21 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         val areaAddWindowHint = AreaAddWindowHint(this,R.style.Dialogstyle,"System",
                 object : AreaAddWindowHint.PeriodListener {
                     override fun refreshListener(string: String) {
-                        finish()
+                        startTimerHoldSeat(false)
+                        // 如果连接已存在，则需要先泄气，再停止，最后断开连接，退出
+                        if (SocketThreadManager.sharedInstance(mContext).isCanConnected()) {
+                            loadingDialog.showAndMsg("请稍后...")
+                            isExitApplication = true
+                            // 全部泄气1
+                            SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(BaseVolume.COMMAND_CAN_ALL_DEFLATE_A_B)
+                        }
+                        else {
+                            finish()
+                            System.exit(0)
+                        }
+                    }
+
+                    override fun cancelListener() {
                     }
                 },"Are you sure to exit the application?",false)
         areaAddWindowHint?.show()
@@ -740,6 +780,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         trackerView.showMask(true)
         trackerView.setOnSizeChangedListener(this)
 
+
         restoreConfig()
 
         val pref = getSharedPreferences(ConfigActivity.PREF_NAME, 0)
@@ -818,9 +859,9 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
         render.showFeatureRegion(showHistogramAndRegions)
 
-        var visageFaceTracker: FaceTrackerAdapter = MNNFaceDetectorAdapter(baseContext)
+        var visageFaceTracker = MNNFaceDetectorAdapter(baseContext)
         visageFaceTracker.setTrackingRegion(0, 0, MeasurementActivity.IMAGE_WIDTH.toInt(), MeasurementActivity.IMAGE_HEIGHT.toInt())
-
+        visageFaceTracker.setCheckPersionHaveListener(checkPersionHaveListener)
         cloudAnalyzerListener = object : CloudAnalyzerListener {
             override fun onStartAnalyzing() {
             }
@@ -955,6 +996,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         trackerView.setMeasurementDuration(MeasurementActivity.MEASUREMENT_DURATION)
     }
 
+
+
     private fun startMeasurement() {
         if (lastStatus != ConstraintResult.ConstraintStatus.Good) {
             AnuLogUtil.e(MeasurementActivity.TAG, "lastStatus=" + lastStatus.name + " !=Good")
@@ -973,7 +1016,11 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         dfxPipe.startCollect("")
         cloudAnalyzer.startAnalyzing(MeasurementActivity.STUDY_ID, "")
         cancelled_tv.text = resources.getString(R.string.MEASUREMENT_STARTED)
+
+
+
     }
+
 
     private fun stopMeasurement(stopResult: Boolean) {
         AnuLogUtil.d(MeasurementActivity.TAG, "Stop measurement: $stopResult")

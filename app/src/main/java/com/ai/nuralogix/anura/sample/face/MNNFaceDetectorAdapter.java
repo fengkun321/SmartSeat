@@ -8,6 +8,7 @@ import com.alibaba.android.mnnkit.entity.FaceDetectionReport;
 import com.alibaba.android.mnnkit.entity.MNNCVImageFormat;
 import com.alibaba.android.mnnkit.entity.MNNFlipType;
 import com.alibaba.android.mnnkit.intf.InstanceCreatedListener;
+import com.smartCarSeatProject.activity.BaseActivity;
 
 import org.opencv.core.Point3;
 import org.opencv.core.Rect;
@@ -34,6 +35,8 @@ public class MNNFaceDetectorAdapter implements FaceTrackerAdapter {
     private FaceTrackerAdapterListener faceTrackerAdapterListener = null;
     private HashMap<String, Face> faceHashMap = new HashMap<>();
     private long logIndex = 0;
+
+    private BaseActivity.CheckPersionHaveListener checkPersionHaveListener = null;
 
     public MNNFaceDetectorAdapter(Context context) {
         if (null == context) {
@@ -69,6 +72,10 @@ public class MNNFaceDetectorAdapter implements FaceTrackerAdapter {
         }
     }
 
+    public void setCheckPersionHaveListener(BaseActivity.CheckPersionHaveListener checkPersionHaveListener) {
+        this.checkPersionHaveListener = checkPersionHaveListener;
+    }
+
     @NonNull
     @Override
     public AnuraError track(@NonNull AnuraVideoFrame anuraVideoFrame, @NonNull String[] attributes) {
@@ -84,11 +91,16 @@ public class MNNFaceDetectorAdapter implements FaceTrackerAdapter {
         }
 
         if (null == results || results.length <= 0) {
+            if (checkPersionHaveListener != null)
+                checkPersionHaveListener.checkResult(false);
             faceHashMap.clear();
             faceTrackerAdapterListener.onFacePointsTracked(faceHashMap);
             faceTrackerAdapterListener.onFaceDetected(0);
             return AnuraError.OK;
         }
+
+        if (checkPersionHaveListener != null)
+            checkPersionHaveListener.checkResult(true);
         faceTrackerAdapterListener.onFaceDetected(Math.min(results.length, MAX_RESULT));
         Face faceObj;
         for (int i = 0; i < results.length && i < MAX_RESULT; i++) {

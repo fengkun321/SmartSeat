@@ -51,6 +51,7 @@ class AreaAddWindowHint : Dialog, View.OnClickListener {
      */
     interface PeriodListener {
         fun refreshListener(string: String)
+        fun cancelListener()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,7 +102,10 @@ class AreaAddWindowHint : Dialog, View.OnClickListener {
         // TODO Auto-generated method stub
         val id = v.id
         when (id) {
-            R.id.cancel_btn -> dismiss()
+            R.id.cancel_btn -> {
+                dismiss()
+                listener?.cancelListener()
+            }
             R.id.confirm_btn -> {
                 dismiss()
                 listener!!.refreshListener(period)

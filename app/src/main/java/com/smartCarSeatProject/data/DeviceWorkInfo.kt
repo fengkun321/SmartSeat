@@ -174,6 +174,19 @@ class DeviceWorkInfo : Serializable{
 
     }
 
+    /**
+     * 判断有人没人
+     */
+    fun isCheckHavePerson() : Boolean {
+        val offset = 150
+        var iPressInside = sensePressValueListl[6].toInt()+ sensePressValueListl[8].toInt()
+        var iPressOut = sensePressValueListl[5].toInt()+ sensePressValueListl[7].toInt()
+        if ((iPressInside > iPressOut - offset) and (iPressInside < iPressOut + offset)) {
+            return false
+        }
+        return true
+    }
+
 
 
 

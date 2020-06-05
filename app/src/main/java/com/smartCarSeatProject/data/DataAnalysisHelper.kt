@@ -245,18 +245,7 @@ class DataAnalysisHelper{
 
     }
 
-    /**
-     * 判断有人没人
-     */
-    fun isCheckHavePerson() : Boolean {
-        val offset = 150
-        var iPressInside = deviceState.sensePressStatusList[6]+ deviceState.sensePressStatusList[8]
-        var iPressOut = deviceState.sensePressStatusList[5]+ deviceState.sensePressStatusList[7]
-        if ((iPressInside > iPressOut - offset) and (iPressInside < iPressOut + offset)) {
-            return false
-        }
-        return true
-    }
+
 
 
 

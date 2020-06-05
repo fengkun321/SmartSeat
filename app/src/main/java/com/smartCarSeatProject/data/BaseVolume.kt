@@ -67,6 +67,7 @@ class BaseVolume {
         const val BROADCAST_UPDATA_WIFI_INFO = "BROADCAST_UPDATA_WIFI_INFO"
         const val BROADCAST_FINISH_APPLICATION = "BROADCAST_FINISH_APPLICATION"
         const val BROADCAST_RESET_ACTION = "BROADCAST_RESET_ACTION"
+        const val BROADCAST_NO_HAVE_PERSON = "BROADCAST_NO_HAVE_PERSON"
 
         const val BROADCAST_TCP_INFO_CAN = "BROADCAST_TCP_INFO_CAN"
         const val BROADCAST_TCP_INFO_CAN2 = "BROADCAST_TCP_INFO_CAN2"
@@ -143,7 +144,7 @@ class BaseVolume {
         /** 指令：气压相关 */
         const val COMMAND_TYPE_PRESS = "3"
         /** 指令：座椅模式 */
-        const val COMMAND_TYPE_SEX_MODE = "5"
+        const val COMMAND_TYPE_SEAT_MODE = "5"
         /** 指令：通道状态 */
         const val COMMAND_TYPE_CHANNEL_STATUS = "6"
         /**
