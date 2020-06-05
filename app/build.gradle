@@ -110,5 +110,7 @@ dependencies {
     implementation "com.android.support:support-fragment:28.0.0"
     implementation 'com.alibaba.android.mnnkit:facedetection:0.0.4'
 
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.7'
+
 
 }

@@ -112,6 +112,9 @@ class SocketThreadManager() {
                     .putExtra(BaseVolume.BROADCAST_TCP_STATUS,false))
             return
         }
+        // 电机指令，每条要发三遍
+        LocTaskCenter.sharedCenter(mContext).sendHexText(strData)
+        LocTaskCenter.sharedCenter(mContext).sendHexText(strData)
         LocTaskCenter.sharedCenter(mContext).sendHexText(strData)
     }
 

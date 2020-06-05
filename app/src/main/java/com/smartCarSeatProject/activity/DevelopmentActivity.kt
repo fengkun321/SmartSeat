@@ -277,6 +277,9 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 object : AreaAddWindowHint.PeriodListener {
                     override fun refreshListener(string: String) {
                     }
+
+                    override fun cancelListener() {
+                    }
                 },strContent)
         areaAddWindowHint.show()
     }

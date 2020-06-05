@@ -1,47 +1,22 @@
 package com.smartCarSeatProject.activity
 
-import ai.nuralogix.anura.sample.activities.ConfigActivity
-import ai.nuralogix.anura.sample.activities.MeasurementActivity
-import ai.nuralogix.anura.sample.settings.CameraConfigurationFragment
-import ai.nuralogix.anurasdk.camera.CameraAdapter
-import ai.nuralogix.anurasdk.config.DfxPipeConfiguration
-import ai.nuralogix.anurasdk.core.*
-import ai.nuralogix.anurasdk.error.AnuraError
-import ai.nuralogix.anurasdk.face.FaceTrackerAdapter
-import ai.nuralogix.anurasdk.network.DeepAffexDataSpec
-import ai.nuralogix.anurasdk.network.DeepFXClient
-import ai.nuralogix.anurasdk.render.Render
-import ai.nuralogix.anurasdk.render.opengl.GLSurfaceViewTracker
-import ai.nuralogix.anurasdk.utils.*
-import ai.nuralogix.anurasdk.views.TrackerView
-import ai.nuralogix.dfx.ChunkPayload
-import ai.nuralogix.dfx.Collector
-import ai.nuralogix.dfx.ConstraintResult
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.drawable.GradientDrawable
-import android.opengl.GLSurfaceView
+import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.SystemClock
-import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.TextView
-import android.widget.Toast
-import com.ai.nuralogix.anura.sample.face.MNNFaceDetectorAdapter
-import com.ai.nuralogix.anura.sample.utils.BundleUtils
-import com.alibaba.android.mnnkit.monitor.MNNMonitor
-import com.smartCarSeatProject.BuildConfig
 import com.smartCarSeatProject.R
 import com.smartCarSeatProject.data.*
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import kotlinx.android.synthetic.main.layout_auto_seat.view.*
 import kotlinx.android.synthetic.main.layout_automatic.*
-import org.json.JSONArray
-import org.opencv.core.Point
+import java.util.*
 
 
 class AutomaticActivity: BaseActivity(), View.OnClickListener{
@@ -51,15 +26,18 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
     var drawableList = arrayListOf<GradientDrawable>()
     // 视图的集合
     var viewList = arrayListOf<TextView>()
-
+    val mediaPlayer = MediaPlayer()
+    // 音频资源
+    var fd = assets.openFd("sound_music.mp3")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_automatic)
 
+        mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
+        mediaPlayer.isLooping = true // 循环播放
         initUI()
         initData()
         reciverBand()
-
 
     }
 
@@ -100,7 +78,14 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
 
     private val onChangeListener = object:CompoundButton.OnCheckedChangeListener{
         override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-            onAutoSetPressByStatus()
+            if (buttonView?.tag.toString().equals("press"))
+                onAutoSetPressByStatus()
+            else if (buttonView?.tag.toString().equals("location")) {
+                onAutoSetLocationByStatus()
+            }
+            else if (buttonView?.tag.toString().equals("massage")) {
+                onAutoSetMassageByStatus()
+            }
         }
 
     }
@@ -173,6 +158,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
         registerReceiver(myNetReceiver, myIntentFilter)
     }
 
+
     /** 根据选择状态自动调节各个气袋气压
      *  男女
      *  国别
@@ -197,13 +183,110 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
             SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan(sendData[0])
             SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan(sendData[1])
         }
+
+
+
+    }
+
+    /**
+     * 位置自适应
+     */
+    private fun onAutoSetLocationByStatus() {
         // 位置自适应
         if (cbAutoWeiZhi.isChecked) {
+            if (DataAnalysisHelper.deviceState.nowHeight <= 160)
+                SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_1)
+            else if (DataAnalysisHelper.deviceState.nowHeight > 160 && DataAnalysisHelper.deviceState.nowHeight <= 170)
+                SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_2)
+            else if (DataAnalysisHelper.deviceState.nowHeight > 170 && DataAnalysisHelper.deviceState.nowHeight <= 175)
+                SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_3)
+            else if (DataAnalysisHelper.deviceState.nowHeight > 175 && DataAnalysisHelper.deviceState.nowHeight <= 180)
+                SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_4)
+            else if (DataAnalysisHelper.deviceState.nowHeight > 180 && DataAnalysisHelper.deviceState.nowHeight <= 185)
+                SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_5)
+            else if (DataAnalysisHelper.deviceState.nowHeight > 185)
+                SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_6)
+
+            SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_0)
         }
+        else {
+            SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_DEFAULT)
+            SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_0)
+        }
+    }
+
+    /**
+     * 健康自适应
+     */
+    private fun onAutoSetMassageByStatus() {
         // 健康自适应
         if (cbJianKang.isChecked) {
-        }
+            var strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_NORMAL,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+            // 1.心率/血压/情绪值 正常状态( 60<心率<100 and 90<收缩压< 139 and 60<舒张压<89 and 心理压力值<4 )
+            // 字体绿色显示，启动A面轻度按摩,播放音乐
+            if ((DataAnalysisHelper.deviceState.HeartRate.toFloat()>60 && DataAnalysisHelper.deviceState.HeartRate.toFloat()<100)
+                    && (DataAnalysisHelper.deviceState.Sys_BP.toFloat()>90 && DataAnalysisHelper.deviceState.Sys_BP.toFloat()<139)
+                    && (DataAnalysisHelper.deviceState.Dia_BP.toFloat()>60 && DataAnalysisHelper.deviceState.Dia_BP.toFloat()<89)
+                    && DataAnalysisHelper.deviceState.E_Index.toFloat()<4) {
+                strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+                MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.colorGreen)
+                // 播放音乐
 
+            }
+            // 2.心率/血压/情绪值 轻度超标 （40<心率<60 or 100<心率<160 or 140<收缩压<159 or 90<舒张压<99 or 4<心理压力值<5 )
+            // 字体黄色显示，同时启动座椅A面及B面中度按摩，播放音乐
+            else if ((DataAnalysisHelper.deviceState.HeartRate.toFloat()>40 && DataAnalysisHelper.deviceState.HeartRate.toFloat()<60)
+                    || (DataAnalysisHelper.deviceState.HeartRate.toFloat()>100 && DataAnalysisHelper.deviceState.HeartRate.toFloat()<160)
+                    || (DataAnalysisHelper.deviceState.Sys_BP.toFloat()>140 && DataAnalysisHelper.deviceState.Sys_BP.toFloat()<159)
+                    || (DataAnalysisHelper.deviceState.Dia_BP.toFloat()>90 && DataAnalysisHelper.deviceState.Dia_BP.toFloat()<99)
+                    || (DataAnalysisHelper.deviceState.E_Index.toFloat()>4 && DataAnalysisHelper.deviceState.E_Index.toFloat()<5)) {
+                strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_2,BaseVolume.COMMAND_CAN_MODEL_MASG_2)
+                MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.colorYellow)
+                // 播放音乐
+
+            }
+            // 3.心率/血压/情绪值 中度超标（心率<40 or 心率>160 or 160<收缩压 or 100<舒张压 or 心理压力值>5 )
+            // 字体红色显示，提示停车，座椅归位出厂状态，并启动A面B面同时3级按摩
+            else if (DataAnalysisHelper.deviceState.HeartRate.toFloat()<40
+                    || DataAnalysisHelper.deviceState.HeartRate.toFloat()>160
+                    || DataAnalysisHelper.deviceState.Sys_BP.toFloat()>160
+                    || DataAnalysisHelper.deviceState.Dia_BP.toFloat()>100
+                    || DataAnalysisHelper.deviceState.E_Index.toFloat()>5) {
+                strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_3,BaseVolume.COMMAND_CAN_MODEL_MASG_3)
+                MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.device_red)
+                // 播放音乐
+
+            }
+            Log.e("ManualActivity", "当前按摩指令：$strSendData")
+            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+        }
+    }
+
+
+    var timerPlayer:Timer? = Timer()
+    /**
+     * 播放音乐
+     * 播放/停止
+     * 持续时间
+     */
+    private fun playOrPauseMedia(isPlay:Boolean,iTime:Long) {
+        timerPlayer?.cancel()
+        timerPlayer = null
+        if (isPlay) {
+            if (!mediaPlayer.isPlaying)
+                mediaPlayer.start()
+            timerPlayer = Timer()
+            timerPlayer?.schedule(object : TimerTask() {
+                override fun run() {
+                    Log.e("AutomaticActivity", "时间到,停止播放！")
+                    mediaPlayer.stop()
+                }
+            }, iTime)
+        }
+        // 停止播放
+        else {
+            mediaPlayer.stop()
+        }
     }
 
     /**
@@ -333,6 +416,8 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
             // 自动调整座椅气压和位置
             else if (action == BaseVolume.BROADCAST_AUTO_MODEL) {
                 onAutoSetPressByStatus()
+                onAutoSetLocationByStatus()
+                onAutoSetMassageByStatus()
             }
         }
     }

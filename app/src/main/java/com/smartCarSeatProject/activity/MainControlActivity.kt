@@ -409,6 +409,19 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         container.addView(hashMapViews.get(toAct), ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT)
     }
 
+    /**
+     * 改变人体数据的颜色
+     */
+    fun changePersonInfoTextColor(iColor:Int) {
+
+        tvHeart.setTextColor(iColor)
+        tvBPD.setTextColor(iColor)
+        tvBPS.setTextColor(iColor)
+        tvMSI.setTextColor(iColor)
+        tvSN.setTextColor(iColor)
+
+    }
+
     /****
      * 广播监听
      */
@@ -954,9 +967,12 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                         val builder: AlertDialog.Builder? = mContext.let {
                             AlertDialog.Builder(it)
                         }
-                        builder?.setMessage("Wait for final result...")?.setCancelable(false)
-                        dialog = builder?.create()!!
-                        dialog.show()
+                        // 如果座椅处于正在探测人体数据状态，则显示弹窗
+                        if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue) {
+                            builder?.setMessage("Wait for final result...")?.setCancelable(false)
+                            dialog = builder?.create()!!
+                            dialog.show()
+                        }
                     }
                     trackerView.setMeasurementProgress(progressPercent.toFloat())
                     if (frameNumber % 10 == 0L) {

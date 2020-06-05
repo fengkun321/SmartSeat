@@ -359,6 +359,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                             imgWIFI.visibility = View.GONE
                             tvReCanConnect.visibility = View.VISIBLE
                         }
+                        // 电源ON
+                        SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_ON)
 //                        ToastMsg("Loc Connection successful！")
                     }
                 }
@@ -529,6 +531,16 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             ToastMsg("Initializing...")
             progressBarWindowHint?.updateContent("Initializing...")
             progressBarWindowHint?.onSelfShow()
+
+            // 电机恢复默认位置
+            if (SocketThreadManager.sharedInstance(mContext).isCan2Connected()) {
+
+                // 默认位置
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_DEFAULT)
+                // 00 结束
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_0)
+            }
+
         }
         // 座椅恢复成功，可以检测了！！！！
         else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_reserve.iValue){
@@ -567,7 +579,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             progressBarWindowHint?.onSelfDismiss()
 
             // 开启座椅检测
-            startTimerHoldSeat(true)
+//            startTimerHoldSeat(true)
 
         }
         // 座椅自动模式
@@ -1273,9 +1285,14 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         val builder: AlertDialog.Builder? = this@MenuSelectActivity.let {
                             AlertDialog.Builder(it)
                         }
-                        builder?.setMessage("Wait for final result...")?.setCancelable(false)
-                        dialog = builder?.create()!!
-                        dialog.show()
+
+                        // 如果座椅处于正在探测人体数据状态，则显示弹窗
+                        if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue) {
+                            builder?.setMessage("Wait for final result...")?.setCancelable(false)
+                            dialog = builder?.create()!!
+                            dialog.show()
+                        }
+
                     }
                     trackerView.setMeasurementProgress(progressPercent.toFloat())
                     if (frameNumber % 10 == 0L) {

@@ -43,6 +43,9 @@ open class HistoryDataShowActivity : BaseActivity(){
                                 myHisDateAdapter?.notifyDataSetChanged()
                             }
                         }
+
+                        override fun cancelListener() {
+                        }
                     }
             ,"Are you sure you want to delete this data?"
             )

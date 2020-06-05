@@ -123,6 +123,15 @@
 
         </LinearLayout>
 
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/gif_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="-100dp"
+            android:src="@drawable/img_dianji_ce"
+            android:visibility="gone"/>
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -273,50 +273,49 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
     val onClickLoactionListener = View.OnClickListener { it0 ->
         val isRun = it0.tag.toString().toBoolean()
         locationList.forEach {
+            it.tag = false
             it.setBackgroundColor(getColor(R.color.colorBlack))
         }
         // 取消位置调节
         if (isRun) {
             DataAnalysisHelper.deviceState.l_location = "0"
+            // 默认位置
+            SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_DEFAULT)
             SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_0)
             return@OnClickListener
         }
 
-        var iLocNumber = -1
+        it0.tag = !isRun
+        it0.setBackgroundColor(getColor(R.color.colorLightBlue))
         when(it0.id) {
             R.id.tvLoc1 -> {
-                iLocNumber = 1
+                DataAnalysisHelper.deviceState.l_location = "1"
                 SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_1)
             }
             R.id.tvLoc2 ->{
-                iLocNumber = 2
+                DataAnalysisHelper.deviceState.l_location = "2"
                 SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_2)
             }
             R.id.tvLoc3 -> {
-                iLocNumber = 3
+                DataAnalysisHelper.deviceState.l_location = "3"
                 SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_3)
             }
             R.id.tvLoc4 -> {
-                iLocNumber = 4
+                DataAnalysisHelper.deviceState.l_location = "4"
                 SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_4)
             }
             R.id.tvLoc5 -> {
-                iLocNumber = 5
+                DataAnalysisHelper.deviceState.l_location = "5"
                 SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_5)
             }
             R.id.tvLoc6 -> {
-                iLocNumber = 6
+                DataAnalysisHelper.deviceState.l_location = "6"
                 SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_6)
             }
 
         }
         // 每次发完位置后，要再发一条清零指令才会动作
         SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_0)
-
-        it0.tag = !isRun
-
-        DataAnalysisHelper.deviceState.l_location = "$iLocNumber"
-        locationList[iLocNumber-1].setBackgroundColor(getColor(R.color.colorLightBlue))
 
 
     }
@@ -816,6 +815,9 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                         else
                             ToastMsg("Manual mode, data saved successfully！")
                         memoryInfoDao.closeDb()
+                    }
+
+                    override fun cancelListener() {
                     }
                 },strContent)
         areaAddWindowHint.show()
