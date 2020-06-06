@@ -10,10 +10,15 @@ class DeviceWorkInfo : Serializable{
     var strID = ""
     // 座椅当前状态
     var seatStatus = SeatStatus.press_wait_reserve.iValue
-    // 控制气压8个（其中前三个，也是传感气压）
+    // 控制气压8个（其中后三个，也是传感气压）
     var controlPressValueList :ArrayList<String> = arrayListOf("0","0","0","0","0","0","0","0")
     // 传感气压11个
     var sensePressValueListl :ArrayList<String> = arrayListOf("0","0","0","0","0","0","0","0","0","0","0")
+
+    // 控制缓存气压8个（其中后三个，也是传感气压）
+    var controlPressValueBufferList :ArrayList<String> = arrayListOf("0","0","0","0","0","0","0","0")
+    // 传感缓存气压8个
+    var sensePressValueBufferListl :ArrayList<String> = arrayListOf("0","0","0","0","0","0","0","0")
 
     // 缓存刚识别到人体的数据
     var recog_back_A_valueList = arrayListOf<String>() // 8个
@@ -35,17 +40,17 @@ class DeviceWorkInfo : Serializable{
     var nowBMI = -1.0
 
     // 心率
-    var HeartRate = ""
+    var HeartRate = "0.0"
     // 信噪比
-    var snr = ""
+    var snr = "0.0"
     // 呼吸率
-    var BreathRate = ""
+    var BreathRate = "0.0"
     // 情绪值
-    var E_Index = ""
+    var E_Index = "0.0"
     // 舒张压
-    var Dia_BP = ""
+    var Dia_BP = "0.0"
     // 收缩压
-    var Sys_BP = ""
+    var Sys_BP = "0.0"
 
     companion object{
 

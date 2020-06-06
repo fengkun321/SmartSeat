@@ -9,11 +9,13 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.TextView
 import com.smartCarSeatProject.R
 import com.smartCarSeatProject.data.*
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
+import com.smartCarSeatProject.view.AreaAddWindowHint
 import kotlinx.android.synthetic.main.layout_auto_seat.view.*
 import kotlinx.android.synthetic.main.layout_automatic.*
 import java.util.*
@@ -26,15 +28,12 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
     var drawableList = arrayListOf<GradientDrawable>()
     // 视图的集合
     var viewList = arrayListOf<TextView>()
-    val mediaPlayer = MediaPlayer()
-    // 音频资源
-    var fd = assets.openFd("sound_music.mp3")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_automatic)
 
-        mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
-        mediaPlayer.isLooping = true // 循环播放
+
         initUI()
         initData()
         reciverBand()
@@ -47,6 +46,8 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
         }
 
         cbAutoTiYa.setOnCheckedChangeListener(onChangeListener)
+        cbAutoWeiZhi.setOnCheckedChangeListener(onChangeListener)
+        cbJianKang.setOnCheckedChangeListener(onChangeListener)
 
         btnNan.setOnClickListener(this)
         btnNv.setOnClickListener(this)
@@ -89,6 +90,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
         }
 
     }
+
 
     /**
      * 初始化样式
@@ -221,7 +223,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
     private fun onAutoSetMassageByStatus() {
         // 健康自适应
         if (cbJianKang.isChecked) {
-            var strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_NORMAL,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+            var strSendData = BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B
             // 1.心率/血压/情绪值 正常状态( 60<心率<100 and 90<收缩压< 139 and 60<舒张压<89 and 心理压力值<4 )
             // 字体绿色显示，启动A面轻度按摩,播放音乐
             if ((DataAnalysisHelper.deviceState.HeartRate.toFloat()>60 && DataAnalysisHelper.deviceState.HeartRate.toFloat()<100)
@@ -231,7 +233,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                 strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
                 MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.colorGreen)
                 // 播放音乐
-
+                MainControlActivity.getInstance()?.playOrPauseMedia("Alohal_release.mp3",true,1000*60)
             }
             // 2.心率/血压/情绪值 轻度超标 （40<心率<60 or 100<心率<160 or 140<收缩压<159 or 90<舒张压<99 or 4<心理压力值<5 )
             // 字体黄色显示，同时启动座椅A面及B面中度按摩，播放音乐
@@ -243,6 +245,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                 strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_2,BaseVolume.COMMAND_CAN_MODEL_MASG_2)
                 MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.colorYellow)
                 // 播放音乐
+                MainControlActivity.getInstance()?.playOrPauseMedia("Alohal_release.mp3",true,1000*60*3)
 
             }
             // 3.心率/血压/情绪值 中度超标（心率<40 or 心率>160 or 160<收缩压 or 100<舒张压 or 心理压力值>5 )
@@ -252,42 +255,53 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                     || DataAnalysisHelper.deviceState.Sys_BP.toFloat()>160
                     || DataAnalysisHelper.deviceState.Dia_BP.toFloat()>100
                     || DataAnalysisHelper.deviceState.E_Index.toFloat()>5) {
+                // AB面同时按摩3
                 strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_3,BaseVolume.COMMAND_CAN_MODEL_MASG_3)
+                // 座椅恢复到出厂设置
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_DEFAULT)
+                // 字显示红色
                 MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.device_red)
                 // 播放音乐
+                MainControlActivity.getInstance()?.playOrPauseMedia("Alohal.mp3",true,1000*60*3)
+                showDangerDialog()
 
+            }
+            // 其他范围，就按摩一下吧，
+            else {
+                strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+                MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.colorGreen)
+                // 播放音乐
+                MainControlActivity.getInstance()?.playOrPauseMedia("Alohal_release.mp3",true,1000*60)
             }
             Log.e("ManualActivity", "当前按摩指令：$strSendData")
             SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
         }
-    }
-
-
-    var timerPlayer:Timer? = Timer()
-    /**
-     * 播放音乐
-     * 播放/停止
-     * 持续时间
-     */
-    private fun playOrPauseMedia(isPlay:Boolean,iTime:Long) {
-        timerPlayer?.cancel()
-        timerPlayer = null
-        if (isPlay) {
-            if (!mediaPlayer.isPlaying)
-                mediaPlayer.start()
-            timerPlayer = Timer()
-            timerPlayer?.schedule(object : TimerTask() {
-                override fun run() {
-                    Log.e("AutomaticActivity", "时间到,停止播放！")
-                    mediaPlayer.stop()
-                }
-            }, iTime)
-        }
-        // 停止播放
+        // 关闭按摩自适应
         else {
-            mediaPlayer.stop()
+            MainControlActivity.getInstance()?.playOrPauseMedia("",false,0)
+            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_ALL_STOP_A_B)
+
         }
+
+//        MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.device_red)
+//        // 播放音乐
+//        MainControlActivity.getInstance()?.playOrPauseMedia(true,1000*60*3)
     }
+
+    private fun showDangerDialog() {
+        val areaAddWindowHint = AreaAddWindowHint(this,R.style.Dialogstyle,"System",
+                object : AreaAddWindowHint.PeriodListener {
+                    override fun refreshListener(string: String) {
+                    }
+                    override fun cancelListener() {
+                    }
+                },"Fatigue driving, please take a rest!",true)
+        areaAddWindowHint?.show()
+
+    }
+
+
+
 
     /**
      * 根据当前气压值，改变view颜色
@@ -383,25 +397,58 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                 if (strType == BaseVolume.COMMAND_TYPE_CHANNEL_STATUS) {
                     // 自动模式控制B面所有气袋气压
                     if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue && SocketThreadManager.isCheckChannelState) {
-                        var isAllNormal = true
-                        // B面所有气袋 12345678
-                        for (iState in DataAnalysisHelper.deviceState.controlPressStatusList) {
-                            // 正在充气，说明还没完成
-                            if (iState == DeviceWorkInfo.STATUS_SETTING)
-                                return
-                            if (iState == DeviceWorkInfo.STATUS_SETTED)
-                                isAllNormal = false
+                        // 这是按摩结束后，自动调整所有气压时判断所有气袋状态
+                        if (SocketThreadManager.isStopMassageAutoCtrPress) {
+                            var isAllNormal = true
+                            // A面所有气袋 abcdefgh
+                            for (iState in DataAnalysisHelper.deviceState.sensePressStatusList) {
+                                // 正在充气，说明还没完成
+                                if (iState == DeviceWorkInfo.STATUS_SETTING)
+                                    return
+                                if (iState == DeviceWorkInfo.STATUS_SETTED)
+                                    isAllNormal = false
+                            }
+                            for (iNumber in 5 .. 7) {
+                                val iState = DataAnalysisHelper.deviceState.controlPressStatusList[iNumber]
+                                // 正在充气，说明还没完成
+                                if (iState == DeviceWorkInfo.STATUS_SETTING)
+                                    return
+                                if (iState == DeviceWorkInfo.STATUS_SETTED)
+                                    isAllNormal = false
+                            }
+                            // 全部恢复到Normal
+                            if (!isAllNormal) {
+                                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
+                            }
+                            // 已经全部恢复到Normal，则将座椅切到恢复成功状态
+                            else {
+                                // 恢复Normal
+                                SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+                            }
+                        }
+                        // 体压自适应的调压状态
+                        else {
+                            var isBNormal = true
+                            // B面所有气袋 12345678
+                            for (iState in DataAnalysisHelper.deviceState.controlPressStatusList) {
+                                // 正在充气，说明还没完成
+                                if (iState == DeviceWorkInfo.STATUS_SETTING)
+                                    return
+                                if (iState == DeviceWorkInfo.STATUS_SETTED)
+                                    isBNormal = false
+                            }
+
+                            // 全部恢复到Normal
+                            if (!isBNormal) {
+                                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
+                            }
+                            // 已经全部恢复到Normal，则将座椅切到恢复成功状态
+                            else {
+                                loadingDialog.dismiss()
+                                SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+                            }
                         }
 
-                        // 全部恢复到Normal
-                        if (!isAllNormal) {
-                            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
-                        }
-                        // 已经全部恢复到Normal，则将座椅切到恢复成功状态
-                        else {
-                            loadingDialog.dismiss()
-                            SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
-                        }
                     }
                 }
                 // 气压值
@@ -417,7 +464,8 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
             else if (action == BaseVolume.BROADCAST_AUTO_MODEL) {
                 onAutoSetPressByStatus()
                 onAutoSetLocationByStatus()
-                onAutoSetMassageByStatus()
+                if (cbJianKang.isChecked)
+                    onAutoSetMassageByStatus()
             }
         }
     }

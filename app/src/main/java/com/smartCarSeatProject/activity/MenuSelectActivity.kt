@@ -21,6 +21,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.AssetFileDescriptor
+import android.media.MediaPlayer
 import android.net.ConnectivityManager
 import android.opengl.GLSurfaceView
 import android.os.Bundle
@@ -53,7 +55,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
     var isControlShow = false
     // 是否在退出应用
     var isExitApplication = false
-
+    val mediaPlayer = MediaPlayer()
     // 检测人体的同时缓存A面气压值，用于后面的体重，身高计算
     var statPressABufferListByProbe = arrayListOf<ArrayList<String>>()
     // 流程：连接Can→ 调压模式，初始化 → 初始化完成后normal → 开始检测人体参数并缓存压力值 → 识别结束，计算身高体重 → 各个模式按钮亮起来！
@@ -65,6 +67,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
         initUI()
         reciverBand()
+
 
         btn1.isEnabled = true
         btn2.isEnabled = true
@@ -87,6 +90,13 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
         // 将座椅恢复到最初
         changeSeatState(SeatStatus.press_wait_reserve.iValue)
+
+        // 音频资源
+//        var fd = assets.openFd("Alohal.mp3")
+//        mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
+//        mediaPlayer.isLooping = true // 循环播放
+//        mediaPlayer.prepare()
+//        mediaPlayer.start()
 
     }
 
@@ -186,13 +196,37 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             R.id.btn2 -> {
                 gotoMainControlActivity(2)
             }
-            R.id.btn3 ->
+            R.id.btn3 -> {
                 gotoMainControlActivity(3)
+//                if (mediaPlayer.isPlaying)
+//                    mediaPlayer.stop()
+//                else {
+//                    mediaPlayer.reset()
+//                    var fd = assets.openFd("Alohal_release.mp3")
+//                    mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
+//                    mediaPlayer.isLooping = true // 循环播放
+//                    mediaPlayer.prepare()
+//                    mediaPlayer.start()
+//                }
+
+
+            }
             R.id.btn4 -> {
                 gotoMainControlActivity(4)
             }
             R.id.tvReCanConnect -> {
                 SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
+//                if (mediaPlayer.isPlaying)
+//                    mediaPlayer.stop()
+//                else {
+//                    mediaPlayer.reset()
+//                    var fd = assets.openFd("Alohal.mp3")
+//                    mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
+//                    mediaPlayer.isLooping = true // 循环播放
+//                    mediaPlayer.prepare()
+//                    mediaPlayer.start()
+//                }
+
             }
             R.id.tvReLocConnect -> {
                 SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createLocSocket()
@@ -322,16 +356,17 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                             tvReLocConnect.visibility = View.VISIBLE
                         }
 //                        ToastMsg("Can Connection successful！")
-                    }
-                    OnStartLoadData(isConnected)
-                    changeSeatState(-1)
-                    // 判断座椅状态 待初始化：先发调压模式，再调整气压
-                    if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_wait_reserve.iValue) {
-                        defaultSeatState()
+                        OnStartLoadData(isConnected)
+                        changeSeatState(-1)
+                        // 判断座椅状态 待初始化：先发调压模式，再调整气压
+                        if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_wait_reserve.iValue) {
+                            defaultSeatState()
+                        }
+
+                        // 测试阶段，A面气袋有问题，所以直接进入默认状态！fixme
+//                        changeSeatState(SeatStatus.press_normal.iValue)
                     }
 
-                    // 测试阶段，A面气袋有问题，所以直接进入默认状态！fixme
-//                    changeSeatState(SeatStatus.press_normal.iValue)
 
                 }
 

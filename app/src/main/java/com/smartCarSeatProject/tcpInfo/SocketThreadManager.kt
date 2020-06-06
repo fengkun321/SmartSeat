@@ -87,7 +87,22 @@ class SocketThreadManager() {
         }
         NowActionModel = Action_ChangModel
 //        startTimeOut(false)
-        CanTaskCenter.sharedCenter(mContext).sendHexText(strData)
+
+        // 如果是停止所有按摩，则需要将AB面气袋自动调整到按摩之前的气压
+        if (strData.equals(BaseVolume.COMMAND_CAN_ALL_STOP_A_B,false)) {
+            NowActionModel = Action_ChangModel
+            CanTaskCenter.sharedCenter(mContext).sendHexText(BaseVolume.COMMAND_CAN_MODEL_ADJUST_A_B)
+            isStopMassageAutoCtrPress = true
+            // 座椅AB面气压恢复初始化！
+            val sendDataList = CreateCtrDataHelper.getAllPressValueBy16Buffer(DataAnalysisHelper.deviceState.controlPressValueBufferList,DataAnalysisHelper.deviceState.sensePressValueBufferListl)
+            sendDataList.forEach {
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(it)
+            }
+        }
+        else {
+            CanTaskCenter.sharedCenter(mContext).sendHexText(strData)
+        }
+
     }
 
     /** 通过Can盒调试通道气压（带保护机制：30秒后，如果还是调压模式，则强制切换到Normal模式） */
@@ -131,6 +146,8 @@ class SocketThreadManager() {
         var NowActionModel = Action_ChangModel
         /** 是否允许上报状态 */
         var isCheckChannelState = false
+        /** 是否停止massage后，自动调整所有气袋气压 */
+        var isStopMassageAutoCtrPress = false
 
         fun sharedInstance(context: Context): SocketThreadManager {
             mContext = context
@@ -160,6 +177,7 @@ class SocketThreadManager() {
         }
         else {
             isCheckChannelState = false
+            isStopMassageAutoCtrPress = false
             timer?.cancel()
         }
     }
@@ -173,6 +191,7 @@ class SocketThreadManager() {
     fun startCheckState(isCheckState : Boolean) {
         if (isCheckState) {
             isCheckChannelState = false
+            isStopMassageAutoCtrPress = false
             checkStateTimer?.cancel()
             checkStateTimer = null
             checkStateTimer = Timer()

@@ -230,7 +230,7 @@ public class LocTaskCenter {
      * send string cmd to serial
      */
     public void sendHexText(String cmd) {
-        Log.e(TAG, "发送数据："+cmd);
+        Log.e(TAG, "发送电机数据："+cmd);
         strNowSendData = cmd;
 //        byte[] mBuffer = cmd.getBytes();
         byte[] mBuffer = BaseVolume.hexStringToBytes(strNowSendData);

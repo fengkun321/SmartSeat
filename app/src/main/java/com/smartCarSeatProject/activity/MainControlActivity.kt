@@ -21,11 +21,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.AssetFileDescriptor
+import android.media.MediaPlayer
 import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.os.SystemClock
 import android.support.v7.app.AlertDialog
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
@@ -35,10 +38,7 @@ import com.ai.nuralogix.anura.sample.utils.BundleUtils
 import com.alibaba.android.mnnkit.monitor.MNNMonitor
 import com.smartCarSeatProject.BuildConfig
 import com.smartCarSeatProject.R
-import com.smartCarSeatProject.data.BaseVolume
-import com.smartCarSeatProject.data.DataAnalysisHelper
-import com.smartCarSeatProject.data.DeviceWorkInfo
-import com.smartCarSeatProject.data.SeatStatus
+import com.smartCarSeatProject.data.*
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import com.smartCarSeatProject.view.AreaAddWindowHint
 import kotlinx.android.synthetic.main.layout_control.*
@@ -59,10 +59,16 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
     // 设置过的通道的值
     var setValueBufferByChannel = HashMap<Int,String>()
     var cameraIsStart = false
-
+    // 音频资源
+    lateinit var fd:AssetFileDescriptor
+    val mediaPlayer = MediaPlayer()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_control)
+
+        fd = assets.openFd("Alohal.mp3")
+        mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
+        mediaPlayer.isLooping = true // 循环播放
 
         NowShowViewNumber = intent.getIntExtra("iNumber",1)
         Tag = this.localClassName
@@ -247,6 +253,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
     }
 
     private fun switchActivityByNumber(number: Int) {
+        mediaPlayer.stop()
         NowShowViewNumber = number
         imgLeft1.setImageResource(R.drawable.img_left_1_false)
         imgLeft2.setImageResource(R.drawable.img_left_2_false)
@@ -414,12 +421,56 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
      */
     fun changePersonInfoTextColor(iColor:Int) {
 
-        tvHeart.setTextColor(iColor)
-        tvBPD.setTextColor(iColor)
-        tvBPS.setTextColor(iColor)
-        tvMSI.setTextColor(iColor)
-        tvSN.setTextColor(iColor)
+        tvHeart.setTextColor(resources.getColor(iColor))
+        tvBPD.setTextColor(resources.getColor(iColor))
+        tvBPS.setTextColor(resources.getColor(iColor))
+        tvMSI.setTextColor(resources.getColor(iColor))
+        tvSN.setTextColor(resources.getColor(iColor))
 
+
+    }
+
+
+
+    var timerPlayer:Timer? = Timer()
+    var nowPlayName = ""
+    /**
+     * 播放音乐
+     * 播放/停止
+     * 持续时间
+     */
+    fun playOrPauseMedia(playName:String,isPlay:Boolean,iTime:Long) {
+
+        timerPlayer?.cancel()
+        timerPlayer = null
+        if (isPlay) {
+            // 当前播放的和要播放的歌曲不同，则停止重新播放
+            if (!nowPlayName.equals(playName)) {
+                nowPlayName = playName
+                mediaPlayer.stop()
+                mediaPlayer.reset()
+                var fd = assets.openFd(nowPlayName)
+                mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
+                mediaPlayer.isLooping = true // 循环播放
+            }
+            if (!mediaPlayer.isPlaying) {
+                mediaPlayer.prepare()
+                mediaPlayer.start()
+            }
+
+            timerPlayer = Timer()
+            timerPlayer?.schedule(object : TimerTask() {
+                override fun run() {
+                    Log.e("AutomaticActivity", "时间到,停止播放！")
+                    mediaPlayer.stop()
+                    SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_ALL_STOP_A_B)
+                }
+            }, iTime)
+        }
+        // 停止播放
+        else {
+            mediaPlayer.stop()
+        }
     }
 
     /****
@@ -968,11 +1019,11 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                             AlertDialog.Builder(it)
                         }
                         // 如果座椅处于正在探测人体数据状态，则显示弹窗
-                        if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue) {
-                            builder?.setMessage("Wait for final result...")?.setCancelable(false)
-                            dialog = builder?.create()!!
-                            dialog.show()
-                        }
+//                        if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue) {
+//                            builder?.setMessage("Wait for final result...")?.setCancelable(false)
+//                            dialog = builder?.create()!!
+//                            dialog.show()
+//                        }
                     }
                     trackerView.setMeasurementProgress(progressPercent.toFloat())
                     if (frameNumber % 10 == 0L) {
@@ -1060,6 +1111,9 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
     }
 
     override fun onDestroy() {
+
+        mediaPlayer.stop()
+        mediaPlayer. release()
 
         destoryCamera()
 

@@ -157,43 +157,26 @@ class DataAnalysisHelper{
                 .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_CHANNEL_STATUS)
                 .putExtra(BaseVolume.BROADCAST_MSG,deviceState))
 
-//        if (SocketThreadManager.isCheckChannelState) {
-//            Log.e("通道状态 ", "抛到上层！")
-//            context?.sendBroadcast(Intent(BaseVolume.BROADCAST_RESULT_DATA_INFO)
-//                    .putExtra(BaseVolume.BROADCAST_TYPE,BaseVolume.COMMAND_TYPE_CHANNEL_STATUS)
-//                    .putExtra(BaseVolume.BROADCAST_MSG,deviceState))
-//        }
+        for (iState in deviceState.sensePressStatusList) {
+            if (iState != DeviceWorkInfo.STATUS_NORMAL)
+                return
+        }
+        for (iState in deviceState.controlPressStatusList) {
+            if (iState != DeviceWorkInfo.STATUS_NORMAL)
+                return
+        }
+
+        deviceState.controlPressValueBufferList.clear()
+        deviceState.sensePressValueBufferListl.clear()
+        deviceState.controlPressValueBufferList.addAll(deviceState.controlPressValueList)
+        for (iNumber in 3 .. 10) {
+            deviceState.sensePressValueBufferListl.add(deviceState.sensePressValueListl[iNumber])
+        }
 
 
-//        var iSettedCountA = 0
-//        var iNormalCountA = 0
-//        for (iState in deviceState.sensePressStatusList) {
-//            if (iState == DeviceWorkInfo.STATUS_SETTING || iState == DeviceWorkInfo.STATUS_MASSAGE)
-//                return
-//            if (iState == DeviceWorkInfo.STATUS_SETTED)
-//                ++iSettedCountA
-//            if (iState == DeviceWorkInfo.STATUS_NORMAL)
-//                ++iNormalCountA
-//        }
-////
-//        var iSettedCountB = 0
-//        var iNormalCountB = 0
-//        for (iState in deviceState.controlPressStatusList) {
-//            if (iState == DeviceWorkInfo.STATUS_SETTING || iState == DeviceWorkInfo.STATUS_MASSAGE)
-//                return
-//            if (iState == DeviceWorkInfo.STATUS_SETTED)
-//                ++iSettedCountB
-//            if (iState == DeviceWorkInfo.STATUS_NORMAL)
-//                ++iNormalCountB
-//        }
-//
-//        // 如果是在调压
-//        if (SocketThreadManager.NowActionModel == SocketThreadManager.Action_CtrPress) {
-//            // 如果已经调完，且存在没切换到Normal的，则强制切换
-//            if (iSettedCountA > 0 || iSettedCountB > 0) {
-//                SocketThreadManager.sharedInstance(context).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
-//            }
-//        }
+        // 所有气袋状态全是Normal,则说明都控制完成，这时候缓存各个气袋的压力值，用于按摩结束后自动恢复气压功能
+
+
     }
 
 

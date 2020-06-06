@@ -61,6 +61,44 @@ class CreateCtrDataHelper {
 
         }
 
+        /** 自动调整16路通道的气压值 */
+        fun getAllPressValueBy16Buffer(controlPressListBuffer:ArrayList<String>,sensePressListBuffer:ArrayList<String>):ArrayList<String>{
+            var dataList = arrayListOf<String>()
+            var strSendData1 = BaseVolume.COMMAND_HEAD + BaseVolume.COMMAND_CTR_1_4
+            var strSendData2 = BaseVolume.COMMAND_HEAD + BaseVolume.COMMAND_CTR_5_8
+            var strSendData3 = BaseVolume.COMMAND_HEAD + BaseVolume.COMMAND_CTR_9_12
+            var strSendData4 = BaseVolume.COMMAND_HEAD + BaseVolume.COMMAND_CTR_13_16
+
+            strSendData1 = strSendData1 +
+                    String.format("%04x",controlPressListBuffer[0].toInt())+
+                    String.format("%04x",controlPressListBuffer[1].toInt())+
+                    String.format("%04x",controlPressListBuffer[2].toInt())+
+                    String.format("%04x",controlPressListBuffer[3].toInt())
+
+            strSendData2 = strSendData2 +
+                    String.format("%04x",controlPressListBuffer[4].toInt())+
+                    String.format("%04x",controlPressListBuffer[5].toInt())+
+                    String.format("%04x",controlPressListBuffer[6].toInt())+
+                    String.format("%04x",controlPressListBuffer[7].toInt())
+            strSendData3 = strSendData3 +
+                    String.format("%04x",sensePressListBuffer[0].toInt())+
+                    String.format("%04x",sensePressListBuffer[1].toInt())+
+                    String.format("%04x",sensePressListBuffer[2].toInt())+
+                    String.format("%04x",sensePressListBuffer[3].toInt())
+            strSendData4 = strSendData4 +
+                    String.format("%04x",sensePressListBuffer[4].toInt())+
+                    String.format("%04x",sensePressListBuffer[5].toInt())+
+                    String.format("%04x",sensePressListBuffer[6].toInt())+
+                    String.format("%04x",sensePressListBuffer[7].toInt())
+
+            dataList.add(strSendData1)
+            dataList.add(strSendData2)
+            dataList.add(strSendData3)
+            dataList.add(strSendData4)
+
+            return dataList
+        }
+
         /** 开发者模式下，同时设置16路通道的气压值 */
         fun getAllPressValueBy16(strA:String,strSeat:String,strB:String):ArrayList<String>{
             var dataList = arrayListOf<String>()
