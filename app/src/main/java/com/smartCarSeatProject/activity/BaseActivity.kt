@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.WindowManager
@@ -27,10 +28,13 @@ open class BaseActivity : AppCompatActivity(){
     lateinit var progressBarWindowHint: ProgressBarWindowHint
     // 是否已经检测过人体数据
     protected var isCheckedPersonInfo = false
+    protected lateinit var mHandler:Handler
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mHandler = Handler()
 
         pref = getSharedPreferences(PREF_NAME, 0)
 

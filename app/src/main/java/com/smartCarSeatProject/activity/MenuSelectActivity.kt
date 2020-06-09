@@ -582,7 +582,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             btn4.isEnabled = true
             loadingDialog?.dismiss()
             progressBarWindowHint?.onSelfDismiss()
-            ToastMsg("Seat initialization is complete！")
+            ToastMsg("Initialized！")
             // 切换到正在检测
             changeSeatState(SeatStatus.press_auto_probe.iValue)
         }
@@ -591,7 +591,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             btn4.isEnabled = true
             loadingDialog?.dismiss()
             progressBarWindowHint?.onSelfDismiss()
-            ToastMsg("Start collecting data！")
+            ToastMsg("collecting data...")
             // 同时收集A面气袋的数据 fixme
             statPressABufferListByProbe.clear()
             stopMeasurement(true)
@@ -626,7 +626,6 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             btn4.isEnabled = true
             loadingDialog?.dismiss()
             progressBarWindowHint?.onSelfDismiss()
-            ToastMsg("Automatic mode！")
         }
         // 手动模式
         else if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_manual.iValue){

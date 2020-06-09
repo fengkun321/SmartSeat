@@ -37,6 +37,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
         initUI()
         initData()
         reciverBand()
+        checkNowAutoProgress()
 
     }
 
@@ -44,6 +45,10 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
         imgBack.setOnClickListener {
             MainControlActivity.getInstance()?.finish()
         }
+
+        cbAutoTiYa.isChecked = DataAnalysisHelper.deviceState.isAutoTiYa
+        cbAutoWeiZhi.isChecked = DataAnalysisHelper.deviceState.isAutoWeiZhi
+        cbJianKang.isChecked = DataAnalysisHelper.deviceState.isAutoJianKang
 
         cbAutoTiYa.setOnCheckedChangeListener(onChangeListener)
         cbAutoWeiZhi.setOnCheckedChangeListener(onChangeListener)
@@ -79,13 +84,18 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
 
     private val onChangeListener = object:CompoundButton.OnCheckedChangeListener{
         override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-            if (buttonView?.tag.toString().equals("press"))
-                onAutoSetPressByStatus()
+            if (buttonView?.tag.toString().equals("press")) {
+                DataAnalysisHelper.deviceState.isAutoTiYa = isChecked
+//                onAutoSetPressByStatus()
+            }
+
             else if (buttonView?.tag.toString().equals("location")) {
-                onAutoSetLocationByStatus()
+                DataAnalysisHelper.deviceState.isAutoWeiZhi = isChecked
+//                onAutoSetLocationByStatus()
             }
             else if (buttonView?.tag.toString().equals("massage")) {
-                onAutoSetMassageByStatus()
+                DataAnalysisHelper.deviceState.isAutoJianKang = isChecked
+//                onAutoSetMassageByStatus()
             }
         }
 
@@ -156,6 +166,8 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
         myIntentFilter.addAction(BaseVolume.BROADCAST_RESULT_DATA_INFO)
         myIntentFilter.addAction(BaseVolume.BROADCAST_CTR_CALLBACK)
         myIntentFilter.addAction(BaseVolume.BROADCAST_AUTO_MODEL)
+        myIntentFilter.addAction(BaseVolume.BROADCAST_STOP_LOCATION_TIMEOUT)
+        myIntentFilter.addAction(BaseVolume.BROADCAST_PERSON_INFO)
         // 注册广播
         registerReceiver(myNetReceiver, myIntentFilter)
     }
@@ -173,11 +185,11 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
         // 体压自适应启动
         if (cbAutoTiYa.isChecked) {
             // 根据男女，身高体重，获取气压表
+            DataAnalysisHelper.deviceState.iNowAutoProgress = 3
             val isMan = DataAnalysisHelper.deviceState.m_gender
             val isCN = DataAnalysisHelper.deviceState.m_national
             // 设置气压，并提示用户，正在自动调整
             val willCtrPressValue = DataAnalysisHelper.getInstance(mContext)?.getAutoCtrPressByPersonStyle(isMan,isCN)
-            loadingDialog.showAndMsg("正在调整...")
             val sendData = CreateCtrDataHelper.getCtrPressAllValueByPerson(willCtrPressValue!!)
             Log.e("DeviceWorkInfo","计算数据：自动设置B面的气压值：1-4:${sendData[0]} & 5-8:${sendData[1]}")
             // 只调整B面的，所以将A面设为normal，B面设为adjust
@@ -185,6 +197,12 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
             SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan(sendData[0])
             SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan(sendData[1])
         }
+        else {
+            DataAnalysisHelper.deviceState.iNowAutoProgress = 4
+            onAutoSetMassageByStatus()
+        }
+
+        checkNowAutoProgress()
 
 
 
@@ -196,6 +214,9 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
     private fun onAutoSetLocationByStatus() {
         // 位置自适应
         if (cbAutoWeiZhi.isChecked) {
+            locationTimeOut(true)
+            ToastMsg("自动调整位置！")
+            DataAnalysisHelper.deviceState.iNowAutoProgress = 2
             if (DataAnalysisHelper.deviceState.nowHeight <= 160)
                 SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_1)
             else if (DataAnalysisHelper.deviceState.nowHeight > 160 && DataAnalysisHelper.deviceState.nowHeight <= 170)
@@ -212,9 +233,14 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
             SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_0)
         }
         else {
-            SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_DEFAULT)
-            SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_0)
+//            SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_DEFAULT)
+//            SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_0)
+            DataAnalysisHelper.deviceState.iNowAutoProgress = 3
+            onAutoSetPressByStatus()
         }
+
+        checkNowAutoProgress()
+
     }
 
     /**
@@ -223,69 +249,80 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
     private fun onAutoSetMassageByStatus() {
         // 健康自适应
         if (cbJianKang.isChecked) {
-            var strSendData = BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B
-            // 1.心率/血压/情绪值 正常状态( 60<心率<100 and 90<收缩压< 139 and 60<舒张压<89 and 心理压力值<4 )
-            // 字体绿色显示，启动A面轻度按摩,播放音乐
-            if ((DataAnalysisHelper.deviceState.HeartRate.toFloat()>60 && DataAnalysisHelper.deviceState.HeartRate.toFloat()<100)
-                    && (DataAnalysisHelper.deviceState.Sys_BP.toFloat()>90 && DataAnalysisHelper.deviceState.Sys_BP.toFloat()<139)
-                    && (DataAnalysisHelper.deviceState.Dia_BP.toFloat()>60 && DataAnalysisHelper.deviceState.Dia_BP.toFloat()<89)
-                    && DataAnalysisHelper.deviceState.E_Index.toFloat()<4) {
-                strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
-                MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.colorGreen)
-                // 播放音乐
-                MainControlActivity.getInstance()?.playOrPauseMedia("Alohal_release.mp3",true,1000*60)
-            }
-            // 2.心率/血压/情绪值 轻度超标 （40<心率<60 or 100<心率<160 or 140<收缩压<159 or 90<舒张压<99 or 4<心理压力值<5 )
-            // 字体黄色显示，同时启动座椅A面及B面中度按摩，播放音乐
-            else if ((DataAnalysisHelper.deviceState.HeartRate.toFloat()>40 && DataAnalysisHelper.deviceState.HeartRate.toFloat()<60)
-                    || (DataAnalysisHelper.deviceState.HeartRate.toFloat()>100 && DataAnalysisHelper.deviceState.HeartRate.toFloat()<160)
-                    || (DataAnalysisHelper.deviceState.Sys_BP.toFloat()>140 && DataAnalysisHelper.deviceState.Sys_BP.toFloat()<159)
-                    || (DataAnalysisHelper.deviceState.Dia_BP.toFloat()>90 && DataAnalysisHelper.deviceState.Dia_BP.toFloat()<99)
-                    || (DataAnalysisHelper.deviceState.E_Index.toFloat()>4 && DataAnalysisHelper.deviceState.E_Index.toFloat()<5)) {
-                strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_2,BaseVolume.COMMAND_CAN_MODEL_MASG_2)
-                MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.colorYellow)
-                // 播放音乐
-                MainControlActivity.getInstance()?.playOrPauseMedia("Alohal_release.mp3",true,1000*60*3)
-
-            }
-            // 3.心率/血压/情绪值 中度超标（心率<40 or 心率>160 or 160<收缩压 or 100<舒张压 or 心理压力值>5 )
-            // 字体红色显示，提示停车，座椅归位出厂状态，并启动A面B面同时3级按摩
-            else if (DataAnalysisHelper.deviceState.HeartRate.toFloat()<40
-                    || DataAnalysisHelper.deviceState.HeartRate.toFloat()>160
-                    || DataAnalysisHelper.deviceState.Sys_BP.toFloat()>160
-                    || DataAnalysisHelper.deviceState.Dia_BP.toFloat()>100
-                    || DataAnalysisHelper.deviceState.E_Index.toFloat()>5) {
-                // AB面同时按摩3
-                strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_3,BaseVolume.COMMAND_CAN_MODEL_MASG_3)
-                // 座椅恢复到出厂设置
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_DEFAULT)
-                // 字显示红色
-                MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.device_red)
-                // 播放音乐
-                MainControlActivity.getInstance()?.playOrPauseMedia("Alohal.mp3",true,1000*60*3)
-                showDangerDialog()
-
-            }
-            // 其他范围，就按摩一下吧，
-            else {
-                strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
-                MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.colorGreen)
-                // 播放音乐
-                MainControlActivity.getInstance()?.playOrPauseMedia("Alohal_release.mp3",true,1000*60)
-            }
-            Log.e("ManualActivity", "当前按摩指令：$strSendData")
-            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+            ToastMsg("健康监测！")
+            DataAnalysisHelper.deviceState.iNowAutoProgress = 4
+            runMassageInfo()
         }
         // 关闭按摩自适应
         else {
-            MainControlActivity.getInstance()?.playOrPauseMedia("",false,0)
-            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_ALL_STOP_A_B)
+//            MainControlActivity.getInstance()?.playOrPauseMedia("",false,0)
+//            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_ALL_STOP_A_B)
+            DataAnalysisHelper.deviceState.iNowAutoProgress = 5
 
         }
+
+        checkNowAutoProgress()
 
 //        MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.device_red)
 //        // 播放音乐
 //        MainControlActivity.getInstance()?.playOrPauseMedia(true,1000*60*3)
+    }
+
+    /** 执行massage */
+    private fun runMassageInfo() {
+        var strSendData = BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B
+        // 1.心率/血压/情绪值 正常状态( 60<心率<100 and 90<收缩压< 139 and 60<舒张压<89 and 心理压力值<4 )
+        // 字体绿色显示，启动A面轻度按摩,播放音乐
+        if ((DataAnalysisHelper.deviceState.HeartRate.toFloat()>60 && DataAnalysisHelper.deviceState.HeartRate.toFloat()<100)
+                && (DataAnalysisHelper.deviceState.Sys_BP.toFloat()>90 && DataAnalysisHelper.deviceState.Sys_BP.toFloat()<139)
+                && (DataAnalysisHelper.deviceState.Dia_BP.toFloat()>60 && DataAnalysisHelper.deviceState.Dia_BP.toFloat()<89)
+                && DataAnalysisHelper.deviceState.E_Index.toFloat()<4) {
+            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+            MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.colorGreen)
+            // 播放音乐
+            MainControlActivity.getInstance()?.playOrPauseMedia("Alohal_release.mp3",true,1000*60)
+        }
+        // 2.心率/血压/情绪值 轻度超标 （40<心率<60 or 100<心率<160 or 140<收缩压<159 or 90<舒张压<99 or 4<心理压力值<5 )
+        // 字体黄色显示，同时启动座椅A面及B面中度按摩，播放音乐
+        else if ((DataAnalysisHelper.deviceState.HeartRate.toFloat()>40 && DataAnalysisHelper.deviceState.HeartRate.toFloat()<60)
+                || (DataAnalysisHelper.deviceState.HeartRate.toFloat()>100 && DataAnalysisHelper.deviceState.HeartRate.toFloat()<160)
+                || (DataAnalysisHelper.deviceState.Sys_BP.toFloat()>140 && DataAnalysisHelper.deviceState.Sys_BP.toFloat()<159)
+                || (DataAnalysisHelper.deviceState.Dia_BP.toFloat()>90 && DataAnalysisHelper.deviceState.Dia_BP.toFloat()<99)
+                || (DataAnalysisHelper.deviceState.E_Index.toFloat()>4 && DataAnalysisHelper.deviceState.E_Index.toFloat()<5)) {
+            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_2,BaseVolume.COMMAND_CAN_MODEL_MASG_2)
+            MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.colorYellow)
+            // 播放音乐
+            MainControlActivity.getInstance()?.playOrPauseMedia("Alohal_release.mp3",true,1000*60*3)
+
+        }
+        // 3.心率/血压/情绪值 中度超标（心率<40 or 心率>160 or 160<收缩压 or 100<舒张压 or 心理压力值>5 )
+        // 字体红色显示，提示停车，座椅归位出厂状态，并启动A面B面同时3级按摩
+        else if (DataAnalysisHelper.deviceState.HeartRate.toFloat()<40
+                || DataAnalysisHelper.deviceState.HeartRate.toFloat()>160
+                || DataAnalysisHelper.deviceState.Sys_BP.toFloat()>160
+                || DataAnalysisHelper.deviceState.Dia_BP.toFloat()>100
+                || DataAnalysisHelper.deviceState.E_Index.toFloat()>5) {
+            // AB面同时按摩3
+            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_3,BaseVolume.COMMAND_CAN_MODEL_MASG_3)
+            // 座椅恢复到出厂设置
+            SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_DEFAULT)
+            // 字显示红色
+            MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.device_red)
+            // 播放音乐
+            MainControlActivity.getInstance()?.playOrPauseMedia("Alohal.mp3",true,1000*60*3)
+            showDangerDialog()
+
+        }
+        // 其他范围，就按摩一下吧，
+        else {
+            ToastMsg("不在健康诊断范围内，也放个音乐，按摩一下吧！")
+            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+            MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.colorGreen)
+            // 播放音乐
+            MainControlActivity.getInstance()?.playOrPauseMedia("Alohal_release.mp3",true,1000*60)
+        }
+        Log.e("ManualActivity", "当前按摩指令：$strSendData")
+        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
     }
 
     private fun showDangerDialog() {
@@ -300,6 +337,44 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
 
     }
 
+    /** 判断当前自动模式的进度 */
+    private fun checkNowAutoProgress() {
+        imgBack.isEnabled = false
+        cbAutoWeiZhi.isEnabled = false
+        cbAutoTiYa.isEnabled = false
+        cbJianKang.isEnabled = false
+        cbAutoWeiZhi.setTextColor(mContext.getColor(R.color.colorHui))
+        cbAutoTiYa.setTextColor(mContext.getColor(R.color.colorHui))
+
+        cbJianKang.setTextColor(mContext.getColor(R.color.colorHui))
+        when(DataAnalysisHelper.deviceState.iNowAutoProgress) {
+            2 -> {
+                cbAutoWeiZhi.setTextColor(mContext.getColor(R.color.colorWhite))
+            }
+            3 -> {
+                cbAutoWeiZhi.setTextColor(mContext.getColor(R.color.colorWhite))
+                cbAutoTiYa.setTextColor(mContext.getColor(R.color.colorWhite))
+                cbAutoWeiZhi.isEnabled = true
+            }
+            4 -> {
+                cbAutoWeiZhi.setTextColor(mContext.getColor(R.color.colorWhite))
+                cbAutoTiYa.setTextColor(mContext.getColor(R.color.colorWhite))
+                cbJianKang.setTextColor(mContext.getColor(R.color.colorWhite))
+                cbAutoTiYa.isEnabled = true
+                cbAutoWeiZhi.isEnabled = true
+            }
+            5 -> {
+                imgBack.isEnabled = true
+                cbAutoTiYa.setTextColor(mContext.getColor(R.color.colorWhite))
+                cbAutoWeiZhi.setTextColor(mContext.getColor(R.color.colorWhite))
+                cbJianKang.setTextColor(mContext.getColor(R.color.colorWhite))
+                cbAutoTiYa.isEnabled = true
+                cbAutoWeiZhi.isEnabled = true
+                cbJianKang.isEnabled = true
+            }
+        }
+
+    }
 
 
 
@@ -446,6 +521,10 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                             else {
                                 loadingDialog.dismiss()
                                 SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+                                if (DataAnalysisHelper.deviceState.iNowAutoProgress == 3) {
+                                    // 气压调节完成，开始按摩调节
+                                    onAutoSetMassageByStatus()
+                                }
                             }
                         }
 
@@ -462,11 +541,50 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
             }
             // 自动调整座椅气压和位置
             else if (action == BaseVolume.BROADCAST_AUTO_MODEL) {
-                onAutoSetPressByStatus()
-                onAutoSetLocationByStatus()
-                if (cbJianKang.isChecked)
-                    onAutoSetMassageByStatus()
+                // 当前自动模式的步骤没执行过，则开始执行
+                if (DataAnalysisHelper.deviceState.iNowAutoProgress <= 1) {
+                    // 先判断位置自适应
+                    onAutoSetLocationByStatus()
+                }
+                else {
+                    // 更新当前进度
+                    checkNowAutoProgress()
+                }
+
             }
+            // 停止位置调节，倒计时
+            else if (action == BaseVolume.BROADCAST_STOP_LOCATION_TIMEOUT) {
+                locationTimeOut(false)
+            }
+            // 实时判断人体数据
+            else if (action == BaseVolume.BROADCAST_PERSON_INFO) {
+                if (cbJianKang.isChecked && DataAnalysisHelper.deviceState.iNowAutoProgress == 5) {
+                    runMassageInfo()
+                }
+            }
+        }
+    }
+
+    var timerLocation:Timer? = null
+    /**
+     * 开启/关闭计时器
+     */
+    fun locationTimeOut(isRun : Boolean) {
+        if (isRun) {
+            timerLocation?.cancel()
+            timerLocation = null
+            timerLocation = Timer()
+            timerLocation?.schedule(object : TimerTask() {
+                override fun run() {
+                    Log.e("AutoMaticActivity", "10秒时间到！位置调节结束，开始调节气压")
+                    mHandler.post {
+                        onAutoSetPressByStatus()
+                    }
+                }
+            }, (10 * 1000))
+        }
+        else {
+            timer?.cancel()
         }
     }
 
@@ -474,7 +592,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(myNetReceiver)
-
+        locationTimeOut(false)
     }
 
 

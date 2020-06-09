@@ -12,7 +12,7 @@
         <ImageView android:id="@+id/imgBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/img_top_back"
+            android:src="@drawable/img_back_style"
             android:layout_alignParentLeft="true"
             android:visibility="visible"
             android:layout_alignParentBottom="true"/>
@@ -74,34 +74,34 @@
             android:layout_marginRight="30dp"
             android:gravity="center">
 
-            <CheckBox android:id="@+id/cbAutoTiYa"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="  体压自适应"
-                android:button="@drawable/checkbox_selector"
-                android:textColor="@color/colorWhite"
-                android:gravity="center_vertical"
-                android:layout_marginTop="20dp"
-                android:checked="true"
-                android:tag="press"/>
-
             <CheckBox android:id="@+id/cbAutoWeiZhi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="  位置自适应"
                 android:button="@drawable/checkbox_selector"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/colorHui"
+                android:gravity="center_vertical"
+                android:layout_marginTop="20dp"
+                android:checked="true"
+                android:tag="location"/>
+
+            <CheckBox android:id="@+id/cbAutoTiYa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  体压自适应"
+                android:button="@drawable/checkbox_selector"
+                android:textColor="@color/colorHui"
                 android:gravity="center_vertical"
                 android:layout_marginTop="10dp"
                 android:checked="true"
-                android:tag="location"/>
+                android:tag="press"/>
 
             <CheckBox android:id="@+id/cbJianKang"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="  健康自适应"
                 android:button="@drawable/checkbox_selector"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/colorHui"
                 android:gravity="center_vertical"
                 android:layout_marginTop="10dp"
                 android:checked="true"
@@ -114,7 +114,8 @@
                 android:orientation="horizontal"
                 android:padding="3dp"
                 android:background="@drawable/btn_press_no"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="20dp"
+                android:visibility="gone">
 
                 <Button android:id="@+id/btnNan"
                     android:layout_width="70dp"
@@ -148,7 +149,8 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="10dp"
                 android:padding="3dp"
-                android:background="@drawable/btn_press_no">
+                android:background="@drawable/btn_press_no"
+                android:visibility="gone">
 
                 <Button android:id="@+id/btnDongF"
                     android:layout_width="70dp"

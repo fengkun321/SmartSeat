@@ -214,6 +214,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
             R.id.imgLeft4 -> {
 //                rlCamera.x = rlCamera.x - 300
 //                rlCamera.y = rlCamera.y - 300
+                DataAnalysisHelper.deviceState.iNowAutoProgress = 0
                 changeSeatState(SeatStatus.develop.iValue)
                 startActivity(Intent(this,DevelopmentActivity::class.java))
                 finish()
@@ -272,12 +273,14 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                 keyActivity = "ManualActivity"
                 intent1.setClass(this, ManualActivity::class.java!!)
                 changeSeatState(SeatStatus.press_manual.iValue)
+                DataAnalysisHelper.deviceState.iNowAutoProgress = 0
             }
             3 -> {
                 imgLeft3.setImageResource(R.drawable.img_left_3)
                 keyActivity = "SetWifiActivity"
                 intent1.setClass(this, SetWifiActivity::class.java!!)
                 changeSeatState(-1)
+                DataAnalysisHelper.deviceState.iNowAutoProgress = 0
             }
 
         }
@@ -311,7 +314,10 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         if (number == 1) {
             sendBroadcast(Intent(BaseVolume.BROADCAST_AUTO_MODEL))
         }
-
+        else {
+            // 停止位置
+//            sendBroadcast(Intent(BaseVolume.BROADCAST_STOP_LOCATION_TIMEOUT))
+        }
 
     }
 
@@ -463,9 +469,11 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                 override fun run() {
                     Log.e("AutomaticActivity", "时间到,停止播放！")
                     mediaPlayer.stop()
+                    DataAnalysisHelper.deviceState.iNowAutoProgress = 5
+                    mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_AUTO_MODEL))
                     SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_ALL_STOP_A_B)
                 }
-            }, iTime)
+            }, iTime/10)
         }
         // 停止播放
         else {
@@ -572,6 +580,10 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                         },"The seat is empty. Do you want to keep it?",false)
                 areaAddWindowHint?.show()
             }
+            else if (action == BaseVolume.BROADCAST_PERSON_INFO) {
+
+
+            }
         }
     }
 
@@ -661,24 +673,26 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                     // 人体数据： id & 信噪比 & 心跳 & 情绪值 & 低压 & 高压
                     Loge("MenuSelectActivity","人体数据：id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}")
                     DataAnalysisHelper.deviceState.snr = "${result.snr}"
-                    DataAnalysisHelper.deviceState.HeartRate = "${result.heartRate}"
-                    DataAnalysisHelper.deviceState.E_Index = "${result.msi}"
-                    DataAnalysisHelper.deviceState.Dia_BP = "${result.bpDiastolic}"
-                    DataAnalysisHelper.deviceState.Sys_BP = "${result.bpSystolic}"
-
                     tvSN.text = "信噪比:"+DataAnalysisHelper.deviceState.snr
-                    tvHeart.text = "心跳:"+DataAnalysisHelper.deviceState.HeartRate
-                    tvMSI.text = "情绪值:"+DataAnalysisHelper.deviceState.E_Index
-                    if (result.bpDiastolic != 0) {
-                        tvBPD.text = "舒张压:"+DataAnalysisHelper.deviceState.Dia_BP
+                    if (result.heartRate > 0) {
+                        DataAnalysisHelper.deviceState.HeartRate = "${result.heartRate}"
+                        tvHeart.text = "心跳:"+DataAnalysisHelper.deviceState.HeartRate
                     }
-                    if (result.bpSystolic != 0) {
-                        tvBPS.text = "收缩压:"+DataAnalysisHelper.deviceState.Sys_BP
-                    }
+                    // 当前处于自动模式，则需要去判断是否健康
+                    if (NowShowViewNumber == 1)
+                        sendBroadcast(Intent(BaseVolume.BROADCAST_PERSON_INFO))
 
                     if (result.resultIndex + 1 >= MeasurementActivity.TOTAL_NUMBER_CHUNKS) {
                         Loge("MenuSelectActivity","人体数据：测量结束！开始计算身高体重")
                         stopMeasurement(true)
+
+                        DataAnalysisHelper.deviceState.E_Index = "${result.msi}"
+                        DataAnalysisHelper.deviceState.Dia_BP = "${result.bpDiastolic}"
+                        DataAnalysisHelper.deviceState.Sys_BP = "${result.bpSystolic}"
+                        tvMSI.text = "情绪值:"+DataAnalysisHelper.deviceState.E_Index
+                        tvBPD.text = "舒张压:"+DataAnalysisHelper.deviceState.Dia_BP
+                        tvBPS.text = "收缩压:"+DataAnalysisHelper.deviceState.Sys_BP
+
                     }
                 }
             }

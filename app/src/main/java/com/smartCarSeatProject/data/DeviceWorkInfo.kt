@@ -24,6 +24,17 @@ class DeviceWorkInfo : Serializable{
     var recog_back_A_valueList = arrayListOf<String>() // 8个
     var recog_back_B_valueList = arrayListOf<String>() // 8个
 
+    /**
+     * 自动模式的进度
+     * 0：不在自动模式
+     * 1：刚进入自动模式
+     * 2：正在执行位置调节
+     * 3：正在执行气袋调节
+     * 4：正在执行按摩调节
+     * 5：处于自动模式，且全部执行完成
+     */
+    var iNowAutoProgress = 0
+
 
     // 位置调节
     var l_location = "1"
@@ -51,6 +62,10 @@ class DeviceWorkInfo : Serializable{
     var Dia_BP = "0.0"
     // 收缩压
     var Sys_BP = "0.0"
+
+    var isAutoWeiZhi = true
+    var isAutoTiYa = true
+    var isAutoJianKang = true
 
     companion object{
 
@@ -89,6 +104,11 @@ class DeviceWorkInfo : Serializable{
             sensePressStatusList.add(STATUS_NORMAL)
             controlPressStatusList.add(STATUS_NORMAL)
         }
+
+        iNowAutoProgress = 0
+        isAutoWeiZhi = true
+        isAutoTiYa = true
+        isAutoJianKang = true
 
 //        seatStatus = SeatStatus.press_wait_reserve.iValue
 
