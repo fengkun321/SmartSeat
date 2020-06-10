@@ -66,6 +66,12 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
     var setValueDialog : SetValueAreaAddWindow? = null
     var nowDevelopDataInfo = DevelopDataInfo()
     var iNowSelectNumber = -1;
+    // 座垫控件
+    var cushionList = arrayListOf<TextView>()
+    // 检测人体的同时缓存A面气压值
+    var statPressABufferListByProbe = arrayListOf<ArrayList<String>>()
+    // 30秒检测后的A面的平均气压值
+    var recogBackPressABufferListByProbe = arrayListOf<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,6 +100,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
     fun initUI() {
 
+
         edAInitValue.setText(BaseVolume.strSensorInitValue)
         edSeatInitValue.setText(BaseVolume.strSeatInitValue)
         edBInitValue.setText(BaseVolume.strAdjustInitialValue)
@@ -113,6 +120,15 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         includeA.includeASeat6.tvTitle.text = "6"
         includeA.includeASeat7.tvTitle.text = "7"
         includeA.includeASeat8.tvTitle.text = "8"
+
+        includeCushionA1.tvTitle.text = "A1";includeCushionA2.tvTitle.text = "A2"
+        includeCushionB1.tvTitle.text = "A1";includeCushionB2.tvTitle.text = "A2"
+        includeCushionC1.tvTitle.text = "A1";includeCushionC2.tvTitle.text = "A2"
+        // 座垫值
+        cushionList.add(includeCushionA1.tvValueA);cushionList.add(includeCushionA2.tvValueA)
+        cushionList.add(includeCushionB1.tvValueA);cushionList.add(includeCushionB2.tvValueA)
+        cushionList.add(includeCushionC1.tvValueA);cushionList.add(includeCushionC2.tvValueA)
+
 
         // A面的部分参数值(11个。座垫3+靠背左测8)
         tvAValueList.add(includeA.includeASeat6.tvValueA)
@@ -191,6 +207,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
     fun initUIFromB() {
         val iColorResource = if(isSaveAData) resources.getColor(R.color.colorWhite) else resources.getColor(R.color.black1)
 
+        // 保存全部数据的按钮
         btnSaveAllData.isEnabled = isSaveAData
         btnSaveAllData.setTextColor(iColorResource)
 
@@ -229,6 +246,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
     /** 减号的点击时间 */
     val onJianListenerProxy : View.OnClickListener = View.OnClickListener {
         var iTag = it.tag as Int
+        iNowSelectNumber = iTag
         var iValue = seekBarList[iTag].progress
         iValue -= 5
         if (iValue > 0)
@@ -243,6 +261,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
     /** 加号的点击时间 */
     val onJiaListenerProxy : View.OnClickListener = View.OnClickListener {
         var iTag = it.tag as Int
+        iNowSelectNumber = iTag
         var iValue = seekBarList[iTag].progress
         iValue += 5
         if (iValue < seekBarList[iTag].max)
@@ -259,15 +278,32 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
     val onSeekBarChangeListenerProxy = object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar: SeekBar?, i: Int, b: Boolean) {
             var iProcess = seekBar?.progress!! +BaseVolume.ProgressValueMin
-            var iTag = seekBar?.tag
-            tvBValueList[iTag  as Int].text = "$iProcess"
+            var iTag = seekBar?.tag.toString().toInt()
+            tvBValueList[iTag].text = "$iProcess"
+
+            if (btnSaveAllData.isEnabled) {
+                changeColor()
+            }
+
+
         }
         override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            var iTag = seekBar?.tag.toString().toInt()
+            iNowSelectNumber = iTag
         }
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
             var iProcess = seekBar?.progress!! +BaseVolume.ProgressValueMin
-            var iTag = seekBar?.tag  as Int
+            var iTag = seekBar?.tag.toString().toInt()
             controlPressValueByTag(iTag,iProcess)
+        }
+    }
+
+    private fun changeColor() {
+        for (iN in 0 until tvBValueList.size) {
+            if (iN == iNowSelectNumber)
+                tvBValueList[iN].setTextColor(mContext.resources.getColor(R.color.colorGreen))
+            else
+                tvBValueList[iN].setTextColor(mContext.resources.getColor(R.color.colorWhite))
         }
     }
 
@@ -343,11 +379,13 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
                             }
                             // 已经全部恢复到Normal，则将显示初始化完成
                             else {
-                                // 保存体征按钮，可用
-                                btnSaveA.isEnabled = true
-                                btnSaveA.setTextColor(resources.getColor(R.color.colorWhite))
+                                // 保存体征按钮，亮起来
+                                changCameraState(true)
                                 includeA.tvInitValue.text = "Initialization completed!"
                                 includeA.tvInitValue.setTextColor(resources.getColor(R.color.colorGreen))
+                                // 把前一个按钮灰掉
+                                btnInitValue.isEnabled = false
+                                btnInitValue.setTextColor(resources.getColor(R.color.black1))
                                 SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
                             }
                         }
@@ -366,7 +404,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
                                 SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
                             }
                             else if (iCtrState == DeviceWorkInfo.STATUS_NORMAL) {
-
+                                tvBValueList[iNowSelectNumber].setTextColor(mContext.resources.getColor(R.color.colorWhite))
                                 iNowSelectNumber = -1
                                 SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
                             }
@@ -397,6 +435,12 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
                             tvAOtherValueList[iIndex-3].text = sensePressList[iIndex]
                         }
                     }
+
+                    // 座椅正在检测人体，则收集A面气压值
+                    if (btnSaveA.isEnabled) {
+                        statPressABufferListByProbe.add(DataAnalysisHelper.deviceState.sensePressValueListl)
+                    }
+
                 }
             }
             // 控制回调
@@ -471,7 +515,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         }
 
     }
-    val locationList = arrayListOf<String>("区域1","区域2","区域3","区域4","区域5","区域6")
+    val locationList = arrayListOf<String>("区域0","区域1","区域2","区域3","区域4","区域5","区域6")
     val massageModeList = arrayListOf<String>("模式1","模式2","模式3")
     /** 设备编辑菜单选择功能  */
     private fun deviceSelectMenu(isLocation : Boolean,strValue : String,list : ArrayList<String>) {
@@ -498,16 +542,18 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
     fun setLocationData (number: Int) {
         when(number) {
             0 ->
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_1)
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_DEFAULT)
             1 ->
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_2)
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_1)
             2 ->
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_3)
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_2)
             3 ->
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_4)
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_3)
             4 ->
-                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_5)
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_4)
             5 ->
+                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_5)
+            6 ->
                 SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_6)
         }
         // 每次发完位置后，要再发一条清零指令才会动作
@@ -537,8 +583,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         includeA.tvInitValue.setTextColor(resources.getColor(R.color.colorWhite))
 
         // 保存体征按钮，不可用
-        btnSaveA.isEnabled = false
-        btnSaveA.setTextColor(resources.getColor(R.color.black1))
+        changCameraState(false)
 
         isSaveAData = false
         initUIFromB()
@@ -551,6 +596,25 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         NowSendDataList.forEach {
             SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.StartSendDataByCan(it)
         }
+
+        // 电机恢复默认位置
+        if (SocketThreadManager.sharedInstance(mContext).isCan2Connected()) {
+            // 默认位置
+            SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_DEFAULT)
+            // 00 结束
+            SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_0)
+        }
+
+        tvLocation.text = locationList[0]
+        tvXinZao.text = "0"
+        tvXinLv.text = "0"
+        tvQingXu.text = "0"
+        tvShuZhang.text = "0"
+        tvShouSuo.text = "0"
+        tvHuXiLv.text = "0"
+
+        nowDevelopDataInfo.initData()
+        iNowSelectNumber = -1
 
     }
 
@@ -576,7 +640,25 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
             return
         }
 
-        nowDevelopDataInfo.initData()
+
+        val fXinZao = tvXinZao.text.toString().toFloat()
+        val fXinLv = tvXinLv.text.toString().toFloat()
+        val fHuXiLv = tvHuXiLv.text.toString().toFloat()
+        val fQingXu = tvQingXu.text.toString().toFloat()
+        val fShuZhang = tvShuZhang.text.toString().toFloat()
+        val fShouSuo = tvShouSuo.text.toString().toFloat()
+
+//        if (fXinLv <= 0 || fHuXiLv <= 0 || fQingXu <= 0 || fShuZhang <= 0 || fShouSuo <= 0) {
+//            ToastMsg("人体数据异常！")
+//            return
+//        }
+
+        if (recogBackPressABufferListByProbe.size == 0) {
+            ToastMsg("请先进行数据采集！")
+            return
+        }
+
+
         //性别
         val sex =  findViewById<RadioButton>(rgSex.checkedRadioButtonId)
         //国家
@@ -596,6 +678,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         nowDevelopDataInfo.strPSInfo =  edPS.text.toString()
 
 
+        nowDevelopDataInfo.Snr = tvXinZao.text.toString()
         nowDevelopDataInfo.HeartRate = tvXinLv.text.toString()
         nowDevelopDataInfo.BreathRate = tvHuXiLv.text.toString()
         nowDevelopDataInfo.E_Index = tvQingXu.text.toString()
@@ -610,20 +693,30 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         // 初始化坐垫3组气压
         nowDevelopDataInfo.p_init_cushion = strVSeat
 
+        // 初始化的6个座垫压力值在广播中已经获取到！
+        //
+        // 这里只保存识别后的6个座垫压力值
+        nowDevelopDataInfo.p_recog_cushion_A1 =  includeCushionA1.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_cushion_A2 =  includeCushionA2.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_cushion_B1 =  includeCushionB1.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_cushion_B2 =  includeCushionB2.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_cushion_C1 =  includeCushionC1.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_cushion_C2 =  includeCushionC2.tvValueA.text.toString()
+
         // 识别后靠背A面8组
-        nowDevelopDataInfo.p_recog_back_A =  includeA.includeAAL.tvValueA.text.toString()
-        nowDevelopDataInfo.p_recog_back_B =  includeA.includeABL.tvValueA.text.toString()
-        nowDevelopDataInfo.p_recog_back_C =  includeA.includeACL.tvValueA.text.toString()
-        nowDevelopDataInfo.p_recog_back_D =  includeA.includeADL.tvValueA.text.toString()
-        nowDevelopDataInfo.p_recog_back_E =  includeA.includeAEL.tvValueA.text.toString()
-        nowDevelopDataInfo.p_recog_back_F =  includeA.includeAFL.tvValueA.text.toString()
-        nowDevelopDataInfo.p_recog_back_G =  includeA.includeAGL.tvValueA.text.toString()
-        nowDevelopDataInfo.p_recog_back_H =  includeA.includeAHL.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_back_A =  recogBackPressABufferListByProbe[3].toString()
+        nowDevelopDataInfo.p_recog_back_B =  recogBackPressABufferListByProbe[4].toString()
+        nowDevelopDataInfo.p_recog_back_C =  recogBackPressABufferListByProbe[5].toString()
+        nowDevelopDataInfo.p_recog_back_D =  recogBackPressABufferListByProbe[6].toString()
+        nowDevelopDataInfo.p_recog_back_E =  recogBackPressABufferListByProbe[7].toString()
+        nowDevelopDataInfo.p_recog_back_F =  recogBackPressABufferListByProbe[8].toString()
+        nowDevelopDataInfo.p_recog_back_G =  recogBackPressABufferListByProbe[9].toString()
+        nowDevelopDataInfo.p_recog_back_H =  recogBackPressABufferListByProbe[10].toString()
 
         // 识别后坐垫3组
-        nowDevelopDataInfo.p_recog_cushion_6 =  includeA.includeASeat6.tvValueA.text.toString()
-        nowDevelopDataInfo.p_recog_cushion_7 =  includeA.includeASeat7.tvValueA.text.toString()
-        nowDevelopDataInfo.p_recog_cushion_8 =  includeA.includeASeat8.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_cushion_6 =  recogBackPressABufferListByProbe[0].toString()
+        nowDevelopDataInfo.p_recog_cushion_7 =  recogBackPressABufferListByProbe[1].toString()
+        nowDevelopDataInfo.p_recog_cushion_8 =  recogBackPressABufferListByProbe[2].toString()
 
         // 识别后靠背B面5组
         nowDevelopDataInfo.p_recog_back_1 =  includeB.includeB1.tvValueB.text.toString()
@@ -633,6 +726,18 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         nowDevelopDataInfo.p_recog_back_5 =  includeB.includeB5.tvValueB.text.toString()
 
         ToastMsg("Adjust the pressure on B！")
+
+        // 检测完成后，需要将A面的气袋全部泄气，要先发按摩，然后发off
+        val strSendData0 = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData0)
+        val strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_OFF,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+
+        // 保存体征按钮，不可用
+        changCameraState(false)
+
         isSaveAData = true
         initUIFromB()
     }
@@ -666,9 +771,37 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         isSaveAData = false
         ToastMsg("Save successful！")
 
+        // 保存体征按钮，不可用
+        changCameraState(false)
+
+        btnInitValue.isEnabled = true
+        btnInitValue.setTextColor(resources.getColor(R.color.colorWhite))
+
         initUIFromB()
 
 
+    }
+
+    /** 改变相机状态 */
+    private fun changCameraState(isEnable:Boolean) {
+        btnSaveA.isEnabled = isEnable
+
+        if (isEnable) {
+            btnSaveA.setTextColor(resources.getColor(R.color.colorWhite))
+            stopMeasurement(true)
+            // 启动摄像头！
+            rlCamera.visibility = View.VISIBLE
+            if (this::core.isInitialized) {
+                renderingVideoSink.start()
+            }
+            state = STATE.IDLE
+        }
+        else {
+            stopMeasurement(true)
+            btnSaveA.setTextColor(resources.getColor(R.color.black1))
+            rlCamera.visibility = View.INVISIBLE
+            renderingVideoSink.stop()
+        }
     }
 
     /**
@@ -682,6 +815,30 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         SocketThreadManager.sharedInstance(mContext)?.StartChangeModelByCan(CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_NORMAL,BaseVolume.COMMAND_CAN_MODEL_ADJUST))
         val strSendData = CreateCtrDataHelper.getCtrPressVaslueByNumber(iTag,iPressValue)
         SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(strSendData)
+
+    }
+
+    /** 根据当前气压值，取平均值 */
+    private fun checkHeightWeightByPress() {
+
+        // 1,将收集的A面气压集合取平均值
+        val iSize = statPressABufferListByProbe.size
+        var iSumList = arrayListOf<Int>(0,0,0,0,0,0,0,0,0,0,0)
+        // 先把所有集合的每个字段相加
+        statPressABufferListByProbe.forEach { it0 ->
+            for (iNumber in 0 .. 10) {
+                iSumList[iNumber] += (it0[iNumber].toInt())
+            }
+        }
+        // 再将每个字段总和算平均值
+        var iMeanList = arrayListOf<Int>()
+        iSumList.forEach {
+            val iValue = it/iSize
+            iMeanList.add(iValue)
+        }
+
+        recogBackPressABufferListByProbe.clear()
+        recogBackPressABufferListByProbe.addAll(iMeanList)
 
     }
 
@@ -777,17 +934,27 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 AnuLogUtil.d(MeasurementActivity.TAG, "JSON result: $jsonResult index: ${result.resultIndex}")
 
                 runOnUiThread {
-                    // 人体数据： id & 信噪比 & 心跳 & 情绪值 & 低压 & 高压
+
                     val strPersonDataInfo =  "${result.measurementID}&${result.snr}&${result.heartRate}&${result.msi}&${result.bpDiastolic}&${result.bpSystolic}"
-                    Loge("MenuSelectActivity","人体数据：id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}&性别：${result.gender}")
-                    tvXinLv.text = "${result.heartRate}"
-                    tvHuXiLv.text = "0"
-                    tvQingXu.text = "${result.msi}"
-                    tvShuZhang.text = "${result.bpDiastolic}"
-                    tvShouSuo.text = "${result.bpSystolic}"
+                    Loge("MenuSelectActivity","人体数据：信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}&呼吸率：${result.brBp}&性别：${result.gender}")
+                    tvXinZao.text = "${result.snr}"
+                    if (result.heartRate > 0)
+                        tvXinLv.text = "${result.heartRate}"
+                    if (result.msi > 0.0f)
+                        tvQingXu.text = "${result.msi}"
+                    if (result.bpDiastolic > 0)
+                        tvShuZhang.text = "${result.bpDiastolic}"
+                    if (result.bpSystolic > 0)
+                        tvShouSuo.text = "${result.bpSystolic}"
+                    if (result.brBp > 0.0f)
+                        tvHuXiLv.text = "${result.brBp}"
+
                     if (result.resultIndex + 1 >= MeasurementActivity.TOTAL_NUMBER_CHUNKS) {
 //                        Loge("MenuSelectActivity","人体数据：测量结束！开始计算身高体重")
                         stopMeasurement(true)
+
+                        checkHeightWeightByPress()
+
                     }
                 }
             }
@@ -828,7 +995,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         dfxConfig.setStartupParameter(DfxPipeConfiguration.StartupKey.BOX_HEIGHT_PCT, targetBox.boxHeight_pct.toString())
 
         dfxPipe = DfxPipe.createDfxPipe("DfxPipe", core, format,
-                core.createDFXFactory(getFilesDir().getAbsolutePath() + "/r21r23h-8.dat", "discrete")!!, dfxConfig.toJSONObject().toString(), cloudAnalyzer, this, renderingVideoSink)
+                core.createDFXFactory(getFilesDir().getAbsolutePath() + "/regions.dat", "discrete")!!, dfxConfig.toJSONObject().toString(), cloudAnalyzer, this, renderingVideoSink)
 
         signalAnalysisPipe = VideoPipe.createVideoSignalAnalysisPipe("AnalysisPipe", core, format, this)
 
@@ -850,6 +1017,10 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
             override fun onCountdownEnd() {
                 if (MeasurementActivity.userToken != null) {
                     runOnUiThread {
+                        if (btnSaveA.isEnabled) {
+                            // 同时收集A面气袋的数据 fixme
+                            statPressABufferListByProbe.clear()
+                        }
                         startMeasurement()
                     }
                 } else {
@@ -990,6 +1161,9 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
     override fun onResume() {
         super.onResume()
+        if (!btnSaveA.isEnabled) {
+            return
+        }
         if (this::core.isInitialized) {
             renderingVideoSink.start()
         }
@@ -1141,7 +1315,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         }
                         builder?.setMessage("Wait for final result...")?.setCancelable(false)
                         dialog = builder?.create()!!
-                        dialog.show()
+//                        dialog.show()
                     }
                     trackerView.setMeasurementProgress(progressPercent.toFloat())
                     if (frameNumber % 10 == 0L) {
@@ -1205,6 +1379,9 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
     override fun onDestroy() {
         super.onDestroy()
+
+        // 通知返回主页
+        sendBroadcast(Intent(BaseVolume.BROADCAST_GOBACK_MENU))
 
         BaseVolume.strSensorInitValue = edAInitValue.text.toString()
         BaseVolume.strSeatInitValue = edSeatInitValue.text.toString()

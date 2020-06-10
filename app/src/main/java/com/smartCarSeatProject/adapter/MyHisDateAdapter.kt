@@ -53,6 +53,12 @@ class MyHisDateAdapter(internal var list: ArrayList<DevelopDataInfo>, internal v
             holder.m_tvInitA = convertView.findViewById(R.id.tvInitA) as TextView
             holder.m_tvInitB = convertView.findViewById(R.id.tvInitB) as TextView
             holder.m_tvInitSeat = convertView.findViewById(R.id.tvInitSeat) as TextView
+            holder.m_tvInitSeat_A1 = convertView.findViewById(R.id.tvInitSeat_A1) as TextView
+            holder.m_tvInitSeat_A2 = convertView.findViewById(R.id.tvInitSeat_A2) as TextView
+            holder.m_tvInitSeat_B1 = convertView.findViewById(R.id.tvInitSeat_B1) as TextView
+            holder.m_tvInitSeat_B2 = convertView.findViewById(R.id.tvInitSeat_B2) as TextView
+            holder.m_tvInitSeat_C1 = convertView.findViewById(R.id.tvInitSeat_C1) as TextView
+            holder.m_tvInitSeat_C2 = convertView.findViewById(R.id.tvInitSeat_C2) as TextView
 
             holder.m_tvA_A = convertView.findViewById(R.id.A_A) as TextView
             holder.m_tvA_B = convertView.findViewById(R.id.A_B) as TextView
@@ -73,6 +79,12 @@ class MyHisDateAdapter(internal var list: ArrayList<DevelopDataInfo>, internal v
             holder.m_tvB_6 = convertView.findViewById(R.id.B_6) as TextView
             holder.m_tvB_7 = convertView.findViewById(R.id.B_7) as TextView
             holder.m_tvB_8 = convertView.findViewById(R.id.B_8) as TextView
+            holder.m_tvB_A1 = convertView.findViewById(R.id.B_A1) as TextView
+            holder.m_tvB_A2 = convertView.findViewById(R.id.B_A2) as TextView
+            holder.m_tvB_B1 = convertView.findViewById(R.id.B_B1) as TextView
+            holder.m_tvB_B2 = convertView.findViewById(R.id.B_B2) as TextView
+            holder.m_tvB_C1 = convertView.findViewById(R.id.B_C1) as TextView
+            holder.m_tvB_C2 = convertView.findViewById(R.id.B_C2) as TextView
 
             holder.m_tvAD_1 = convertView.findViewById(R.id.AD_1) as TextView
             holder.m_tvAD_2 = convertView.findViewById(R.id.AD_2) as TextView
@@ -89,7 +101,7 @@ class MyHisDateAdapter(internal var list: ArrayList<DevelopDataInfo>, internal v
             holder.m_tvE_Index = convertView.findViewById(R.id.E_Index) as TextView
             holder.m_tvDia_BP = convertView.findViewById(R.id.Dia_BP) as TextView
             holder.m_tvSys_BP = convertView.findViewById(R.id.Sys_BP) as TextView
-            holder.m_tvMassage = convertView.findViewById(R.id.mMassage) as TextView
+            holder.m_tvSnr = convertView.findViewById(R.id.mSnr) as TextView
 
             convertView!!.tag = holder
         } else {
@@ -106,6 +118,13 @@ class MyHisDateAdapter(internal var list: ArrayList<DevelopDataInfo>, internal v
         holder.m_tvInitA!!.text = deviceInfo.p_init_back_A
         holder.m_tvInitB!!.text = deviceInfo.p_init_back_B
         holder.m_tvInitSeat!!.text =  deviceInfo.p_init_cushion
+
+        holder.m_tvInitSeat_A1!!.text =  deviceInfo.p_init_cushion_A1
+        holder.m_tvInitSeat_A2!!.text =  deviceInfo.p_init_cushion_A2
+        holder.m_tvInitSeat_B1!!.text =  deviceInfo.p_init_cushion_B1
+        holder.m_tvInitSeat_B2!!.text =  deviceInfo.p_init_cushion_B2
+        holder.m_tvInitSeat_C1!!.text =  deviceInfo.p_init_cushion_C1
+        holder.m_tvInitSeat_C2!!.text =  deviceInfo.p_init_cushion_C2
 
         holder.m_tvA_A!!.text = deviceInfo.p_recog_back_A
         holder.m_tvA_B!!.text = deviceInfo.p_recog_back_B
@@ -127,6 +146,13 @@ class MyHisDateAdapter(internal var list: ArrayList<DevelopDataInfo>, internal v
         holder.m_tvB_7!!.text = deviceInfo.p_recog_cushion_7
         holder.m_tvB_8!!.text = deviceInfo.p_recog_cushion_8
 
+        holder.m_tvB_A1!!.text = deviceInfo.p_recog_cushion_A1
+        holder.m_tvB_A2!!.text = deviceInfo.p_recog_cushion_A2
+        holder.m_tvB_B1!!.text = deviceInfo.p_recog_cushion_B1
+        holder.m_tvB_B2!!.text = deviceInfo.p_recog_cushion_B2
+        holder.m_tvB_C1!!.text = deviceInfo.p_recog_cushion_C1
+        holder.m_tvB_C2!!.text = deviceInfo.p_recog_cushion_C2
+
         holder.m_tvAD_1!!.text = deviceInfo.p_adjust_cushion_1
         holder.m_tvAD_2!!.text = deviceInfo.p_adjust_cushion_2
         holder.m_tvAD_3!!.text = deviceInfo.p_adjust_cushion_3
@@ -142,6 +168,7 @@ class MyHisDateAdapter(internal var list: ArrayList<DevelopDataInfo>, internal v
         holder.m_tvE_Index!!.text = deviceInfo.E_Index
         holder.m_tvDia_BP!!.text = deviceInfo.Dia_BP
         holder.m_tvSys_BP!!.text = deviceInfo.Sys_BP
+        holder.m_tvSnr!!.text = deviceInfo.Snr
 
 
         return convertView
@@ -156,6 +183,12 @@ class MyHisDateAdapter(internal var list: ArrayList<DevelopDataInfo>, internal v
         var m_tvInitA: TextView? = null
         var m_tvInitB: TextView? = null
         var m_tvInitSeat: TextView? = null
+        var m_tvInitSeat_A1: TextView? = null
+        var m_tvInitSeat_A2: TextView? = null
+        var m_tvInitSeat_B1: TextView? = null
+        var m_tvInitSeat_B2: TextView? = null
+        var m_tvInitSeat_C1: TextView? = null
+        var m_tvInitSeat_C2: TextView? = null
 
         var m_tvA_A: TextView? = null
         var m_tvA_B: TextView? = null
@@ -175,6 +208,12 @@ class MyHisDateAdapter(internal var list: ArrayList<DevelopDataInfo>, internal v
         var m_tvB_6: TextView? = null
         var m_tvB_7: TextView? = null
         var m_tvB_8: TextView? = null
+        var m_tvB_A1: TextView? = null
+        var m_tvB_A2: TextView? = null
+        var m_tvB_B1: TextView? = null
+        var m_tvB_B2: TextView? = null
+        var m_tvB_C1: TextView? = null
+        var m_tvB_C2: TextView? = null
 
         var m_tvAD_1: TextView? = null
         var m_tvAD_2: TextView? = null
@@ -191,7 +230,7 @@ class MyHisDateAdapter(internal var list: ArrayList<DevelopDataInfo>, internal v
         var m_tvE_Index: TextView? = null
         var m_tvDia_BP: TextView? = null
         var m_tvSys_BP: TextView? = null
-        var m_tvMassage: TextView? = null
+        var m_tvSnr: TextView? = null
 
 
     }

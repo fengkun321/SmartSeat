@@ -83,6 +83,25 @@ class DevelopDataInfo {
     var Dia_BP = ""
     // 收缩压
     var Sys_BP = ""
+    // 信噪比
+    var Snr = ""
+
+    // 初始化的座垫
+    var p_init_cushion_A1 = "0"
+    var p_init_cushion_A2 = "0"
+    var p_init_cushion_B1 = "0"
+    var p_init_cushion_B2 = "0"
+    var p_init_cushion_C1 = "0"
+    var p_init_cushion_C2 = "0"
+
+    // 识别后的座垫
+    var p_recog_cushion_A1 = "0"
+    var p_recog_cushion_A2 = "0"
+    var p_recog_cushion_B1 = "0"
+    var p_recog_cushion_B2 = "0"
+    var p_recog_cushion_C1 = "0"
+    var p_recog_cushion_C2 = "0"
+
 
     /** 初始化数据 */
     fun initData() {

@@ -289,7 +289,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                 || (DataAnalysisHelper.deviceState.Sys_BP.toFloat()>140 && DataAnalysisHelper.deviceState.Sys_BP.toFloat()<159)
                 || (DataAnalysisHelper.deviceState.Dia_BP.toFloat()>90 && DataAnalysisHelper.deviceState.Dia_BP.toFloat()<99)
                 || (DataAnalysisHelper.deviceState.E_Index.toFloat()>4 && DataAnalysisHelper.deviceState.E_Index.toFloat()<5)) {
-            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_2,BaseVolume.COMMAND_CAN_MODEL_MASG_2)
+            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_2,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
             MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.colorYellow)
             // 播放音乐
             MainControlActivity.getInstance()?.playOrPauseMedia("Alohal_release.mp3",true,1000*60*3)
@@ -303,7 +303,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                 || DataAnalysisHelper.deviceState.Dia_BP.toFloat()>100
                 || DataAnalysisHelper.deviceState.E_Index.toFloat()>5) {
             // AB面同时按摩3
-            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_3,BaseVolume.COMMAND_CAN_MODEL_MASG_3)
+            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_3,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
             // 座椅恢复到出厂设置
             SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_DEFAULT)
             // 字显示红色

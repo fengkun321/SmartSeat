@@ -96,6 +96,62 @@
 
         android:textColor="@color/colorWhite"/>
 
+        <TextView android:id="@+id/tvInitSeat_A1"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:text="init_cushion_A1"
+            android:layout_gravity="center_vertical"
+            android:textSize="13sp"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"/>
+
+        <TextView android:id="@+id/tvInitSeat_A2"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:text="init_cushion_A2"
+            android:layout_gravity="center_vertical"
+            android:textSize="13sp"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"/>
+
+        <TextView android:id="@+id/tvInitSeat_B1"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:text="init_cushion_B1"
+            android:layout_gravity="center_vertical"
+            android:textSize="13sp"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"/>
+
+        <TextView android:id="@+id/tvInitSeat_B2"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:text="init_cushion_B2"
+            android:layout_gravity="center_vertical"
+            android:textSize="13sp"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"/>
+
+        <TextView android:id="@+id/tvInitSeat_C1"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:text="init_cushion_C1"
+            android:layout_gravity="center_vertical"
+            android:textSize="13sp"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"/>
+
+        <TextView android:id="@+id/tvInitSeat_C2"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:text="init_cushion_C2"
+            android:layout_gravity="center_vertical"
+            android:textSize="13sp"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"/>
+
+
+
     <TextView android:id="@+id/A_A"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
@@ -267,8 +323,61 @@
         android:textStyle="bold"
         android:gravity="center"
         android:textSize="13sp"
-        
         android:textColor="@color/colorWhite"/>
+
+        <TextView android:id="@+id/B_A1"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="13sp"
+            android:textColor="@color/colorWhite"/>
+
+        <TextView android:id="@+id/B_A2"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="13sp"
+            android:textColor="@color/colorWhite"/>
+
+        <TextView android:id="@+id/B_B1"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="13sp"
+            android:textColor="@color/colorWhite"/>
+
+        <TextView android:id="@+id/B_B2"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="13sp"
+            android:textColor="@color/colorWhite"/>
+
+        <TextView android:id="@+id/B_C1"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="13sp"
+            android:textColor="@color/colorWhite"/>
+
+        <TextView android:id="@+id/B_C2"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="13sp"
+            android:textColor="@color/colorWhite"/>
 
     <TextView android:id="@+id/AD_1"
         android:layout_width="70dp"
@@ -414,7 +523,7 @@
             android:textSize="13sp"
             android:textColor="@color/colorWhite"/>
 
-    <TextView android:id="@+id/mMassage"
+    <TextView android:id="@+id/mSnr"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"

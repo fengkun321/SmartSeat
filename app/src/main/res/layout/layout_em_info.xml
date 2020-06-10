@@ -13,10 +13,11 @@
         android:textStyle="bold"
         android:textColor="@color/colorWhite"/>
 
-    <RelativeLayout
+    <RelativeLayout android:id="@+id/rlCamera"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="5">
+        android:layout_weight="5"
+        android:visibility="invisible">
 
         <ai.nuralogix.anurasdk.render.opengl.GLSurfaceViewTracker
             android:id="@+id/tracker_opengl_view"
@@ -39,6 +40,28 @@
             android:textColor="@color/colorAccent"
             android:text="123"
             android:textSize="15sp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="信噪比："
+            android:textColor="@color/colorWhite"
+            android:gravity="center_vertical"/>
+
+        <TextView android:id="@+id/tvXinZao"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="0"
+            android:textColor="@color/colorWhite"
+            android:gravity="center_vertical"
+            android:layout_alignParentRight="true"/>
 
     </RelativeLayout>
 
@@ -174,7 +197,7 @@
         <TextView android:id="@+id/tvLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="位置1"
+            android:text="位置0"
             android:textColor="@color/colorWhite"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/imgRight"

@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
 
         AnuLogUtil.setShowLog(BuildConfig.DEBUG)
         MNNMonitor.setMonitorEnable(false)
-        copyFileOrDir("r21r23h-8.dat")
+        copyFileOrDir("regions.dat")
 
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {

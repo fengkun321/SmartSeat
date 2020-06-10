@@ -75,7 +75,60 @@
         android:layout_gravity="center_vertical"
         android:textSize="13sp"
         android:gravity="center"
-        
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="init_cushion_A1"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="init_cushion_A2"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="init_cushion_B1"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="init_cushion_B2"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="init_cushion_C1"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="init_cushion_C2"
+        android:layout_gravity="center_vertical"
+        android:textSize="13sp"
+        android:gravity="center"
         android:textColor="@color/colorWhite"/>
 
     <TextView
@@ -234,6 +287,66 @@
     <TextView
         android:layout_width="70dp"
         android:layout_height="wrap_content"
+        android:text="recog_A1"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_A2"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_B1"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_B2"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_C1"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="recog_C2"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textSize="13sp"
+
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
         android:text="adjust_1"
         android:layout_gravity="center_vertical"
         android:textSize="13sp"
@@ -275,7 +388,7 @@
     <TextView
         android:layout_width="70dp"
         android:layout_height="wrap_content"
-        android:text="recog_5"
+        android:text="adjust_5"
         android:layout_gravity="center_vertical"
         android:gravity="center"
         android:textSize="13sp"
@@ -368,7 +481,7 @@
     <TextView
         android:layout_width="70dp"
         android:layout_height="wrap_content"
-        android:text="massage"
+        android:text="Snr"
         android:layout_gravity="center_vertical"
         android:gravity="center"
         android:textSize="13sp"

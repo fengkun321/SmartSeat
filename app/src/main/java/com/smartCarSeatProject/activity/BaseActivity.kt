@@ -13,6 +13,7 @@ import android.widget.Toast
 import com.smartCarSeatProject.R
 import com.smartCarSeatProject.data.BaseVolume
 import com.smartCarSeatProject.data.DataAnalysisHelper
+import com.smartCarSeatProject.data.SeatStatus
 import com.smartCarSeatProject.view.LoadingDialog
 import com.smartCarSeatProject.view.ProgressBarWindowHint
 import com.umeng.analytics.MobclickAgent
@@ -115,13 +116,29 @@ open class BaseActivity : AppCompatActivity(){
         timer = Timer()
         timer.schedule(object : TimerTask() {
             override fun run() {
-                if (DataAnalysisHelper.deviceState.isCheckHavePerson() || isCheckHaveFace ) {
-                    startTimerHoldSeat(true)
+                // 座椅处于正在检测，此时需要判断A面气压
+                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue) {
+                    // 同时检测到人，则重新倒计时
+                    if (DataAnalysisHelper.deviceState.isCheckHavePerson() && isCheckHaveFace ) {
+                        startTimerHoldSeat(true)
+                    }
+                    else {
+                        // 座椅和人脸只要有一个没有检测到人，则提示用户，并重置座椅
+                        sendBroadcast(Intent(BaseVolume.BROADCAST_NO_HAVE_PERSON))
+                    }
                 }
+                // 座椅处于某种工作模式，只需要判断人脸
                 else {
-                    // 座椅和人脸同时没有检测到人，则提示用户，并重置座椅
-                    sendBroadcast(Intent(BaseVolume.BROADCAST_NO_HAVE_PERSON))
+                    // 检测到人，则重新倒计时
+                    if (isCheckHaveFace ) {
+                        startTimerHoldSeat(true)
+                    }
+                    else {
+                        // 人脸没有检测到人，则提示用户，并重置座椅
+                        sendBroadcast(Intent(BaseVolume.BROADCAST_NO_HAVE_PERSON))
+                    }
                 }
+
             }
         }, 1000 * 30) // 设定指定的时间time,此处为60秒
     }

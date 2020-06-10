@@ -4,22 +4,24 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
 import com.smartCarSeatProject.dao.SQLiteTemplate.RowMapper;
+
 import java.util.ArrayList;
 
-public class DevelopInfoDao {
+public class ManualInfoDao {
 
 	static SQLiteDatabase mDB;
 	DBBaseDao mBaseDao;
 	
-	public DevelopInfoDao(Context context) {
+	public ManualInfoDao(Context context) {
 		String filePath = context.getFilesDir().getAbsolutePath() +"/smart_seat_develop_data.db";
 		mDB = SQLiteDatabase.openOrCreateDatabase(filePath,null);
 		if (mDB != null){ 
 			this.mBaseDao = new DBBaseDao(mDB);
 		}
-		if (!mBaseDao.tabIsExist(DBContent.DeviceInfo.TABLE_NAME_Develop)) {
-			mDB.execSQL(DBContent.DeviceInfo.getCreateSQLByDevelop());
+		if (!mBaseDao.tabIsExist(DBContent.DeviceInfo.TABLE_NAME_Manual)) {
+			mDB.execSQL(DBContent.DeviceInfo.getCreateSQLByManual());
 		}
 	}
 	
@@ -31,7 +33,7 @@ public class DevelopInfoDao {
 		public int insertSingleData(DevelopDataInfo data) {
 			int result = 0;
 			try {
-				mDB.insert(DBContent.DeviceInfo.TABLE_NAME_Develop,null,makeValues(data));
+				mDB.insert(DBContent.DeviceInfo.TABLE_NAME_Manual,null,makeValues(data));
 			} catch (Exception e) {
 				e.printStackTrace();
 				result = -1;
@@ -49,7 +51,7 @@ public class DevelopInfoDao {
 	public ArrayList<DevelopDataInfo> queryHistDataInf(){
 			ArrayList<DevelopDataInfo> result = new ArrayList<DevelopDataInfo>();
 			try {
-				result = mBaseDao.queryForListBySql("select *from "+DBContent.DeviceInfo.TABLE_NAME_Develop + " order by saveTime desc ",mRowMapper_MessageData,null );
+				result = mBaseDao.queryForListBySql("select *from "+DBContent.DeviceInfo.TABLE_NAME_Manual + " order by saveTime desc ",mRowMapper_MessageData,null );
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -64,7 +66,7 @@ public class DevelopInfoDao {
     public ArrayList<DevelopDataInfo> queryHistDataInfByDataType(String strDataType){
         ArrayList<DevelopDataInfo> result = new ArrayList<DevelopDataInfo>();
         try {
-            result = mBaseDao.queryForListBySql("select *from "+DBContent.DeviceInfo.TABLE_NAME_Develop + " where "+DBContent.DeviceInfo.Columns.dataType+" = '"+strDataType+"' order by saveTime desc ",mRowMapper_MessageData,null );
+            result = mBaseDao.queryForListBySql("select *from "+DBContent.DeviceInfo.TABLE_NAME_Manual + " where "+DBContent.DeviceInfo.Columns.dataType+" = '"+strDataType+"' order by saveTime desc ",mRowMapper_MessageData,null );
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -79,7 +81,7 @@ public class DevelopInfoDao {
         String whereClause = DBContent.DeviceInfo.Columns.dataName+" = ?";
         int i;
         try {
-            i = mDB.update(DBContent.DeviceInfo.TABLE_NAME_Develop, makeValues(developDataInfo), whereClause, new String[]{developDataInfo.getStrName()});
+            i = mDB.update(DBContent.DeviceInfo.TABLE_NAME_Manual, makeValues(developDataInfo), whereClause, new String[]{developDataInfo.getStrName()});
             return (i== 1);
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,7 +98,7 @@ public class DevelopInfoDao {
     public boolean isHaveByName(String strName) {
         ArrayList<DevelopDataInfo> result = new ArrayList<DevelopDataInfo>();
         try {
-            result = mBaseDao.queryForListBySql("select *from "+DBContent.DeviceInfo.TABLE_NAME_Develop + " where "+DBContent.DeviceInfo.Columns.dataName+" = '"+strName+"'",mRowMapper_MessageData,null );
+            result = mBaseDao.queryForListBySql("select *from "+DBContent.DeviceInfo.TABLE_NAME_Manual + " where "+DBContent.DeviceInfo.Columns.dataName+" = '"+strName+"'",mRowMapper_MessageData,null );
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -116,7 +118,7 @@ public class DevelopInfoDao {
 		String whereClause = DBContent.DeviceInfo.Columns.id+" = ?";
 		int i;
 		try {
-			i = mDB.delete(DBContent.DeviceInfo.TABLE_NAME_Develop,  whereClause, new String[]{developDataInfo.getIID()+""});
+			i = mDB.delete(DBContent.DeviceInfo.TABLE_NAME_Manual,  whereClause, new String[]{developDataInfo.getIID()+""});
 			return (i== 1);
 		} catch (Exception e) {
 			e.printStackTrace();

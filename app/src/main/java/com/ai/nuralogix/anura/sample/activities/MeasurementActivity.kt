@@ -287,7 +287,7 @@ class MeasurementActivity : AppCompatActivity(), DfxPipeListener, VideoSignalAna
         dfxConfig.setStartupParameter(DfxPipeConfiguration.StartupKey.BOX_HEIGHT_PCT, targetBox.boxHeight_pct.toString())
 
         dfxPipe = DfxPipe.createDfxPipe("DfxPipe", core, format,
-                core.createDFXFactory(getFilesDir().getAbsolutePath() + "/r21r23h-8.dat", "discrete")!!, dfxConfig.toJSONObject().toString(), cloudAnalyzer, this, renderingVideoSink)
+                core.createDFXFactory(getFilesDir().getAbsolutePath() + "/regions.dat", "discrete")!!, dfxConfig.toJSONObject().toString(), cloudAnalyzer, this, renderingVideoSink)
 
         signalAnalysisPipe = VideoPipe.createVideoSignalAnalysisPipe("AnalysisPipe", core, format, this)
 

@@ -733,7 +733,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         dfxConfig.setStartupParameter(DfxPipeConfiguration.StartupKey.BOX_HEIGHT_PCT, targetBox.boxHeight_pct.toString())
 
         dfxPipe = DfxPipe.createDfxPipe("DfxPipe", core, format,
-                core.createDFXFactory(getFilesDir().getAbsolutePath() + "/r21r23h-8.dat", "discrete")!!, dfxConfig.toJSONObject().toString(), cloudAnalyzer, this, renderingVideoSink)
+                core.createDFXFactory(getFilesDir().getAbsolutePath() + "/regions.dat", "discrete")!!, dfxConfig.toJSONObject().toString(), cloudAnalyzer, this, renderingVideoSink)
 
         signalAnalysisPipe = VideoPipe.createVideoSignalAnalysisPipe("AnalysisPipe", core, format, this)
 
@@ -790,7 +790,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         cameraAdapter.lockFocus(true)
         firstFrameTimestamp = 0L
         trackerView.showMask(false)
-        trackerView.showMeasurementProgress(true)
+        trackerView.showMeasurementProgress(false)
         trackerView.setMeasurementProgress(0.0f)
 
         state = STATE.MEASURING

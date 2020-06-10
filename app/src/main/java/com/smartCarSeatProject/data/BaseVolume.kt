@@ -18,7 +18,7 @@ class BaseVolume {
         const val LocHostListenningPort = 4002
         const val HostListenningPort = 9999
         // WIFI标志
-        const val WIFI_SIGN = "HLK_OpenWrt"
+        const val WIFI_SIGN = "NoboSmartSeat"
 //        const val WIFI_SIGN = "TP-LINK_FK"
         // 拖拽进度条最小值
         const val ProgressValueMin = 255
@@ -227,16 +227,15 @@ class BaseVolume {
          */
         fun getPressByValue(iValue:Int,iChannel:Int):Int {
             // 偏差值
-            var iChaZhi = deviationValueMap[iChannel]
-            if (iChaZhi == null)
-                iChaZhi = 0
-            var iNowPress = iValue*0.14262 - 11.904
-            iNowPress += iChaZhi
-
-            // 四舍五入
-            var iPress = Math.round(iNowPress).toInt()
-
-            return iPress
+//            var iChaZhi = deviationValueMap[iChannel]
+//            if (iChaZhi == null)
+//                iChaZhi = 0
+//            var iNowPress = iValue*0.14262 - 11.904
+//            iNowPress += iChaZhi
+//            // 四舍五入
+//            var iPress = Math.round(iNowPress).toInt()
+//            return iPress
+            return iValue
         }
 
         /**

@@ -2,6 +2,8 @@ package com.smartCarSeatProject
 
 import android.app.Application
 import android.graphics.Typeface
+import com.smartCarSeatProject.dao.DevelopInfoDao
+import com.smartCarSeatProject.dao.ManualInfoDao
 import com.smartCarSeatProject.data.BaseVolume
 import com.smartCarSeatProject.data.CreateCtrDataHelper
 import com.umeng.commonsdk.UMConfigure
@@ -25,7 +27,11 @@ class BaseApplication : Application() {
          */
         UMConfigure.init(this, "5d722f4f4ca357f80d00071f", "Umeng", UMConfigure.DEVICE_TYPE_PHONE,null)
 
+        val developInfoDao = DevelopInfoDao(this)
+        developInfoDao.closeDb()
 
+        val manualInfoDao = ManualInfoDao(this)
+        manualInfoDao.closeDb()
 
     }
 
