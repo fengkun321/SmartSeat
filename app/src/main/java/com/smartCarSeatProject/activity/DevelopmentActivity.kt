@@ -1391,6 +1391,9 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         // 通知返回主页
         sendBroadcast(Intent(BaseVolume.BROADCAST_GOBACK_MENU))
 
+        // 释放A面气压，B面保持不动
+//        releaseAPress()
+
         BaseVolume.strSensorInitValue = edAInitValue.text.toString()
         BaseVolume.strSeatInitValue = edSeatInitValue.text.toString()
         BaseVolume.strAdjustInitialValue = edBInitValue.text.toString()

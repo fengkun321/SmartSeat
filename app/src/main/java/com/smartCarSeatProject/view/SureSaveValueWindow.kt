@@ -72,12 +72,13 @@ class SureSaveValueWindow : Dialog, View.OnClickListener {
         edHeight.setText("${deviceWorkInfo.nowHeight}")
         edWeight.setText("${deviceWorkInfo.nowWeight}")
         edName.setText("")
-        tvXinLv.text = "心率："+deviceWorkInfo.HeartRate
-        tvHuXiLv.text = "呼吸率："+deviceWorkInfo.BreathRate
-        tvQingXu.text = "情绪值："+deviceWorkInfo.E_Index
-        tvShuZhang.text = "舒张压："+deviceWorkInfo.Dia_BP
-        tvShouSuo.text = "收缩压："+deviceWorkInfo.Sys_BP
-        tvWeiZhi.text = "位置："+deviceWorkInfo.l_location
+        tvXinLv.text = "心率:"+deviceWorkInfo.HeartRate
+        tvHuXiLv.text = "呼吸率:"+deviceWorkInfo.BreathRate
+        tvQingXu.text = "情绪值:"+deviceWorkInfo.E_Index
+        tvShuZhang.text = "舒张压:"+deviceWorkInfo.Dia_BP
+        tvShouSuo.text = "收缩压:"+deviceWorkInfo.Sys_BP
+        tvWeiZhi.text = "区域:"+deviceWorkInfo.l_location
+        tvXinZao.text = "信噪比:"+deviceWorkInfo.snr
 
     }
 

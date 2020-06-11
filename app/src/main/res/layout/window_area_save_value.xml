@@ -177,8 +177,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:gravity="center_vertical"
         android:layout_marginTop="10dp">
 
@@ -216,7 +214,15 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="位置：xxx"
+            android:text="区域：xxx"
+            android:textColor="@color/colorWhite"/>
+
+        <TextView android:id="@+id/tvXinZao"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="信噪比：xxx"
+            android:singleLine="true"
             android:textColor="@color/colorWhite"/>
 
     </LinearLayout>

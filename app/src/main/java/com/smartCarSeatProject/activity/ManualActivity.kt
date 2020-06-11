@@ -12,6 +12,7 @@ import android.widget.*
 import com.smartCarSeatProject.R
 import com.smartCarSeatProject.dao.DevelopDataInfo
 import com.smartCarSeatProject.dao.DevelopInfoDao
+import com.smartCarSeatProject.dao.RemoteSQLInfo
 import com.smartCarSeatProject.data.*
 import com.smartCarSeatProject.isometric.Color
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
@@ -181,10 +182,6 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
         manualHeat.imgMoA2.setOnClickListener(onClickAnMoListenerA)
         manualHeat.imgMoA3.setOnClickListener(onClickAnMoListenerA)
 
-        manualHeat.imgMoB1.setOnClickListener(onClickAnMoListenerB)
-        manualHeat.imgMoB2.setOnClickListener(onClickAnMoListenerB)
-        manualHeat.imgMoB3.setOnClickListener(onClickAnMoListenerB)
-
         updateSenseSeatView()
 
     }
@@ -336,27 +333,12 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                 R.id.imgMoA3 -> imgMoA3.setImageResource(R.drawable.img_anmo_3)
             }
         }
+        // 如果按摩启动，则左侧导航栏要变灰，不能操作，true:可点，false:不可点
+        MainControlActivity.getInstance()?.changeLeftBtnTounch(isRun)
         checkMassageState()
     }
 
-    val onClickAnMoListenerB = View.OnClickListener {
-        val isRun = it.tag.toString().toBoolean()
-        imgMoB1.tag = false
-        imgMoB2.tag = false
-        imgMoB3.tag = false
-        imgMoB1.setImageResource(R.drawable.img_anmo_1_false)
-        imgMoB2.setImageResource(R.drawable.img_anmo_2_false)
-        imgMoB3.setImageResource(R.drawable.img_anmo_3_false)
-        if (!isRun) {
-            it.tag = true
-            when(it.id) {
-                R.id.imgMoB1 -> imgMoB1.setImageResource(R.drawable.img_anmo_1)
-                R.id.imgMoB2 -> imgMoB2.setImageResource(R.drawable.img_anmo_2)
-                R.id.imgMoB3 -> imgMoB3.setImageResource(R.drawable.img_anmo_3)
-            }
-        }
-        checkMassageState()
-    }
+
 
     /**
      * 选择按摩方式
@@ -366,7 +348,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
      */
     private fun checkMassageState() {
         var iNumberA = BaseVolume.COMMAND_CAN_MODEL_MASG_OFF
-        var iNumberB = BaseVolume.COMMAND_CAN_MODEL_MASG_OFF
+        var iNumberB = BaseVolume.COMMAND_CAN_MODEL_NORMAL
         if (imgMoA1.tag.toString().toBoolean()) {
             iNumberA = BaseVolume.COMMAND_CAN_MODEL_MASG_1
         }
@@ -375,16 +357,6 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
         }
         if (imgMoA3.tag.toString().toBoolean()) {
             iNumberA = BaseVolume.COMMAND_CAN_MODEL_MASG_3
-        }
-
-        if (imgMoB1.tag.toString().toBoolean()) {
-            iNumberB = BaseVolume.COMMAND_CAN_MODEL_MASG_1
-        }
-        if (imgMoB2.tag.toString().toBoolean()) {
-            iNumberB = BaseVolume.COMMAND_CAN_MODEL_MASG_2
-        }
-        if (imgMoB3.tag.toString().toBoolean()) {
-            iNumberB = BaseVolume.COMMAND_CAN_MODEL_MASG_3
         }
 
         val strSendData = CreateCtrDataHelper.getCtrModelAB(iNumberA,iNumberB)
@@ -438,6 +410,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
             viewSenseList[iNumber].text = iPressV.toString()
             // 根据气压值，改变填充色
             val colorValue = BaseVolume.getColorByPressValue(iPressV,iChannelNumber)
+            drawable.setStroke(0, resources.getColor(R.color.colorWhite))
             drawable.setColor(colorValue)
 
         }
@@ -508,10 +481,39 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                 changeSelectBtn(p0.tag.toString().toInt())
             }
             R.id.btnProp -> {
-                switchCtrView(1)
+                if (iNowShowPageNumber != 1) {
+                    // 如果按摩启动，则左侧导航栏要变灰，不能操作，true:可点，false:不可点
+                    MainControlActivity.getInstance()?.changeLeftBtnTounch(true)
+                    // 当前如果正在按摩，则需要把A面泄气
+                    if (imgMoA1.tag.toString().toBoolean() || imgMoA2.tag.toString().toBoolean() || imgMoA3.tag.toString().toBoolean()) {
+                        imgMoA1.tag = false
+                        imgMoA2.tag = false
+                        imgMoA3.tag = false
+                        imgMoA1.setImageResource(R.drawable.img_anmo_1_false)
+                        imgMoA2.setImageResource(R.drawable.img_anmo_2_false)
+                        imgMoA3.setImageResource(R.drawable.img_anmo_3_false)
+                        releaseAPress()
+                    }
+                    switchCtrView(1)
+                }
+
             }
             R.id.btnLocation -> {
-                switchCtrView(2)
+                if (iNowShowPageNumber != 2) {
+                    // 如果按摩启动，则左侧导航栏要变灰，不能操作，true:可点，false:不可点
+                    MainControlActivity.getInstance()?.changeLeftBtnTounch(true)
+                    // 当前如果正在按摩，则需要把A面泄气
+                    if (imgMoA1.tag.toString().toBoolean() || imgMoA2.tag.toString().toBoolean() || imgMoA3.tag.toString().toBoolean()) {
+                        imgMoA1.tag = false
+                        imgMoA2.tag = false
+                        imgMoA3.tag = false
+                        imgMoA1.setImageResource(R.drawable.img_anmo_1_false)
+                        imgMoA2.setImageResource(R.drawable.img_anmo_2_false)
+                        imgMoA3.setImageResource(R.drawable.img_anmo_3_false)
+                        releaseAPress()
+                    }
+                    switchCtrView(2)
+                }
             }
             R.id.btnHeat -> {
                 switchCtrView(3)
@@ -573,6 +575,23 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                 return
             }
 
+
+            // 控制气压8个
+            val pressList = DataAnalysisHelper.deviceState.controlPressValueList
+            // 这里实际只用到了8个气压值
+            for (iNumber in 0 until viewList.size) {
+                val iTag = viewList[iNumber].tag.toString().toInt()
+                var drawable = drawableList[iNumber]
+                val iValue = pressList[iTag].toInt()
+                val iPressV = BaseVolume.getPressByValueB(iValue,(iTag+1))
+//            viewList[iNumber].text = iPressV.toString()
+                // 根据气压值，改变填充色
+                drawable.setStroke(0, resources.getColor(R.color.colorWhite))
+                val colorValue = BaseVolume.getColorByPressValue(iPressV,(iTag+1))
+                drawable.setColor(colorValue)
+
+            }
+
             rlViewArray[iTag].setBackgroundResource(R.drawable.channel_border_yes)
             dimBtnArray[iTag].isEnabled = true
             addBtnArray[iTag].isEnabled = true
@@ -583,10 +602,15 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
             viewList[iTag].text = iNowValue.toString()
             if (iTag == 3) {
                 viewList[8].text = iNowValue.toString()
+                drawableList[8].setStroke(3, resources.getColor(R.color.colorAccent))
+
             }
             else if (iTag == 4){
                 viewList[9].text = iNowValue.toString()
+                drawableList[9].setStroke(3, resources.getColor(R.color.colorAccent))
             }
+
+            drawableList[iTag].setStroke(3, resources.getColor(R.color.colorAccent))
 
             seekBarList[iTag].visibility = View.VISIBLE
             seekBarList[iTag].progress = (iNowPressValue - ProgressValueMin)
@@ -638,6 +662,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
 //            viewList[iNumber].text = iPressV.toString()
             // 根据气压值，改变填充色
             val colorValue = BaseVolume.getColorByPressValue(iPressV,(iTag+1))
+            drawable.setStroke(0, resources.getColor(R.color.colorWhite))
             drawable.setColor(colorValue)
 
         }
@@ -659,6 +684,20 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                 nowMemoryInfo.initData()
                 nowMemoryInfo.dataType = DevelopDataInfo.DATA_TYPE_USE
 
+                nowMemoryInfo.p_init_cushion_A1 = DataAnalysisHelper.deviceState.init_cushion_valueList[0].toString()
+                nowMemoryInfo.p_init_cushion_A2 = DataAnalysisHelper.deviceState.init_cushion_valueList[1].toString()
+                nowMemoryInfo.p_init_cushion_B1 = DataAnalysisHelper.deviceState.init_cushion_valueList[2].toString()
+                nowMemoryInfo.p_init_cushion_B2 = DataAnalysisHelper.deviceState.init_cushion_valueList[3].toString()
+                nowMemoryInfo.p_init_cushion_C1 = DataAnalysisHelper.deviceState.init_cushion_valueList[4].toString()
+                nowMemoryInfo.p_init_cushion_C2 = DataAnalysisHelper.deviceState.init_cushion_valueList[5].toString()
+
+                nowMemoryInfo.p_recog_cushion_A1 =  DataAnalysisHelper.deviceState.recog_cushion_valueList[0].toString()
+                nowMemoryInfo.p_recog_cushion_A2 =  DataAnalysisHelper.deviceState.recog_cushion_valueList[1].toString()
+                nowMemoryInfo.p_recog_cushion_B1 =  DataAnalysisHelper.deviceState.recog_cushion_valueList[2].toString()
+                nowMemoryInfo.p_recog_cushion_B2 =  DataAnalysisHelper.deviceState.recog_cushion_valueList[3].toString()
+                nowMemoryInfo.p_recog_cushion_C1 =  DataAnalysisHelper.deviceState.recog_cushion_valueList[4].toString()
+                nowMemoryInfo.p_recog_cushion_C2 =  DataAnalysisHelper.deviceState.recog_cushion_valueList[5].toString()
+
                 // 名称
                 nowMemoryInfo.strName = strName
                 nowMemoryInfo.strPSInfo = strName
@@ -676,6 +715,9 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                 nowMemoryInfo.Dia_BP = deviceWorkInfo.Dia_BP
                 // 收缩压
                 nowMemoryInfo.Sys_BP = deviceWorkInfo.Sys_BP
+                // 信噪比
+                nowMemoryInfo.Snr = deviceWorkInfo.snr
+
                 // 男女
                 if (isMan)
                     nowMemoryInfo.m_gender = "M"
@@ -688,7 +730,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                     nowMemoryInfo.m_national = "EU"
 
                 // 位置
-                nowMemoryInfo.l_location = "位置"+deviceWorkInfo.l_location
+                nowMemoryInfo.l_location = "区域"+deviceWorkInfo.l_location
 
                 // 时间
                 nowMemoryInfo.saveTime =  DateUtil.getNowDateTime()
@@ -724,11 +766,18 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                 else {
                     // 数据库操作
                     val isResult = memoryInfoDao.insertSingleData(nowMemoryInfo)
-                    if (isResult < 0)
-                        ToastMsg("Manual mode, data saved fault！")
-                    else
-                        ToastMsg("Manual mode, data saved successfully！")
                     memoryInfoDao.closeDb()
+
+                    Thread(Runnable {
+                        val remoteSQLInfo = RemoteSQLInfo()
+                        val strResult = remoteSQLInfo.insertDataByManualData(nowMemoryInfo)
+                        mHandler.post {
+                            if (strResult.equals(""))
+                                ToastMsg("Save successful！")
+                            else
+                                ToastMsg(strResult)
+                        }
+                    }).start()
                 }
             }
             override fun cancelListener() {
@@ -810,11 +859,19 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                         val memoryInfoDao = DevelopInfoDao(this@ManualActivity)
                         // 数据库操作
                         val isResult = memoryInfoDao.updateDataByName(nowMemoryInfo)
-                        if (!isResult)
-                            ToastMsg("Manual mode, data saved fault！")
-                        else
-                            ToastMsg("Manual mode, data saved successfully！")
                         memoryInfoDao.closeDb()
+
+                        Thread(Runnable {
+                            val remoteSQLInfo = RemoteSQLInfo()
+                            val strResult = remoteSQLInfo.insertDataByManualData(nowMemoryInfo)
+                            mHandler.post {
+                                if (strResult.equals(""))
+                                    ToastMsg("Save successful！")
+                                else
+                                    ToastMsg(strResult)
+                            }
+                        }).start()
+
                     }
 
                     override fun cancelListener() {

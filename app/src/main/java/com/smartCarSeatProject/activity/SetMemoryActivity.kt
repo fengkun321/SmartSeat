@@ -47,7 +47,7 @@ class SetMemoryActivity: BaseActivity() {
         list_view.setOnItemClickListener { adapterView, view, i, l ->
             nowSelectMemory = list[i]
 
-            loadingDialog.showAndMsg("请稍后...")
+//            loadingDialog.showAndMsg("请稍后...")
             // 只调整B面的，所以将A面设为normal，B面设为adjust
             SocketThreadManager.sharedInstance(mContext)?.StartChangeModelByCan(CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_NORMAL,BaseVolume.COMMAND_CAN_MODEL_ADJUST))
             val strSendDataList = CreateCtrDataHelper.getCtrPressBy8Manual(nowSelectMemory)

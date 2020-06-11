@@ -385,12 +385,12 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         OnStartLoadData(isConnected)
                         changeSeatState(-1)
                         // 判断座椅状态 待初始化：先发调压模式，再调整气压
-//                        if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_wait_reserve.iValue) {
-//                            defaultSeatState()
-//                        }
+                        if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_wait_reserve.iValue) {
+                            defaultSeatState()
+                        }
 
                         // 测试阶段，A面气袋有问题，所以直接进入默认状态！fixme
-                        changeSeatState(SeatStatus.press_normal.iValue)
+//                        changeSeatState(SeatStatus.press_normal.iValue)
                     }
 
 
@@ -527,8 +527,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             // 从控制页面返回到主页
             else if (action == BaseVolume.BROADCAST_GOBACK_MENU) {
                 isControlShow = false
-                // 释放A面气压，B面保持不动
-                releaseAPress()
+
 
             }
             // 检测到无人
@@ -770,6 +769,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         }
         // 先断开连接
         SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.clearAllTCPClient()
+//        SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createLocSocket()
 //        SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
 
 

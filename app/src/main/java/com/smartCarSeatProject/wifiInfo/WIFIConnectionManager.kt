@@ -5,6 +5,7 @@ import android.net.wifi.*
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.Log
+import com.smartCarSeatProject.data.BaseVolume
 
 import java.util.ArrayList
 import java.util.HashMap
@@ -44,7 +45,7 @@ class WIFIConnectionManager(private val mContext: Context) {
                 for (i in scanWifiList.indices) {
                     val scanResult = scanWifiList[i]
                     Log.e("MainActivity", "搜索的wifi-ssid:" + scanResult.SSID)
-                    if (!scanResult.SSID.isEmpty()) {
+                    if (!scanResult.SSID.isEmpty() && scanResult.SSID.indexOf(BaseVolume.WIFI_SIGN) >= 0) {
                         val key = scanResult.SSID + " " + scanResult.capabilities
                         if (!signalStrength.containsKey(key)) {
                             signalStrength[key] = i

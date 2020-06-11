@@ -109,6 +109,11 @@ class DeviceWorkInfo : Serializable{
             controlPressStatusList.add(STATUS_NORMAL)
         }
 
+        for (i in 1..6) {
+            init_cushion_valueList.add(0)
+            recog_cushion_valueList.add(0)
+        }
+
         iNowAutoProgress = 0
         isAutoWeiZhi = true
         isAutoTiYa = true

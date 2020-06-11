@@ -55,34 +55,6 @@
 
             </LinearLayout>
 
-            <LinearLayout android:id="@+id/llMassageB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginLeft="10dp">
-
-                <ImageView android:id="@+id/imgMoB1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/img_anmo_1_false"
-                    android:tag="false"/>
-
-                <ImageView android:id="@+id/imgMoB2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/img_anmo_2_false"
-                    android:layout_marginLeft="20dp"
-                    android:tag="false"/>
-
-                <ImageView android:id="@+id/imgMoB3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/img_anmo_3_false"
-                    android:layout_marginLeft="20dp"
-                    android:tag="false"/>
-
-            </LinearLayout>
 
 
         </LinearLayout>
