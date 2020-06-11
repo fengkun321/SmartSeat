@@ -13,6 +13,7 @@ import android.widget.ListView
 import com.pulltorefreshlistview.PullToRefreshBase
 import com.smartCarSeatProject.R
 import com.smartCarSeatProject.adapter.WifiInfoAdapter
+import com.smartCarSeatProject.dao.RemoteSQLInfo
 import com.smartCarSeatProject.data.BaseVolume
 import com.smartCarSeatProject.data.DeviceWorkInfo
 import com.smartCarSeatProject.view.LoadingDialog
@@ -38,6 +39,7 @@ class SetWifiActivity: BaseActivity() {
         reciverBand()
 
         initWifiData()
+
 
     }
 

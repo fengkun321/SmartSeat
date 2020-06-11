@@ -45,6 +45,7 @@ import com.ai.nuralogix.anura.sample.face.MNNFaceDetectorAdapter
 import com.ai.nuralogix.anura.sample.utils.BundleUtils
 import com.alibaba.android.mnnkit.monitor.MNNMonitor
 import com.smartCarSeatProject.BuildConfig
+import com.smartCarSeatProject.dao.RemoteSQLInfo
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import com.smartCarSeatProject.utl.DateUtil
 import com.smartCarSeatProject.view.AddMenuWindowDialog
@@ -766,7 +767,17 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         developInfoDao.insertSingleData(nowDevelopDataInfo)
         developInfoDao.closeDb()
         isSaveAData = false
-        ToastMsg("Save successful！")
+
+        Thread(Runnable {
+            val remoteSQLInfo = RemoteSQLInfo()
+            val strResult = remoteSQLInfo.insertDataByDevelopData(nowDevelopDataInfo)
+            mHandler.post {
+                if (strResult.equals(""))
+                    ToastMsg("Save successful！")
+                else
+                    ToastMsg(strResult)
+            }
+        }).start()
 
         // 保存体征按钮，不可用
         changCameraState(false)

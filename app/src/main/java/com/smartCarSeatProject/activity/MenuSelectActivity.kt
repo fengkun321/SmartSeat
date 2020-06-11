@@ -35,6 +35,8 @@ import com.ai.nuralogix.anura.sample.utils.BundleUtils
 import com.alibaba.android.mnnkit.monitor.MNNMonitor
 import com.smartCarSeatProject.BuildConfig
 import com.smartCarSeatProject.R
+import com.smartCarSeatProject.dao.DevelopDataInfo
+import com.smartCarSeatProject.dao.RemoteSQLInfo
 import com.smartCarSeatProject.data.*
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import com.smartCarSeatProject.view.AreaAddWindowHint
@@ -68,6 +70,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         setContentView(R.layout.layout_menu)
 
         Tag = this.localClassName
+
+
 
         initUI()
         reciverBand()
@@ -131,6 +135,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         }
 
     }
+
+
 
     /** 监听广播  */
     private fun reciverBand() {
@@ -253,10 +259,17 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 //                    tracker_ui_view.visibility = View.VISIBLE
 //                    tracker_opengl_view.visibility = View.VISIBLE
 //                }
-                val strSendData0 = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
-                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData0)
-                val strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_OFF,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
-                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+//                val strSendData0 = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+//                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData0)
+//                val strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_OFF,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+//                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+
+                Thread(Runnable {
+                    val remoteSQLInfo = RemoteSQLInfo()
+                    remoteSQLInfo.insertDataByDevelopData(DevelopDataInfo())
+                }).start()
+
+
 
 
             }
@@ -861,6 +874,9 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
     override fun onDestroy() {
         super.onDestroy()
+
+        RemoteSQLInfo().cloaseRemoteSQL()
+
         SocketThreadManager.sharedInstance(this)?.clearAllTCPClient()
 
         startTimerHoldSeat(false)

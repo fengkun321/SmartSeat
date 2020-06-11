@@ -12,7 +12,7 @@ class DevelopDataInfo {
     var iID = -1
 
     // 名称
-    var strName = ""
+    var strName = "***"
 
     // 初始化A面8组气压
     var p_init_back_A = "1000"
@@ -68,7 +68,7 @@ class DevelopDataInfo {
     // 人员-身高
     var m_height = "0"
     // 备注
-    var strPSInfo = ""
+    var strPSInfo = "***"
     // 时间
     var saveTime = ""
     // 数据类型

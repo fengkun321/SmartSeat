@@ -19,15 +19,6 @@ android {
         versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        def url = "jdbc:mysql://47.101.160.149:3306/NBServer?serverTimezone=GMT&useSSL=false"
-        def driverClass="com.mysql.cj.jdbc.Driver"
-        def username="root"
-        def password="nbserver"
-        def initialSize="1"
-        def minIdle="1"
-        def maxActive="10"
-
-
         def SAMPLE_REST_URL = "https://api.deepaffex.cn:9443"
         def SAMPLE_WS_URL = "wss://api.deepaffex.cn:9080"
         def LICENSE_KEY = "/SziEHimS+F7UcS0JEnc9jlNouibalkIcOWGtGuq"
@@ -118,9 +109,9 @@ dependencies {
     implementation "com.android.support:preference-v7:28.0.0"
     implementation "com.android.support:support-fragment:28.0.0"
     implementation 'com.alibaba.android.mnnkit:facedetection:0.0.4'
-
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.7'
-    implementation files('libs\\mysql-connector-java-8.0.15.jar')
+
+    implementation files('libs/mysql-connector-java-5.1.47.jar')
 
 //    implementation files('libs/zxing.jar')
 

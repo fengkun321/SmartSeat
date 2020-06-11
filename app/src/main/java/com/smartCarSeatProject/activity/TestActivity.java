@@ -8,13 +8,14 @@ import android.net.NetworkRequest;
 import android.net.NetworkSpecifier;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
-import android.net.wifi.WifiNetworkSpecifier;
+//import android.net.wifi.WifiNetworkSpecifier;
 import android.os.Bundle;
 import android.os.PatternMatcher;
 import android.util.Log;
 import android.view.View;
 import com.smartCarSeatProject.R;
 import com.smartCarSeatProject.dao.DBManager;
+import com.smartCarSeatProject.dao.RemoteSQLInfo;
 import com.smartCarSeatProject.data.ControlPressInfo;
 import com.smartCarSeatProject.isometric.ColorM;
 import com.smartCarSeatProject.isometric.Isometric;
@@ -22,6 +23,11 @@ import com.smartCarSeatProject.isometric.IsometricView;
 import com.smartCarSeatProject.isometric.Point;
 import com.smartCarSeatProject.isometric.shapes.Prism;
 import org.jetbrains.annotations.Nullable;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 
 
@@ -33,7 +39,9 @@ public class TestActivity extends BaseActivity {
     public static ColorM colorMBai = new ColorM(255, 255, 255);
     public static ColorM colorM = new ColorM(5, 122, 205);
     public static ColorM colorMZi = new ColorM(162, 77, 245);
-
+    private String url = "jdbc:mysql://47.101.160.149:3306/nbsmartdb";
+    private String user = "root";
+    private String passwd = "nbserver";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +50,34 @@ public class TestActivity extends BaseActivity {
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         test0();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    Class.forName("com.mysql.jdbc.Driver");
+                    Connection conn = DriverManager.getConnection(url,user,passwd);
+
+                    Statement st = conn.createStatement();
+                    String sql = "SELECT * FROM DevelopDataInfo";
+
+                    final ResultSet rs = st.executeQuery(sql);
+
+
+
+                    //Move to first data
+                    rs.first();
+
+
+
+                    conn.close();
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
 
 
 //        test2();
@@ -194,40 +230,40 @@ public class TestActivity extends BaseActivity {
 
     public void wifiConnect()
     {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q)
-        {
-            NetworkSpecifier specifier =
-                    new WifiNetworkSpecifier.Builder()
-                            .setSsidPattern(new PatternMatcher(wifiName, PatternMatcher.PATTERN_PREFIX))
-                            .setWpa2Passphrase(wifiPassword)
-                            .build();
-
-            NetworkRequest request =
-                    new NetworkRequest.Builder()
-                            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                            .removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                            .setNetworkSpecifier(specifier)
-                            .build();
-
-            ConnectivityManager connectivityManager = (ConnectivityManager)
-                    mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-            ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
-                @Override
-                public void onAvailable(Network network) {
-                    // do success processing here..
-                    Log.e("NetworkCallback", "onAvailable: ");
-                }
-
-                @Override
-                public void onUnavailable() {
-                    Log.e("NetworkCallback", "onUnavailable:");
-                }
-            };
-            connectivityManager.requestNetwork(request, networkCallback);
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q)
+//        {
+//            NetworkSpecifier specifier =
+//                    new WifiNetworkSpecifier.Builder()
+//                            .setSsidPattern(new PatternMatcher(wifiName, PatternMatcher.PATTERN_PREFIX))
+//                            .setWpa2Passphrase(wifiPassword)
+//                            .build();
+//
+//            NetworkRequest request =
+//                    new NetworkRequest.Builder()
+//                            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+//                            .removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+//                            .setNetworkSpecifier(specifier)
+//                            .build();
+//
+//            ConnectivityManager connectivityManager = (ConnectivityManager)
+//                    mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+//
+//            ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
+//                @Override
+//                public void onAvailable(Network network) {
+//                    // do success processing here..
+//                    Log.e("NetworkCallback", "onAvailable: ");
+//                }
+//
+//                @Override
+//                public void onUnavailable() {
+//                    Log.e("NetworkCallback", "onUnavailable:");
+//                }
+//            };
+//            connectivityManager.requestNetwork(request, networkCallback);
             // Release the request when done.
             // connectivityManager.unregisterNetworkCallback(networkCallback);
-        }
+//        }
     }
 
 
