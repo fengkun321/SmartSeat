@@ -2,11 +2,14 @@ package com.smartCarSeatProject
 
 import android.app.Application
 import android.graphics.Typeface
+import android.util.Log
 import com.smartCarSeatProject.dao.DevelopInfoDao
 import com.smartCarSeatProject.dao.ManualInfoDao
+import com.smartCarSeatProject.dao.RemoteSQLInfo
 import com.smartCarSeatProject.data.BaseVolume
-import com.smartCarSeatProject.data.CreateCtrDataHelper
+import com.smartCarSeatProject.tcpInfo.CanTaskCenter
 import com.umeng.commonsdk.UMConfigure
+import java.io.IOException
 
 class BaseApplication : Application() {
 
@@ -32,6 +35,13 @@ class BaseApplication : Application() {
 
         val manualInfoDao = ManualInfoDao(this)
         manualInfoDao.closeDb()
+
+        BuildConfig.SAMPLE_REST_URL
+
+
+//        Thread(Runnable {
+//            val remoteSQLInfo = RemoteSQLInfo()
+//        }).start()
 
     }
 

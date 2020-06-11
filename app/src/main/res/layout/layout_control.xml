@@ -148,96 +148,161 @@
 
         </LinearLayout>
 
-        // 心率
-            <LinearLayout android:id="@+id/llPersonInfo"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="left"
-                android:layout_toLeftOf="@+id/rlCamera"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="30dp">
+        <View android:id="@+id/viewLeftNoTounch"
+            android:layout_width="100dp"
+            android:layout_height="500dp"
+            android:background="@color/ban_transparent"
+            android:visibility="gone"/>
 
-                <TextView android:id="@+id/tvHeight"
-                    android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:orientation="vertical"
+            android:layout_marginRight="70dp">
+
+            // 人体数据
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="50dp"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                // 心率
+                <LinearLayout android:id="@+id/llPersonInfo"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="身高："
-                    android:textColor="@color/colorGreen"/>
-                <TextView android:id="@+id/tvWeight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="体重："
-                    android:textColor="@color/colorGreen"
-                    android:layout_marginTop="5dp"/>
-                <TextView android:id="@+id/tvHeart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="心跳："
-                    android:textColor="@color/colorGreen"
-                    android:layout_marginTop="5dp"/>
-                <TextView android:id="@+id/tvBPD"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="舒张压："
-                    android:textColor="@color/colorGreen"
-                    android:layout_marginTop="5dp"/>
-                <TextView android:id="@+id/tvBPS"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="收缩压："
-                    android:textColor="@color/colorGreen"
-                    android:layout_marginTop="5dp"/>
-                <TextView android:id="@+id/tvMSI"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="情绪值："
-                    android:textColor="@color/colorGreen"
-                    android:layout_marginTop="5dp"/>
-                <TextView android:id="@+id/tvSN"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="信噪值："
-                    android:textColor="@color/colorGreen"
-                    android:layout_marginTop="5dp"/>
+                    android:orientation="vertical"
+                    android:layout_toLeftOf="@+id/rlCamera"
+                    android:layout_centerVertical="true">
+
+                    <TextView android:id="@+id/tvHeight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="身高："
+                        android:textColor="@color/colorGreen"/>
+                    <TextView android:id="@+id/tvWeight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="体重："
+                        android:textColor="@color/colorGreen"
+                        android:layout_marginTop="5dp"/>
+                    <TextView android:id="@+id/tvHeart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="心跳："
+                        android:textColor="@color/colorGreen"
+                        android:layout_marginTop="5dp"/>
+
+                    <TextView android:id="@+id/tvHuXiLv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="呼吸率："
+                        android:textColor="@color/colorGreen"
+                        android:layout_marginTop="5dp"/>
+                    <TextView android:id="@+id/tvBPD"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="舒张压："
+                        android:textColor="@color/colorGreen"
+                        android:layout_marginTop="5dp"/>
+                    <TextView android:id="@+id/tvBPS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="收缩压："
+                        android:textColor="@color/colorGreen"
+                        android:layout_marginTop="5dp"/>
+                    <TextView android:id="@+id/tvMSI"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="情绪值："
+                        android:textColor="@color/colorGreen"
+                        android:layout_marginTop="5dp"/>
+                    <TextView android:id="@+id/tvSN"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="信噪值："
+                        android:textColor="@color/colorGreen"
+                        android:layout_marginTop="5dp"/>
+
+                </LinearLayout>
+
+                <RelativeLayout android:id="@+id/rlCamera"
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
+                    android:background="@color/colorWhite"
+                    android:visibility="visible"
+                    android:layout_centerVertical="true">
+
+
+                    <ai.nuralogix.anurasdk.render.opengl.GLSurfaceViewTracker
+                        android:id="@+id/tracker_opengl_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="visible"/>
+
+                    <ai.nuralogix.anurasdk.views.TrackerView
+                        android:id="@+id/tracker_ui_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="visible"/>
+
+                    <TextView
+                        android:id="@+id/cancelled_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorAccent"
+                        android:text="123"
+                        android:textSize="15sp"
+                        android:visibility="gone"/>
+
+                </RelativeLayout>
+
+
+
+
 
             </LinearLayout>
 
-            <RelativeLayout android:id="@+id/rlCamera"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_centerHorizontal="true"
-                android:background="@color/colorWhite"
-                android:visibility="visible"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginRight="70dp"
-                android:layout_marginBottom="30dp">
 
-
-                <ai.nuralogix.anurasdk.render.opengl.GLSurfaceViewTracker
-                    android:id="@+id/tracker_opengl_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="visible"/>
-
-                <ai.nuralogix.anurasdk.views.TrackerView
-                    android:id="@+id/tracker_ui_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="visible"/>
+            <LinearLayout android:id="@+id/llCushionInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp">
 
                 <TextView
-                    android:id="@+id/cancelled_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:textAlignment="center"
-                    android:textColor="@color/colorAccent"
-                    android:text="123"
-                    android:textSize="15sp"
-                    android:visibility="gone"/>
+                    android:text="座垫体压分布"
+                    android:textColor="@color/colorGreen"/>
 
-            </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="210dp"
+                    android:layout_height="180dp"
+                    android:background="@color/colorHui"
+                    android:layout_marginTop="20dp">
+
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+
+
+
 
     </RelativeLayout>
 

@@ -66,14 +66,12 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"/>
 
-        <LinearLayout android:id="@+id/llRightInfo"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="30dp"
-            android:gravity="center">
-
+            android:layout_toRightOf="@+id/imgRight"
+            android:layout_marginTop="30dp">
             <CheckBox android:id="@+id/cbAutoWeiZhi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -106,6 +104,21 @@
                 android:layout_marginTop="10dp"
                 android:checked="true"
                 android:tag="massage"/>
+
+
+
+        </LinearLayout>
+
+        // 右侧数据采集
+        <LinearLayout android:id="@+id/llRightInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            android:gravity="center">
+
+
 
             // 男女
             <LinearLayout

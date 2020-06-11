@@ -12,8 +12,10 @@ import android.view.WindowManager
 import android.widget.Toast
 import com.smartCarSeatProject.R
 import com.smartCarSeatProject.data.BaseVolume
+import com.smartCarSeatProject.data.CreateCtrDataHelper
 import com.smartCarSeatProject.data.DataAnalysisHelper
 import com.smartCarSeatProject.data.SeatStatus
+import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import com.smartCarSeatProject.view.LoadingDialog
 import com.smartCarSeatProject.view.ProgressBarWindowHint
 import com.umeng.analytics.MobclickAgent
@@ -152,6 +154,23 @@ open class BaseActivity : AppCompatActivity(){
     }
     public interface CheckPersionHaveListener {
         fun checkResult(isHaveFace:Boolean)
+    }
+
+    /** 释放A面气压，B面保持不动 */
+    protected fun releaseAPress() {
+        // 需要将A面的气袋全部泄气，要先发按摩，然后发off
+        val strSendData0 = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData0)
+        val strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_OFF,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+        // 然后延时1秒后执行off
+        val timer = Timer()
+        timer?.schedule(object : TimerTask() {
+            override fun run() {
+                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+            }
+        }, (1 * 1000))
     }
 
 

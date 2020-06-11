@@ -222,20 +222,38 @@ class BaseVolume {
         }
 
 
+
         /**
          * 根据数值，转换为对的压力值
          */
         fun getPressByValue(iValue:Int,iChannel:Int):Int {
-            // 偏差值
-//            var iChaZhi = deviationValueMap[iChannel]
-//            if (iChaZhi == null)
-//                iChaZhi = 0
-//            var iNowPress = iValue*0.14262 - 11.904
-//            iNowPress += iChaZhi
-//            // 四舍五入
-//            var iPress = Math.round(iNowPress).toInt()
-//            return iPress
+            // 偏差值 123 是B面的，所以要换算
+            if (iChannel < 4) {
+                var iChaZhi = deviationValueMap[iChannel]
+                if (iChaZhi == null)
+                    iChaZhi = 0
+                var iNowPress = iValue*0.14262 - 11.904
+                iNowPress += iChaZhi
+                // 四舍五入
+                var iPress = Math.round(iNowPress).toInt()
+                return iPress
+            }
+            // A面的直接显示
             return iValue
+        }
+
+        /**
+         * 根据数值，转换为对的压力值
+         */
+        fun getPressByValueB(iValue:Int,iChannel:Int):Int {
+            var iChaZhi = deviationValueMap[iChannel]
+            if (iChaZhi == null)
+                iChaZhi = 0
+            var iNowPress = iValue*0.14262 - 11.904
+            iNowPress += iChaZhi
+            // 四舍五入
+            var iPress = Math.round(iNowPress).toInt()
+            return iPress
         }
 
         /**

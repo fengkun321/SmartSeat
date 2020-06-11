@@ -105,6 +105,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         tvMSI.text = "情绪值:"+DataAnalysisHelper.deviceState.E_Index
         tvBPD.text = "舒张压:"+DataAnalysisHelper.deviceState.Dia_BP
         tvBPS.text = "收缩压:"+DataAnalysisHelper.deviceState.Sys_BP
+        tvHuXiLv.text = "呼吸率:"+DataAnalysisHelper.deviceState.BreathRate
 
         tvHeight.text = "身高:"+DataAnalysisHelper.deviceState.nowHeight
         tvWeight.text = "体重:"+DataAnalysisHelper.deviceState.nowWeight
@@ -200,8 +201,10 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
             }
             R.id.imgLeft2 -> {
                 if (NowShowViewNumber != 2) {
-                    SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
                     switchActivityByNumber(2)
+                    playOrPauseMedia("",false,0)
+                    // 释放A面气压，B面保持不动
+                    releaseAPress()
                 }
 
             }
@@ -209,6 +212,9 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
 //                rlCamera.x = rlCamera.x + 300
 //                rlCamera.y = rlCamera.y + 300
                 switchActivityByNumber(3)
+                playOrPauseMedia("",false,0)
+                // 释放A面气压，B面保持不动
+                releaseAPress()
             }
 
             R.id.imgLeft4 -> {
@@ -227,6 +233,18 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                 SocketThreadManager.sharedInstance(this@MainControlActivity)?.createLocSocket()
             }
         }
+
+    }
+
+    /** 更改左侧导航栏是否可以点击 */
+    fun changeLeftBtnTounch(isEnable:Boolean) {
+        // 不能点击，则显示遮罩
+        viewLeftNoTounch.visibility = if (!isEnable) View.VISIBLE else View.GONE
+        imgLeft0.isEnabled = isEnable
+        imgLeft1.isEnabled = isEnable
+        imgLeft2.isEnabled = isEnable
+        imgLeft3.isEnabled = isEnable
+        imgLeft4.isEnabled = isEnable
 
     }
 
@@ -288,10 +306,19 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         if (number == 1) {
             llPersonInfo.visibility = View.VISIBLE
             rlCamera.visibility = View.VISIBLE
+            llCushionInfo.visibility = View.VISIBLE
+            if (cameraIsStart) {
+                renderingVideoSink.start()
+            }
         }
         else {
             llPersonInfo.visibility = View.INVISIBLE
             rlCamera.visibility = View.INVISIBLE
+            llCushionInfo.visibility = View.INVISIBLE
+            if (cameraIsStart) {
+                renderingVideoSink.stop()
+            }
+
         }
 
         oldKeyList.clear()
@@ -432,6 +459,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         tvBPS.setTextColor(resources.getColor(iColor))
         tvMSI.setTextColor(resources.getColor(iColor))
         tvSN.setTextColor(resources.getColor(iColor))
+        tvHuXiLv.setTextColor(resources.getColor(iColor))
 
 
     }
@@ -471,13 +499,15 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                     mediaPlayer.stop()
                     DataAnalysisHelper.deviceState.iNowAutoProgress = 5
                     mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_AUTO_MODEL))
-                    SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_ALL_STOP_A_B)
+                    releaseAPress()
                 }
-            }, iTime/10)
+            }, iTime)
         }
         // 停止播放
         else {
-            mediaPlayer.stop()
+            if (mediaPlayer.isPlaying) {
+                mediaPlayer.stop()
+            }
         }
     }
 
@@ -673,25 +703,34 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                     // 人体数据： id & 信噪比 & 心跳 & 情绪值 & 低压 & 高压
                     Loge("MenuSelectActivity","人体数据：id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}")
                     DataAnalysisHelper.deviceState.snr = "${result.snr}"
-                    tvSN.text = "信噪比:"+DataAnalysisHelper.deviceState.snr
-                    if (result.heartRate > 0) {
+
+                    DataAnalysisHelper.deviceState.snr = "${result.snr}"
+                    if (result.heartRate > 0)
                         DataAnalysisHelper.deviceState.HeartRate = "${result.heartRate}"
-                        tvHeart.text = "心跳:"+DataAnalysisHelper.deviceState.HeartRate
-                    }
+                    if (result.msi > 0.0f)
+                        DataAnalysisHelper.deviceState.E_Index = "${result.msi}"
+                    if (result.bpDiastolic > 0)
+                        DataAnalysisHelper.deviceState.Dia_BP = "${result.bpDiastolic}"
+                    if (result.bpSystolic > 0)
+                        DataAnalysisHelper.deviceState.Sys_BP = "${result.bpSystolic}"
+                    if (result.gender > 0)
+                        DataAnalysisHelper.deviceState.m_gender = (result.heartRate == 1)
+                    if (result.brBp > 0.0f)
+                        DataAnalysisHelper.deviceState.BreathRate = "${result.brBp}"
+
+                    updatePersonState()
+
                     // 当前处于自动模式，则需要去判断是否健康
-                    if (NowShowViewNumber == 1)
-                        sendBroadcast(Intent(BaseVolume.BROADCAST_PERSON_INFO))
+                    if (NowShowViewNumber == 1) {
+                        // 信噪比为正数，当前值可信
+                        if (DataAnalysisHelper.deviceState.snr.toFloat() > 0) {
+                            sendBroadcast(Intent(BaseVolume.BROADCAST_PERSON_INFO))
+                        }
+                    }
 
                     if (result.resultIndex + 1 >= MeasurementActivity.TOTAL_NUMBER_CHUNKS) {
                         Loge("MenuSelectActivity","人体数据：测量结束！开始计算身高体重")
                         stopMeasurement(true)
-
-                        DataAnalysisHelper.deviceState.E_Index = "${result.msi}"
-                        DataAnalysisHelper.deviceState.Dia_BP = "${result.bpDiastolic}"
-                        DataAnalysisHelper.deviceState.Sys_BP = "${result.bpSystolic}"
-                        tvMSI.text = "情绪值:"+DataAnalysisHelper.deviceState.E_Index
-                        tvBPD.text = "舒张压:"+DataAnalysisHelper.deviceState.Dia_BP
-                        tvBPS.text = "收缩压:"+DataAnalysisHelper.deviceState.Sys_BP
 
                     }
                 }
@@ -1126,7 +1165,8 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
 
     override fun onDestroy() {
 
-        mediaPlayer.stop()
+
+        playOrPauseMedia("",false,0)
         mediaPlayer. release()
 
         destoryCamera()

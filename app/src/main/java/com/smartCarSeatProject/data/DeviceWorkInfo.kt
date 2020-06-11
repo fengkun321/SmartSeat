@@ -20,9 +20,13 @@ class DeviceWorkInfo : Serializable{
     // 传感缓存气压8个
     var sensePressValueBufferListl :ArrayList<String> = arrayListOf("0","0","0","0","0","0","0","0")
 
-    // 缓存刚识别到人体的数据
+    // 缓存刚识别完成后人体的数据
     var recog_back_A_valueList = arrayListOf<String>() // 8个
     var recog_back_B_valueList = arrayListOf<String>() // 8个
+    // 初始化完成后最初的座垫压力值
+    var init_cushion_valueList = arrayListOf<Int>() // 6个
+    // 缓存刚识别完成后座垫的压力值
+    var recog_cushion_valueList = arrayListOf<Int>() // 6个
 
     /**
      * 自动模式的进度

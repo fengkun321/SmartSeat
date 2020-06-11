@@ -433,7 +433,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
             else {
                 iChannelNumber = iTag+6
             }
-            val iPressV = BaseVolume.getPressByValue(iValue,iChannelNumber)
+            val iPressV = BaseVolume.getPressByValueB(iValue,iChannelNumber)
             viewSenseList[iNumber].text = ""
             viewSenseList[iNumber].text = iPressV.toString()
             // 根据气压值，改变填充色
@@ -456,7 +456,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
         override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
             var iNowValue = p0?.progress!! +ProgressValueMin
             if (iNowSelectNumber != -1) {
-                val iPressV = BaseVolume.getPressByValue(iNowValue,(iNowSelectNumber+1))
+                val iPressV = BaseVolume.getPressByValueB(iNowValue,(iNowSelectNumber+1))
                 tvSeekBarValue.text = iPressV.toString()
                 viewList[p0.tag.toString().toInt()].text = "$iNowValue"
                 if (p0.tag.toString().toInt() == 3)
@@ -473,7 +473,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
             var iNowValue = p0?.progress!! +ProgressValueMin
 
             if (iNowSelectNumber != -1) {
-//                val iPressV = BaseVolume.getPressByValue(iNowValue,(iNowSelectNumber+1))
+//                val iPressV = BaseVolume.getPressByValueB(iNowValue,(iNowSelectNumber+1))
 //                viewList[iNowSelectNumber].text = iPressV.toString()
 
                 // 通道1，最大值3580
@@ -634,7 +634,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
 
             var drawable = drawableList[iNumber]
             val iValue = pressList[iTag].toInt()
-            val iPressV = BaseVolume.getPressByValue(iValue,(iTag+1))
+            val iPressV = BaseVolume.getPressByValueB(iValue,(iTag+1))
 //            viewList[iNumber].text = iPressV.toString()
             // 根据气压值，改变填充色
             val colorValue = BaseVolume.getColorByPressValue(iPressV,(iTag+1))

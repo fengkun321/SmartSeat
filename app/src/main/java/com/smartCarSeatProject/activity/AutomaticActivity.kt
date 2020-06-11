@@ -233,8 +233,6 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
             SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_0)
         }
         else {
-//            SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_DEFAULT)
-//            SocketThreadManager.sharedInstance(mContext)?.StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_0)
             DataAnalysisHelper.deviceState.iNowAutoProgress = 3
             onAutoSetPressByStatus()
         }
@@ -247,7 +245,8 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
      * 健康自适应
      */
     private fun onAutoSetMassageByStatus() {
-        // 健康自适应
+        // 健康自适应,信噪比为负数，当前值不可信，不用执行
+//        if (cbJianKang.isChecked && DataAnalysisHelper.deviceState.snr.toFloat() > 0) {
         if (cbJianKang.isChecked) {
             ToastMsg("健康监测！")
             DataAnalysisHelper.deviceState.iNowAutoProgress = 4
@@ -255,21 +254,14 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
         }
         // 关闭按摩自适应
         else {
-//            MainControlActivity.getInstance()?.playOrPauseMedia("",false,0)
-//            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_ALL_STOP_A_B)
             DataAnalysisHelper.deviceState.iNowAutoProgress = 5
-
         }
-
         checkNowAutoProgress()
-
-//        MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.device_red)
-//        // 播放音乐
-//        MainControlActivity.getInstance()?.playOrPauseMedia(true,1000*60*3)
     }
 
     /** 执行massage */
     private fun runMassageInfo() {
+
         var strSendData = BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B
         // 1.心率/血压/情绪值 正常状态( 60<心率<100 and 90<收缩压< 139 and 60<舒张压<89 and 心理压力值<4 )
         // 字体绿色显示，启动A面轻度按摩,播放音乐
@@ -325,28 +317,33 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
         SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
     }
 
+    /** 危险提醒 */
+    var areaDangerDialog:AreaAddWindowHint? = null
     private fun showDangerDialog() {
-        val areaAddWindowHint = AreaAddWindowHint(this,R.style.Dialogstyle,"System",
-                object : AreaAddWindowHint.PeriodListener {
-                    override fun refreshListener(string: String) {
-                    }
-                    override fun cancelListener() {
-                    }
-                },"Fatigue driving, please take a rest!",true)
-        areaAddWindowHint?.show()
-
+        if (areaDangerDialog == null) {
+            areaDangerDialog = AreaAddWindowHint(this,R.style.Dialogstyle,"System",
+                    object : AreaAddWindowHint.PeriodListener {
+                        override fun refreshListener(string: String) {
+                        }
+                        override fun cancelListener() {
+                        }
+                    },"Fatigue driving, please take a rest!",true)
+        }
+        if (!areaDangerDialog!!.isShowing)
+            areaDangerDialog!!.show()
     }
 
     /** 判断当前自动模式的进度 */
     private fun checkNowAutoProgress() {
+        MainControlActivity.getInstance()?.changeLeftBtnTounch(false)
         imgBack.isEnabled = false
         cbAutoWeiZhi.isEnabled = false
         cbAutoTiYa.isEnabled = false
         cbJianKang.isEnabled = false
-        cbAutoWeiZhi.setTextColor(mContext.getColor(R.color.colorHui))
-        cbAutoTiYa.setTextColor(mContext.getColor(R.color.colorHui))
+        cbAutoWeiZhi.setTextColor(mContext.getColor(R.color.black1))
+        cbAutoTiYa.setTextColor(mContext.getColor(R.color.black1))
 
-        cbJianKang.setTextColor(mContext.getColor(R.color.colorHui))
+        cbJianKang.setTextColor(mContext.getColor(R.color.black1))
         when(DataAnalysisHelper.deviceState.iNowAutoProgress) {
             2 -> {
                 cbAutoWeiZhi.setTextColor(mContext.getColor(R.color.colorWhite))
@@ -365,12 +362,14 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
             }
             5 -> {
                 imgBack.isEnabled = true
+                MainControlActivity.getInstance()?.changeLeftBtnTounch(true)
                 cbAutoTiYa.setTextColor(mContext.getColor(R.color.colorWhite))
                 cbAutoWeiZhi.setTextColor(mContext.getColor(R.color.colorWhite))
                 cbJianKang.setTextColor(mContext.getColor(R.color.colorWhite))
                 cbAutoTiYa.isEnabled = true
                 cbAutoWeiZhi.isEnabled = true
                 cbJianKang.isEnabled = true
+
             }
         }
 

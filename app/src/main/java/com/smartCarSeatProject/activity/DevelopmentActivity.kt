@@ -53,6 +53,8 @@ import kotlinx.android.synthetic.main.layout_develop.tvReCanConnect
 import kotlinx.android.synthetic.main.layout_em_info.*
 import org.json.JSONArray
 import org.opencv.core.Point
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, VideoSignalAnalysisListener, TrackerView.OnSizeChangedListener{
@@ -727,13 +729,8 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
         ToastMsg("Adjust the pressure on B！")
 
-        // 检测完成后，需要将A面的气袋全部泄气，要先发按摩，然后发off
-        val strSendData0 = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
-        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData0)
-        val strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_OFF,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
-        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
-        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
-        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+        // 释放A面气压，B面保持不动
+        releaseAPress()
 
         // 保存体征按钮，不可用
         changCameraState(false)

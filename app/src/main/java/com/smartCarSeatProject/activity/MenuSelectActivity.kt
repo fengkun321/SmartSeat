@@ -43,6 +43,8 @@ import kotlinx.android.synthetic.main.layout_menu.*
 import org.json.JSONArray
 import org.opencv.core.Point
 import java.io.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, VideoSignalAnalysisListener, TrackerView.OnSizeChangedListener{
@@ -370,12 +372,12 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         OnStartLoadData(isConnected)
                         changeSeatState(-1)
                         // 判断座椅状态 待初始化：先发调压模式，再调整气压
-                        if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_wait_reserve.iValue) {
-                            defaultSeatState()
-                        }
+//                        if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_wait_reserve.iValue) {
+//                            defaultSeatState()
+//                        }
 
                         // 测试阶段，A面气袋有问题，所以直接进入默认状态！fixme
-//                        changeSeatState(SeatStatus.press_normal.iValue)
+                        changeSeatState(SeatStatus.press_normal.iValue)
                     }
 
 
@@ -512,6 +514,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             // 从控制页面返回到主页
             else if (action == BaseVolume.BROADCAST_GOBACK_MENU) {
                 isControlShow = false
+                // 释放A面气压，B面保持不动
+                releaseAPress()
 
             }
             // 检测到无人
@@ -576,6 +580,11 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         // 座椅正在恢复 
         else if (DataAnalysisHelper.deviceState.seatStatus ==  SeatStatus.press_resume_reserve.iValue) {
             ToastMsg("Initializing...")
+
+            stopMeasurement(true)
+            rlCamera.visibility = View.INVISIBLE
+            renderingVideoSink.stop()
+
             progressBarWindowHint?.updateContent("Initializing...")
             progressBarWindowHint?.onSelfShow()
 
@@ -728,13 +737,9 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         DataAnalysisHelper.deviceState.measureHeightWeight(iMeanList)
         isCheckedPersonInfo = true
 
-        // 检测完成后，需要将A面的气袋全部泄气，要先发按摩，然后发off
-        val strSendData0 = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
-        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData0)
-        val strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_OFF,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
-        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
-        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
-        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+        // 释放A面气压，B面保持不动
+        releaseAPress()
+
 
     }
 

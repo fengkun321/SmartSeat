@@ -8,11 +8,11 @@ import java.sql.Statement;
 public class RemoteSQLInfo {
 
     //远程数据库账号
-    public static final String SQLITEURL = "jdbc:mysql://192.168.6.221:3306/tmdb";// ip地址:3306 数据库名";
+    public static final String SQLITEURL = "jdbc:mysql://47.101.160.149:3306/NBServer.db";// ip地址:3306 数据库名";
     //远程数据库账号
-    public static final String SQLITEUSER = "appuser";
+    public static final String SQLITEUSER = "root";
     //远程数据库密码
-    public static final String SQLITEPW = "0606";
+    public static final String SQLITEPW = " nbserver";
     public static Connection connection;
     static Statement statement = null;
 
@@ -28,7 +28,7 @@ public class RemoteSQLInfo {
         try {
             connection = (Connection) DriverManager.getConnection(SQLITEURL, SQLITEUSER, SQLITEPW);
             if (connection == null) {
-                connection = (Connection) DriverManager.getConnection(SQLITEURL,     SQLITEUSER, SQLITEPW);
+                connection = (Connection) DriverManager.getConnection(SQLITEURL,SQLITEUSER, SQLITEPW);
             }
             statement = (Statement) connection.createStatement();
 
