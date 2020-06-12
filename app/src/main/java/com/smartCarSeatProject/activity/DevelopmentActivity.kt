@@ -28,38 +28,34 @@ import android.os.SystemClock
 import android.support.v7.app.AlertDialog
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import com.smartCarSeatProject.R
-import com.smartCarSeatProject.dao.DevelopDataInfo
-import com.smartCarSeatProject.dao.DevelopInfoDao
-import com.smartCarSeatProject.data.*
-import com.smartCarSeatProject.view.AreaAddWindowHint
-import com.smartCarSeatProject.view.SetValueAreaAddWindow
-import kotlinx.android.synthetic.main.layout_develop.*
-import kotlinx.android.synthetic.main.layout_people_info.*
-import kotlinx.android.synthetic.main.layout_a_pmcm.view.*
-import kotlinx.android.synthetic.main.layout_a_pmcm_child.view.*
-import kotlinx.android.synthetic.main.layout_b_dmcm.view.*
-import kotlinx.android.synthetic.main.layout_development_value.view.*
 import android.widget.*
 import com.ai.nuralogix.anura.sample.face.MNNFaceDetectorAdapter
 import com.ai.nuralogix.anura.sample.utils.BundleUtils
 import com.alibaba.android.mnnkit.monitor.MNNMonitor
 import com.smartCarSeatProject.BuildConfig
+import com.smartCarSeatProject.R
+import com.smartCarSeatProject.dao.DevelopDataInfo
+import com.smartCarSeatProject.dao.DevelopInfoDao
 import com.smartCarSeatProject.dao.RemoteSQLInfo
+import com.smartCarSeatProject.data.*
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import com.smartCarSeatProject.utl.DateUtil
 import com.smartCarSeatProject.view.AddMenuWindowDialog
+import com.smartCarSeatProject.view.AreaAddWindowHint
+import com.smartCarSeatProject.view.SetValueAreaAddWindow
 import com.yotlive.matx.MatXDataMessage
-import kotlinx.android.synthetic.main.layout_b_dmcm.*
-import kotlinx.android.synthetic.main.layout_develop.tvReCanConnect
+import kotlinx.android.synthetic.main.layout_a_pmcm.view.*
+import kotlinx.android.synthetic.main.layout_a_pmcm_child.view.*
+import kotlinx.android.synthetic.main.layout_b_dmcm.view.*
+import kotlinx.android.synthetic.main.layout_develop.*
+import kotlinx.android.synthetic.main.layout_development_value.view.*
 import kotlinx.android.synthetic.main.layout_em_info.*
+import kotlinx.android.synthetic.main.layout_people_info.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONArray
 import org.opencv.core.Point
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, VideoSignalAnalysisListener, TrackerView.OnSizeChangedListener{
@@ -131,8 +127,8 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         includeA.includeASeat8.tvTitle.text = "8"
 
         includeCushionA1.tvTitle.text = "A1";includeCushionA2.tvTitle.text = "A2"
-        includeCushionB1.tvTitle.text = "A1";includeCushionB2.tvTitle.text = "A2"
-        includeCushionC1.tvTitle.text = "A1";includeCushionC2.tvTitle.text = "A2"
+        includeCushionB1.tvTitle.text = "B1";includeCushionB2.tvTitle.text = "B2"
+        includeCushionC1.tvTitle.text = "C1";includeCushionC2.tvTitle.text = "C2"
         // 座垫值
         cushionList.add(includeCushionA1.tvValueA);cushionList.add(includeCushionA2.tvValueA)
         cushionList.add(includeCushionB1.tvValueA);cushionList.add(includeCushionB2.tvValueA)
@@ -873,11 +869,12 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         // 再将每个字段总和算平均值
         var iCushionMeanList = arrayListOf<Double>()
         iCushionSumList.forEach {
-            val iValue = it/iCushionSize
+            var iValue = it/iCushionSize
+            iValue = String.format("%.1f", iValue).toDouble()
             iCushionMeanList.add(iValue)
         }
         recogValueListByCushion.clear()
-        recogValueListByCushion.addAll(iCushionSumList)
+        recogValueListByCushion.addAll(iCushionMeanList)
 
     }
 

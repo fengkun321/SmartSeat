@@ -352,6 +352,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                 cbAutoWeiZhi.setTextColor(mContext.getColor(R.color.colorWhite))
                 cbAutoTiYa.setTextColor(mContext.getColor(R.color.colorWhite))
                 cbAutoWeiZhi.isEnabled = true
+                MainControlActivity.getInstance()?.changeLeftBtnTounch(true)
             }
             4 -> {
                 cbAutoWeiZhi.setTextColor(mContext.getColor(R.color.colorWhite))
@@ -362,7 +363,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
             }
             5 -> {
                 imgBack.isEnabled = true
-                MainControlActivity.getInstance()?.changeLeftBtnTounch(true)
+
                 cbAutoTiYa.setTextColor(mContext.getColor(R.color.colorWhite))
                 cbAutoWeiZhi.setTextColor(mContext.getColor(R.color.colorWhite))
                 cbJianKang.setTextColor(mContext.getColor(R.color.colorWhite))
@@ -580,7 +581,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                         onAutoSetPressByStatus()
                     }
                 }
-            }, (10 * 1000))
+            }, (7 * 1000))
         }
         else {
             timer?.cancel()

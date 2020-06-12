@@ -769,7 +769,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         // 再将每个字段总和算平均值
         var iCushionMeanList = arrayListOf<Double>()
         iCushionSumList.forEach {
-            val iValue = it/iCushionSize
+            var iValue = it/iCushionSize
+            iValue = String.format("%.1f", iValue).toDouble()
             iCushionMeanList.add(iValue)
         }
         // 缓存座垫压力平均值
@@ -1530,7 +1531,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
     companion object{
         // 座垫ID
-        var CuShionSnum: Int = 0
+        var CuShionSnum: Int = 405
     }
 
     // 是否已经开始检测
@@ -1538,7 +1539,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
     // 检测人体的同时缓存座垫压力值，用于后面的体重，身高计算
     var statCushionValueListBySeat = arrayListOf<ArrayList<Double>>()
     private fun initYotlive() {
-        CuShionSnum = -1
+        CuShionSnum = 405
         EventBus.getDefault().register(this)
         // Bind service and register event bus.
         val intent = Intent(this, MatXService::class.java)

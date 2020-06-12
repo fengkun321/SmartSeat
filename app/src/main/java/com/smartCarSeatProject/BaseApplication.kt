@@ -33,9 +33,9 @@ class BaseApplication : Application() {
         val manualInfoDao = ManualInfoDao(this)
         manualInfoDao.closeDb()
 
-        Thread(Runnable {
-            val remoteSQLInfo = RemoteSQLInfo()
-        }).start()
+//        Thread(Runnable {
+//            val remoteSQLInfo = RemoteSQLInfo()
+//        }).start()
 
     }
 

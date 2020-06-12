@@ -17,10 +17,10 @@ public class RemoteSQLInfo {
     static Statement statement = null;
 
     public RemoteSQLInfo() {
-        if (statement == null) {
-            // 连接远程服务器
-            connectRemoteSQL();
-        }
+//        if (statement == null) {
+//            // 连接远程服务器
+//            connectRemoteSQL();
+//        }
     }
 
     private void connectRemoteSQL() {
@@ -43,6 +43,8 @@ public class RemoteSQLInfo {
     }
 
     public String insertDataByDevelopData(DevelopDataInfo developDataInfo) {
+
+        connectRemoteSQL();
 
         String strID = developDataInfo.getIID()+"";
         // 名称
@@ -187,12 +189,17 @@ public class RemoteSQLInfo {
             e.printStackTrace();
             return e.getMessage().toString();
         }
+        finally {
+            cloaseRemoteSQL();
+        }
 
 
     }
 
 
     public String insertDataByManualData(DevelopDataInfo developDataInfo) {
+
+        connectRemoteSQL();
 
         String strID = developDataInfo.getIID()+"";
         // 名称
@@ -331,11 +338,15 @@ public class RemoteSQLInfo {
                 return "Cloud add failure：code:"+iResult;
             else
                 return "";
-
         } catch (SQLException e) {
             e.printStackTrace();
             return e.getMessage().toString();
         }
+        finally {
+            cloaseRemoteSQL();
+        }
+
+
     }
 
 
