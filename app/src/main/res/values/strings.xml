@@ -1474,4 +1474,21 @@ BMI=体重（kg）/身高（m）的平方。&lt;br/&gt;&lt;br/&gt;
         2.Click MEASUREMENT, start measurement
         3.Do not move during the measurement and keep enough light"</string>
 
+    <string name="step_one">Step 1：Please connect your Android device to your wireless router
+        (i.e. the router to which you want the pressure mat to connect), then enter your router
+        Password (SSID will be entered automatically here), then press "Add". This step records
+        necessary router information.</string>
+    <string name="step_two">Step 2：Please connect your Android device to "Matx" hotspot, then the
+        pressure mat will be set to connect to the router. Please wait until the indicator light
+        (in the hardware box) shows successful connection.</string>
+    <string name="step_three">Step 3：Please connect your Android device to the router again, then
+        your Android device will automatically search and find the pressure mat in LAN. When it is
+        successfully found (both indicator light and eventbus will tell you), press
+        "Next(Heatmap)" or "Next(Number)" to receive data.</string>
+
+    <string name="enter_passwd">Please enter password</string>
+    <string name="add">Add</string>
+    <string name="next_heatmap">Next(Heatmap)</string>
+    <string name="next_number">Next(Number)</string>
+
 </resources>

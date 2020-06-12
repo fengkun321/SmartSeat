@@ -128,6 +128,16 @@
         </activity>
 
 
+        <activity
+            android:name="com.yotlive.android_demo.YotliveMainActivity"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name="com.yotlive.android_demo.PressureDisplay"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <service android:name="com.yotlive.matx.MatXService"/>
 
 
 

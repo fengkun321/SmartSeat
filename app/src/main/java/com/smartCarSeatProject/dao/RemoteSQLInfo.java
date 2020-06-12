@@ -135,34 +135,46 @@ public class RemoteSQLInfo {
 
         // insert into table1(field1,field2) values(value1,value2)
         String sqlLeft="insert into "+DBContent.DeviceInfo.TABLE_NAME_Develop+"(" + DBContent.DeviceInfo.Columns.id+","+
-                DBContent.DeviceInfo.Columns.dataName+","+ DBContent.DeviceInfo.Columns.p_init_back_A+","+ DBContent.DeviceInfo.Columns.p_init_back_B+","+
-                DBContent.DeviceInfo.Columns.p_init_cushion+","+ DBContent.DeviceInfo.Columns.p_init_cushion_A1+","+ DBContent.DeviceInfo.Columns.p_init_cushion_A2+","+
-                DBContent.DeviceInfo.Columns.p_init_cushion_B1+","+ DBContent.DeviceInfo.Columns.p_init_cushion_B2+","+ DBContent.DeviceInfo.Columns.p_init_cushion_C1+","+
-                DBContent.DeviceInfo.Columns.p_init_cushion_C2+","+ DBContent.DeviceInfo.Columns.p_recog_back_A+","+ DBContent.DeviceInfo.Columns.p_recog_back_B+","+
-                DBContent.DeviceInfo.Columns.p_recog_back_C+","+ DBContent.DeviceInfo.Columns.p_recog_back_D+","+ DBContent.DeviceInfo.Columns.p_recog_back_E+","+
-                DBContent.DeviceInfo.Columns.p_recog_back_F+","+ DBContent.DeviceInfo.Columns.p_recog_back_G+","+ DBContent.DeviceInfo.Columns.p_recog_back_H+","+
-                DBContent.DeviceInfo.Columns.p_recog_back_1+","+ DBContent.DeviceInfo.Columns.p_recog_back_2+","+ DBContent.DeviceInfo.Columns.p_recog_back_3+","+
-                DBContent.DeviceInfo.Columns.p_recog_back_4+","+ DBContent.DeviceInfo.Columns.p_recog_back_5+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_6+","+
-                DBContent.DeviceInfo.Columns.p_recog_cushion_7+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_8+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_A1+","+
-                DBContent.DeviceInfo.Columns.p_recog_cushion_A2+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_B1+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_B2+","+
-                DBContent.DeviceInfo.Columns.p_recog_cushion_C1+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_C2+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_1+","+
-                DBContent.DeviceInfo.Columns.p_adjust_cushion_2+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_3+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_4+","+
-                DBContent.DeviceInfo.Columns.p_adjust_cushion_5+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_6+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_7+","+
-                DBContent.DeviceInfo.Columns.p_adjust_cushion_8+","+ DBContent.DeviceInfo.Columns.m_gender+","+ DBContent.DeviceInfo.Columns.m_national+","+
-                DBContent.DeviceInfo.Columns.m_weight+","+ DBContent.DeviceInfo.Columns.m_height+","+ DBContent.DeviceInfo.Columns.strPSInfo+","+
-                DBContent.DeviceInfo.Columns.saveTime+","+ DBContent.DeviceInfo.Columns.dataType+","+ DBContent.DeviceInfo.Columns.loactionCtr+","+
-                DBContent.DeviceInfo.Columns.HeartRate+","+ DBContent.DeviceInfo.Columns.BreathRate+","+ DBContent.DeviceInfo.Columns.E_Index+","+
-                DBContent.DeviceInfo.Columns.Dia_BP+","+ DBContent.DeviceInfo.Columns.Snr+","+ DBContent.DeviceInfo.Columns.Sys_BP+ ")";
-        String sqlRight = "values('"+strID+"','"+strName+"','"+p_init_back_A+"','"+p_init_back_B+"','"+p_init_cushion+"','"+p_init_cushion_A1+"','"+
-                p_init_cushion_A2+"','"+p_init_cushion_B1+"','"+p_init_cushion_B2+"','"+p_init_cushion_C1+"','"+p_init_cushion_C2+"','"+ p_recog_back_A+"','"+
-                p_recog_back_B+"','"+p_recog_back_C+"','"+p_recog_back_D+"','"+p_recog_back_E+"','"+p_recog_back_F+"','"+ p_recog_back_G+"','"+
-                p_recog_back_H+"','"+p_recog_cushion_6+"','"+ p_recog_cushion_7+"','"+p_recog_cushion_8+"','"+ p_recog_cushion_A1+"','"+p_recog_cushion_A2+"','"+
-                p_recog_cushion_B1+"','"+p_recog_cushion_B2+"','"+p_recog_cushion_C1+"','"+ p_recog_cushion_C2+"','"+p_recog_back_1+"','"+p_recog_back_2+"','"+
-                p_recog_back_3+"','"+p_recog_back_4+"','"+p_recog_back_5+"','"+ p_adjust_cushion_6+"','"+ p_adjust_cushion_7+"','"+p_adjust_cushion_8+"','"+
-                p_adjust_cushion_1+"','"+p_adjust_cushion_2+"','"+ p_adjust_cushion_3+"','"+p_adjust_cushion_4+"','"+p_adjust_cushion_5+"','"+ m_gender+"','"+
-                m_national+"','"+m_weight+"','"+ m_height+"','"+strPSInfo+"','"+saveTime+"','"+dataType+"','"+
-                locationCtr+"','"+HeartRate+"','"+BreathRate+"','"+ E_Index+"','"+Dia_BP+"','"+ Sys_BP+"','"+
-                snr+"')";
+                DBContent.DeviceInfo.Columns.dataName+","+ DBContent.DeviceInfo.Columns.p_init_back_A+","+ DBContent.DeviceInfo.Columns.p_init_back_B+","+ DBContent.DeviceInfo.Columns.p_init_cushion+","+
+                DBContent.DeviceInfo.Columns.p_init_cushion_A1+","+ DBContent.DeviceInfo.Columns.p_init_cushion_A2+","+
+                DBContent.DeviceInfo.Columns.p_init_cushion_B1+","+ DBContent.DeviceInfo.Columns.p_init_cushion_B2+","+
+                DBContent.DeviceInfo.Columns.p_init_cushion_C1+","+ DBContent.DeviceInfo.Columns.p_init_cushion_C2+","+
+                DBContent.DeviceInfo.Columns.p_recog_back_A+","+ DBContent.DeviceInfo.Columns.p_recog_back_B+","+ DBContent.DeviceInfo.Columns.p_recog_back_C+","+ DBContent.DeviceInfo.Columns.p_recog_back_D+","+
+                DBContent.DeviceInfo.Columns.p_recog_back_E+","+ DBContent.DeviceInfo.Columns.p_recog_back_F+","+ DBContent.DeviceInfo.Columns.p_recog_back_G+","+ DBContent.DeviceInfo.Columns.p_recog_back_H+","+
+                DBContent.DeviceInfo.Columns.p_recog_back_1+","+ DBContent.DeviceInfo.Columns.p_recog_back_2+","+ DBContent.DeviceInfo.Columns.p_recog_back_3+","+ DBContent.DeviceInfo.Columns.p_recog_back_4+","+
+                DBContent.DeviceInfo.Columns.p_recog_back_5+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_6+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_7+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_8+","+
+                DBContent.DeviceInfo.Columns.p_recog_cushion_A1+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_A2+","+
+                DBContent.DeviceInfo.Columns.p_recog_cushion_B1+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_B2+","+
+                DBContent.DeviceInfo.Columns.p_recog_cushion_C1+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_C2+","+
+                DBContent.DeviceInfo.Columns.p_adjust_cushion_1+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_2+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_3+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_4+","+
+                DBContent.DeviceInfo.Columns.p_adjust_cushion_5+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_6+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_7+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_8+","+
+                DBContent.DeviceInfo.Columns.m_gender+","+ DBContent.DeviceInfo.Columns.m_national+","+
+                DBContent.DeviceInfo.Columns.m_weight+","+ DBContent.DeviceInfo.Columns.m_height+","+
+                DBContent.DeviceInfo.Columns.strPSInfo+","+ DBContent.DeviceInfo.Columns.saveTime+","+
+                DBContent.DeviceInfo.Columns.dataType+","+ DBContent.DeviceInfo.Columns.loactionCtr+","+
+                DBContent.DeviceInfo.Columns.HeartRate+","+ DBContent.DeviceInfo.Columns.BreathRate+","+
+                DBContent.DeviceInfo.Columns.E_Index+","+ DBContent.DeviceInfo.Columns.Dia_BP+","+
+                DBContent.DeviceInfo.Columns.Sys_BP+","+ DBContent.DeviceInfo.Columns.Snr+ ")";
+        String sqlRight = "values('"+strID+"','"+strName+"','"+p_init_back_A+"','"+p_init_back_B+"','"+p_init_cushion+"','"+
+                p_init_cushion_A1+"','"+ p_init_cushion_A2+"','"+
+                p_init_cushion_B1+"','"+p_init_cushion_B2+"','"+
+                p_init_cushion_C1+"','"+p_init_cushion_C2+"','"+
+                p_recog_back_A+"','"+ p_recog_back_B+"','"+p_recog_back_C+"','"+p_recog_back_D+"','"+
+                p_recog_back_E+"','"+p_recog_back_F+"','"+ p_recog_back_G+"','"+ p_recog_back_H+"','"+
+                p_recog_back_1+"','"+ p_recog_back_2+"','"+p_recog_back_3+"','"+ p_recog_back_4+"','"+
+                p_recog_back_5+"','"+ p_recog_cushion_6+"','"+p_recog_cushion_7+"','"+p_recog_cushion_8+"','"+
+                p_recog_cushion_A1+"','"+p_recog_cushion_A2+"','"+
+                p_recog_cushion_B1+"','"+ p_recog_cushion_B2+"','"+
+                p_recog_cushion_C1+"','"+p_recog_cushion_C2+"','"+
+                p_adjust_cushion_1+"','"+ p_adjust_cushion_2+"','"+p_adjust_cushion_3+"','"+ p_adjust_cushion_4+"','"+
+                p_adjust_cushion_5+"','"+ p_adjust_cushion_6+"','"+p_adjust_cushion_7+"','"+p_adjust_cushion_8+"','"+
+                m_gender+"','"+ m_national+"','"+
+                m_weight+"','"+ m_height+"','"+
+                strPSInfo+"','"+saveTime+"','"+
+                dataType+"','"+ locationCtr+"','"+
+                HeartRate+"','"+BreathRate+"','"+
+                E_Index+"','"+Dia_BP+"','"+
+                Sys_BP+"','"+ snr+"')";
         String strSql = sqlLeft+sqlRight;
         try {
              int iResult = statement.executeUpdate(strSql);
@@ -271,36 +283,47 @@ public class RemoteSQLInfo {
         // 信噪比
         String snr = developDataInfo.getSnr();
 
-        // insert into table1(field1,field2) values(value1,value2)
         String sqlLeft="insert into "+DBContent.DeviceInfo.TABLE_NAME_Manual+"(" + DBContent.DeviceInfo.Columns.id+","+
-                DBContent.DeviceInfo.Columns.dataName+","+ DBContent.DeviceInfo.Columns.p_init_back_A+","+ DBContent.DeviceInfo.Columns.p_init_back_B+","+
-                DBContent.DeviceInfo.Columns.p_init_cushion+","+ DBContent.DeviceInfo.Columns.p_init_cushion_A1+","+ DBContent.DeviceInfo.Columns.p_init_cushion_A2+","+
-                DBContent.DeviceInfo.Columns.p_init_cushion_B1+","+ DBContent.DeviceInfo.Columns.p_init_cushion_B2+","+ DBContent.DeviceInfo.Columns.p_init_cushion_C1+","+
-                DBContent.DeviceInfo.Columns.p_init_cushion_C2+","+ DBContent.DeviceInfo.Columns.p_recog_back_A+","+ DBContent.DeviceInfo.Columns.p_recog_back_B+","+
-                DBContent.DeviceInfo.Columns.p_recog_back_C+","+ DBContent.DeviceInfo.Columns.p_recog_back_D+","+ DBContent.DeviceInfo.Columns.p_recog_back_E+","+
-                DBContent.DeviceInfo.Columns.p_recog_back_F+","+ DBContent.DeviceInfo.Columns.p_recog_back_G+","+ DBContent.DeviceInfo.Columns.p_recog_back_H+","+
-                DBContent.DeviceInfo.Columns.p_recog_back_1+","+ DBContent.DeviceInfo.Columns.p_recog_back_2+","+ DBContent.DeviceInfo.Columns.p_recog_back_3+","+
-                DBContent.DeviceInfo.Columns.p_recog_back_4+","+ DBContent.DeviceInfo.Columns.p_recog_back_5+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_6+","+
-                DBContent.DeviceInfo.Columns.p_recog_cushion_7+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_8+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_A1+","+
-                DBContent.DeviceInfo.Columns.p_recog_cushion_A2+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_B1+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_B2+","+
-                DBContent.DeviceInfo.Columns.p_recog_cushion_C1+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_C2+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_1+","+
-                DBContent.DeviceInfo.Columns.p_adjust_cushion_2+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_3+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_4+","+
-                DBContent.DeviceInfo.Columns.p_adjust_cushion_5+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_6+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_7+","+
-                DBContent.DeviceInfo.Columns.p_adjust_cushion_8+","+ DBContent.DeviceInfo.Columns.m_gender+","+ DBContent.DeviceInfo.Columns.m_national+","+
-                DBContent.DeviceInfo.Columns.m_weight+","+ DBContent.DeviceInfo.Columns.m_height+","+ DBContent.DeviceInfo.Columns.strPSInfo+","+
-                DBContent.DeviceInfo.Columns.saveTime+","+ DBContent.DeviceInfo.Columns.dataType+","+ DBContent.DeviceInfo.Columns.loactionCtr+","+
-                DBContent.DeviceInfo.Columns.HeartRate+","+ DBContent.DeviceInfo.Columns.BreathRate+","+ DBContent.DeviceInfo.Columns.E_Index+","+
-                DBContent.DeviceInfo.Columns.Dia_BP+","+ DBContent.DeviceInfo.Columns.Snr+","+ DBContent.DeviceInfo.Columns.Sys_BP+ ")";
-        String sqlRight = "values('"+strID+"','"+strName+"','"+p_init_back_A+"','"+p_init_back_B+"','"+p_init_cushion+"','"+p_init_cushion_A1+"','"+
-                p_init_cushion_A2+"','"+p_init_cushion_B1+"','"+p_init_cushion_B2+"','"+p_init_cushion_C1+"','"+p_init_cushion_C2+"','"+ p_recog_back_A+"','"+
-                p_recog_back_B+"','"+p_recog_back_C+"','"+p_recog_back_D+"','"+p_recog_back_E+"','"+p_recog_back_F+"','"+ p_recog_back_G+"','"+
-                p_recog_back_H+"','"+p_recog_cushion_6+"','"+ p_recog_cushion_7+"','"+p_recog_cushion_8+"','"+ p_recog_cushion_A1+"','"+p_recog_cushion_A2+"','"+
-                p_recog_cushion_B1+"','"+p_recog_cushion_B2+"','"+p_recog_cushion_C1+"','"+ p_recog_cushion_C2+"','"+p_recog_back_1+"','"+p_recog_back_2+"','"+
-                p_recog_back_3+"','"+p_recog_back_4+"','"+p_recog_back_5+"','"+ p_adjust_cushion_6+"','"+ p_adjust_cushion_7+"','"+p_adjust_cushion_8+"','"+
-                p_adjust_cushion_1+"','"+p_adjust_cushion_2+"','"+ p_adjust_cushion_3+"','"+p_adjust_cushion_4+"','"+p_adjust_cushion_5+"','"+ m_gender+"','"+
-                m_national+"','"+m_weight+"','"+ m_height+"','"+strPSInfo+"','"+saveTime+"','"+dataType+"','"+
-                locationCtr+"','"+HeartRate+"','"+BreathRate+"','"+ E_Index+"','"+Dia_BP+"','"+ Sys_BP+"','"+
-                snr+"')";
+                DBContent.DeviceInfo.Columns.dataName+","+ DBContent.DeviceInfo.Columns.p_init_back_A+","+ DBContent.DeviceInfo.Columns.p_init_back_B+","+ DBContent.DeviceInfo.Columns.p_init_cushion+","+
+                DBContent.DeviceInfo.Columns.p_init_cushion_A1+","+ DBContent.DeviceInfo.Columns.p_init_cushion_A2+","+
+                DBContent.DeviceInfo.Columns.p_init_cushion_B1+","+ DBContent.DeviceInfo.Columns.p_init_cushion_B2+","+
+                DBContent.DeviceInfo.Columns.p_init_cushion_C1+","+ DBContent.DeviceInfo.Columns.p_init_cushion_C2+","+
+                DBContent.DeviceInfo.Columns.p_recog_back_A+","+ DBContent.DeviceInfo.Columns.p_recog_back_B+","+ DBContent.DeviceInfo.Columns.p_recog_back_C+","+ DBContent.DeviceInfo.Columns.p_recog_back_D+","+
+                DBContent.DeviceInfo.Columns.p_recog_back_E+","+ DBContent.DeviceInfo.Columns.p_recog_back_F+","+ DBContent.DeviceInfo.Columns.p_recog_back_G+","+ DBContent.DeviceInfo.Columns.p_recog_back_H+","+
+                DBContent.DeviceInfo.Columns.p_recog_back_1+","+ DBContent.DeviceInfo.Columns.p_recog_back_2+","+ DBContent.DeviceInfo.Columns.p_recog_back_3+","+ DBContent.DeviceInfo.Columns.p_recog_back_4+","+
+                DBContent.DeviceInfo.Columns.p_recog_back_5+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_6+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_7+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_8+","+
+                DBContent.DeviceInfo.Columns.p_recog_cushion_A1+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_A2+","+
+                DBContent.DeviceInfo.Columns.p_recog_cushion_B1+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_B2+","+
+                DBContent.DeviceInfo.Columns.p_recog_cushion_C1+","+ DBContent.DeviceInfo.Columns.p_recog_cushion_C2+","+
+                DBContent.DeviceInfo.Columns.p_adjust_cushion_1+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_2+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_3+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_4+","+
+                DBContent.DeviceInfo.Columns.p_adjust_cushion_5+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_6+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_7+","+ DBContent.DeviceInfo.Columns.p_adjust_cushion_8+","+
+                DBContent.DeviceInfo.Columns.m_gender+","+ DBContent.DeviceInfo.Columns.m_national+","+
+                DBContent.DeviceInfo.Columns.m_weight+","+ DBContent.DeviceInfo.Columns.m_height+","+
+                DBContent.DeviceInfo.Columns.strPSInfo+","+ DBContent.DeviceInfo.Columns.saveTime+","+
+                DBContent.DeviceInfo.Columns.dataType+","+ DBContent.DeviceInfo.Columns.loactionCtr+","+
+                DBContent.DeviceInfo.Columns.HeartRate+","+ DBContent.DeviceInfo.Columns.BreathRate+","+
+                DBContent.DeviceInfo.Columns.E_Index+","+ DBContent.DeviceInfo.Columns.Dia_BP+","+
+                DBContent.DeviceInfo.Columns.Sys_BP+","+ DBContent.DeviceInfo.Columns.Snr+ ")";
+        String sqlRight = "values('"+strID+"','"+strName+"','"+p_init_back_A+"','"+p_init_back_B+"','"+p_init_cushion+"','"+
+                p_init_cushion_A1+"','"+ p_init_cushion_A2+"','"+
+                p_init_cushion_B1+"','"+p_init_cushion_B2+"','"+
+                p_init_cushion_C1+"','"+p_init_cushion_C2+"','"+
+                p_recog_back_A+"','"+ p_recog_back_B+"','"+p_recog_back_C+"','"+p_recog_back_D+"','"+
+                p_recog_back_E+"','"+p_recog_back_F+"','"+ p_recog_back_G+"','"+ p_recog_back_H+"','"+
+                p_recog_back_1+"','"+ p_recog_back_2+"','"+p_recog_back_3+"','"+ p_recog_back_4+"','"+
+                p_recog_back_5+"','"+ p_recog_cushion_6+"','"+p_recog_cushion_7+"','"+p_recog_cushion_8+"','"+
+                p_recog_cushion_A1+"','"+p_recog_cushion_A2+"','"+
+                p_recog_cushion_B1+"','"+ p_recog_cushion_B2+"','"+
+                p_recog_cushion_C1+"','"+p_recog_cushion_C2+"','"+
+                p_adjust_cushion_1+"','"+ p_adjust_cushion_2+"','"+p_adjust_cushion_3+"','"+ p_adjust_cushion_4+"','"+
+                p_adjust_cushion_5+"','"+ p_adjust_cushion_6+"','"+p_adjust_cushion_7+"','"+p_adjust_cushion_8+"','"+
+                m_gender+"','"+ m_national+"','"+
+                m_weight+"','"+ m_height+"','"+
+                strPSInfo+"','"+saveTime+"','"+
+                dataType+"','"+ locationCtr+"','"+
+                HeartRate+"','"+BreathRate+"','"+
+                E_Index+"','"+Dia_BP+"','"+
+                Sys_BP+"','"+ snr+"')";
         String strSql = sqlLeft+sqlRight;
         try {
             int iResult = statement.executeUpdate(strSql);

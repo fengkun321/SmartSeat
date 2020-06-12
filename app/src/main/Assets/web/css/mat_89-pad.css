@@ -1,0 +1,84 @@
+html,body{
+    width:100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    font-family:Helvetica;
+    overflow: hidden;
+    background: #0f375f;
+}
+.background {
+    position: absolute;
+    width: 100%;
+    padding: 1px;
+    /*z-index: 3;*/
+}
+
+.background table {
+    padding:0px;
+    border-collapse: collapse;
+    width: 280px;
+    height: 250px;
+    margin: auto;
+  /*  background:white;*/
+  +
+
+
+    /*z-index: 3;*/
+}
+.background table  td{
+    border-collapse: collapse;
+    height: auto;
+    margin: auto;
+    /*z-index: 3;*/
+}
+.background .lines td {
+    border: 0.5px solid #bdbdbd;
+}
+
+.background .lines.border td {
+    border-bottom: 2px solid #14c8d4;
+}
+
+.background .lines.center td {
+    border-bottom: 2px dashed #14c8d4;
+}
+div{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+div.container{
+    width: 100%;
+    height: 100%;
+    min-height: 250px;
+    min-width: 280px;
+    position: relative;
+ /*   background:url("../images/bg.png") no-repeat center;*/
+  /*  background: white; */
+    background-size:100% 100%;
+}
+div.container .subject{
+    position: relative;
+    float:left;
+    width: 100%;
+    margin: auto;
+    /*height: 100%;*/
+    height: 250px;
+    /*min-height: 550px;*/
+    /*max-height: 900px;*/
+    min-width: 280px;
+    max-width: 300px;
+    /*border:1px solid #fff;*/
+    overflow: hidden;
+}
+
+div.subject .canvas{
+    width: 280px;
+    height: 250px;
+    /*background: #598abb;*/
+    border:1px solid #1a3d64;
+    box-sizing: content-box;
+    margin:0 auto;
+    padding:0;
+}

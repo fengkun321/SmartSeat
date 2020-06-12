@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <!-- 国产浏览器采用webkit 内核渲染-->
+    <meta name="renderer" content="webkit">
+    <!-- 让 IE 浏览器运行最新的渲染模式-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes"/>
+    <title>人体压力测试垫</title>
+    <link rel="stylesheet" id="css" href="../css/mat_89-pad.css"/>
+</head>
+<body>
+<div class="container">
+    <div class="subject">
+            <div class="background">
+                <table id="bg_table" class="">
+                    <tr class="lines">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="lines">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="lines">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="lines">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="lines">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="lines">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="lines">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="lines">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="canvas"></div>
+    </div>
+</div>
+<script src="../js/jquery-3.3.1.min.js"></script>
+<script src="../js/heatmap.js"></script>
+<script type="text/javascript">
+    //热力图初始化
+    var heatMapInstance = h337.create({
+        container: document.querySelector('.canvas'), radius: 31, gradient: {
+            '0.10': '#0f375f',
+            '0.20': '#349aff',
+            '0.25': '#2447ae',
+            '0.30': '#1d3a8e',
+            '0.35': '#00a37f',
+            '0.40': '#00c004',
+            '0.45': '#8ed248',
+            '0.55': '#ffff01',
+            '0.65': '#ffbe00',
+            '0.75': '#ff7e00',
+         //  '0.85': '#ff7e00',
+            '0.85': '#fe0007',
+            '0.95': '#e50006',
+            '1.0': '#b20005'
+
+        },
+        opacity: 0.8
+    });
+
+    /***
+     * 获取数据的方法
+     *
+     * @param sourceData 可能是二维数组26*26 或者 二维数组26*26的字符串
+     */
+
+    var width=280;
+    var height=250;
+    var count_t = 0;
+    var heatMap_max = 80;//定义压力最大值
+    function getData(sourceData) {
+        count_t++;
+        var objData = typeof(sourceData) === "string" ? JSON.parse(sourceData) : sourceData;
+    //    document.getElementById("test").innerHTML = count_t;
+        var points = [];
+        //注意这里的遍历顺序
+        for (var i = 0; i < 9; i++) {
+            for (var j = 0; j < 8; j++) {
+                var val = objData[j][i];
+                var point = {
+                    x: i * width / 8,
+                    y: j * height / 7,
+                    value: val
+                };
+                points.push(point);
+            }
+        }
+
+        var pointsData = {
+            max: heatMap_max,
+            data: points
+        };
+        heatMapInstance.setData(pointsData);
+    }
+</script>
+</body>
+</html>

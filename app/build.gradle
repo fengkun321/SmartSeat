@@ -60,6 +60,8 @@ android {
         }
     }
     sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/2'] } }
+    sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] } }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -67,6 +69,10 @@ android {
     packagingOptions {
         pickFirst 'lib/armeabi-v7a/libc++_shared.so'
         pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        exclude 'META-INF/*'
+        exclude 'META-INF/NOTICE' // will not include NOTICE file
+        exclude 'META-INF/LICENSE' // will not include LICENSE file
+        exclude 'META-INF/INDEX.LIST' // will not include INDEX.LIST file
     }
 }
 
@@ -113,7 +119,10 @@ dependencies {
 
     implementation files('libs/mysql-connector-java-5.1.47.jar')
 
-//    implementation files('libs/zxing.jar')
 
+    implementation files('libs/jama-1.0.3.jar')
+    implementation files('libs/matx-7.0.jar')
+    implementation files('libs/netty-all-4.1.29.Final.jar')
+//    implementation files('libs/fastjson-1.2.58.jar')
 
 }
