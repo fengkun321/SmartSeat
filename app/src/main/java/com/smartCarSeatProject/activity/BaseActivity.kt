@@ -19,6 +19,7 @@ import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import com.smartCarSeatProject.view.LoadingDialog
 import com.smartCarSeatProject.view.ProgressBarWindowHint
 import com.umeng.analytics.MobclickAgent
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 
@@ -48,6 +49,8 @@ open class BaseActivity : AppCompatActivity(){
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN) //隐藏状态栏
 //        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN) //显示状态栏
 
+
+
     }
 
     fun ToastMsg(msg : String) {
@@ -66,6 +69,11 @@ open class BaseActivity : AppCompatActivity(){
     public override fun onPause() {
         super.onPause()
         MobclickAgent.onPause(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
     }
 
     // 性别-男
@@ -158,6 +166,7 @@ open class BaseActivity : AppCompatActivity(){
 
     /** 释放A面气压，B面保持不动 */
     protected fun releaseAPress() {
+
         // 需要将A面的气袋全部泄气，要先发按摩，然后发off
         val strSendData0 = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
         SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData0)

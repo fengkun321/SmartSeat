@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.ProgressBar;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.smartCarSeatProject.R;
+import com.smartCarSeatProject.data.AreaAnalysis;
 import com.yotlive.matx.MatXDataMessage;
 import com.yotlive.matx.MatXService;
 import com.yotlive.matx.MatXStateMessage;
@@ -28,8 +30,6 @@ import com.yotlive.matx.MatXStateMessage;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import static com.yotlive.android_demo.YotliveMainActivity.TAG;
 
 
 public class PressureDisplay extends Activity {
@@ -42,7 +42,7 @@ public class PressureDisplay extends Activity {
     public static AlertDialog.Builder builder;
     public static AlertDialog dialog;
     public static StringBuffer message;
-
+    public static  String TAG = "PressureDisplay";
     // MatX service properties.
     private MatXService.MatXServiceBinder mBinder;
     private ServiceConnection conn = new ServiceConnection(){
@@ -77,10 +77,6 @@ public class PressureDisplay extends Activity {
             case 11006: // disconnected (note: disconnection is confirmed only when heartbeat in LAN is lost)
                 break;
             default:
-//                message.setLength(0);
-//                message.append(msg.getMessage());
-//                dialog.setMessage("device:"+msg.getDeviceCode()+"---"+message);
-//                dialog.show();
                 break;
         }
     }
@@ -121,17 +117,14 @@ public class PressureDisplay extends Activity {
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         spinner.setVisibility(ProgressBar.VISIBLE);
-
         // Bind service and register event bus.
         final Intent intent = new Intent(this, MatXService.class);
         bindService(intent, conn, Context.BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
-
         // To show dialogs.
         message  =  new StringBuffer(256);
         builder = new AlertDialog.Builder(this);
         dialog = builder.create();
-
         // Hide the keyboard.
         try {
             InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -139,7 +132,6 @@ public class PressureDisplay extends Activity {
         } catch (Exception e) {
             // Do nothing if the keyboard is not present.
         }
-
         mWebView.loadUrl("file:///android_asset/web/html/mat_89.html");
     }
 
@@ -176,21 +168,25 @@ public class PressureDisplay extends Activity {
             spinner.setVisibility(ProgressBar.GONE);
         }
 
-        Log.d(TAG, Integer.toString(data.length) + "---" + Integer.toString(data[0].length));
+        Log.d(TAG, Integer.toString(data.length) + "---" +Integer.toString(data[0].length));
 
         final JSONArray jsonArray = new JSONArray();
-     //   Random rand =new Random(25);
-      //  int i = 0;
+        //   Random rand =new Random(25);
+        //  int i = 0;
         for (int param1Int = 0; param1Int < data.length; param1Int++) {
             JSONArray jSONArray1 = new JSONArray();
             for (byte b = 0; b < data[param1Int].length; b++) {
                 jSONArray1.add(Integer.valueOf(data[param1Int][b]));
-             //   i = rand.nextInt(45);
-             //   jSONArray1.add(i);
+                //   i = rand.nextInt(45);
+                //   jSONArray1.add(i);
             }
             jsonArray.add(jSONArray1);
         }
         Log.d(TAG,"random : "+jsonArray.toJSONString());
+
+        AreaAnalysis areaAnalysis = new AreaAnalysis(data,0);
+
+
         runOnUiThread(new Runnable() {
             public void run() {
                 StringBuilder stringBuilder = new StringBuilder();

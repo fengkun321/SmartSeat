@@ -1,9 +1,9 @@
-package com.yotlive.android_demo;
+package com.smartCarSeatProject.data;
 
 /**
  * Calculate and store some statistics of pressure data by areas (8*9 resolution).
  */
-class AreaAnalysis{
+public class AreaAnalysis {
     public double a1;
     public double a2;
     public double b1;
@@ -91,5 +91,13 @@ class AreaAnalysis{
         if(c2Points != 0){
             c2 = c2/c2Points;
         }
+
+        a1 = Double.parseDouble(String.format("%.1f",a1));
+        a2= Double.parseDouble(String.format("%.1f",a2));
+        b1 = Double.parseDouble(String.format("%.1f",b1));
+        b2 = Double.parseDouble(String.format("%.1f",b2));
+        c1 = Double.parseDouble(String.format("%.1f",c1));
+        c2 = Double.parseDouble(String.format("%.1f",c2));
+
     }
 }

@@ -25,9 +25,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
 import com.smartCarSeatProject.R;
+import com.yotlive.matx.MatXDataMessage;
 import com.yotlive.matx.MatXService;
 import com.yotlive.matx.MatXStateMessage;
 
@@ -36,7 +39,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 
-public class YotliveMainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
     static String TAG = "Yotlive";
     EditText etPassword;
     Button btn1, btn2;
@@ -147,7 +150,7 @@ public class YotliveMainActivity extends AppCompatActivity {
 
         dataBuffer = new StringBuffer(2304);
         message  =  new StringBuffer(256);
-        builder = new AlertDialog.Builder(YotliveMainActivity.this);
+        builder = new AlertDialog.Builder(MainActivity.this);
         dialog = builder.create();
 
         // To make Wifi manager work.
@@ -200,33 +203,62 @@ public class YotliveMainActivity extends AppCompatActivity {
                 Log.d(TAG, Integer.toString(snum));
                 if (snumTxt.getText().toString().trim().length() != 0) {
                     snum = Integer.valueOf(snumTxt.getText().toString());
-
-                    // Force the orientation to landscape when switching to WebView.
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                    // Hide the status bar.
-                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                    // Hide the keyboard.
-                    try {
-                        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                    } catch (Exception e) {
-                        // Do nothing if the keyboard is not present.
-                    }
-
-                    // Connect the device.
-                    // Once connected, a code will be returned from eventbus. Then mBinder.startSampling will be
-                    // called. You can move it to another action to receive data.
                     mBinder.startSampling(snum);
 
-                    // Go to the display activity.
-                    Intent display_intent = new Intent(getApplicationContext(),
-                            PressureDisplay.class);
-                    display_intent.putExtra("product_id", snum);
-                    startActivity(display_intent);
+                    // Force the orientation to landscape when switching to WebView.
+//                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    // Hide the status bar.
+//                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//                    // Hide the keyboard.
+//                    try {
+//                        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+//                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+//                    } catch (Exception e) {
+//                        // Do nothing if the keyboard is not present.
+//                    }
+//
+//                    // Connect the device.
+//                    // Once connected, a code will be returned from eventbus. Then mBinder.startSampling will be
+//                    // called. You can move it to another action to receive data.
+//                    mBinder.startSampling(snum);
+//
+//                    // Go to the display activity.
+//                    Intent display_intent = new Intent(getApplicationContext(),
+//                            PressureDisplay.class);
+//                    display_intent.putExtra("product_id", snum);
+//                    startActivity(display_intent);
                 }
             }
         });
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void showData(MatXDataMessage msg){
+        int code = msg.getDeviceCode();
+        if(snum == code){
+            displayData(msg.getData());
+        }
+    }
+
+    // To display data using html.
+    private void displayData(int[][] data) {
+
+        Log.d(TAG, Integer.toString(data.length) + "---" + Integer.toString(data[0].length));
+
+        final JSONArray jsonArray = new JSONArray();
+        //   Random rand =new Random(25);
+        //  int i = 0;
+        for (int param1Int = 0; param1Int < data.length; param1Int++) {
+            JSONArray jSONArray1 = new JSONArray();
+            for (byte b = 0; b < data[param1Int].length; b++) {
+                jSONArray1.add(Integer.valueOf(data[param1Int][b]));
+                //   i = rand.nextInt(45);
+                //   jSONArray1.add(i);
+            }
+            jsonArray.add(jSONArray1);
+        }
+        Log.d(TAG, "random : " + jsonArray.toJSONString());
     }
 
     @Override

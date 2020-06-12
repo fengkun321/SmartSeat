@@ -129,7 +129,7 @@
 
 
         <activity
-            android:name="com.yotlive.android_demo.YotliveMainActivity"
+            android:name="com.yotlive.android_demo.MainActivity"
             android:screenOrientation="landscape">
         </activity>
         <activity

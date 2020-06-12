@@ -23,10 +23,13 @@ class DeviceWorkInfo : Serializable{
     // 缓存刚识别完成后人体的数据
     var recog_back_A_valueList = arrayListOf<String>() // 8个
     var recog_back_B_valueList = arrayListOf<String>() // 8个
+
+    // 当前座垫压力值
+    var cushion_now_valueList = arrayListOf<Double>() // 6个
     // 初始化完成后最初的座垫压力值
-    var init_cushion_valueList = arrayListOf<Int>() // 6个
+    var init_cushion_valueList = arrayListOf<Double>() // 6个
     // 缓存刚识别完成后座垫的压力值
-    var recog_cushion_valueList = arrayListOf<Int>() // 6个
+    var recog_cushion_valueList = arrayListOf<Double>() // 6个
 
     /**
      * 自动模式的进度
@@ -110,8 +113,9 @@ class DeviceWorkInfo : Serializable{
         }
 
         for (i in 1..6) {
-            init_cushion_valueList.add(0)
-            recog_cushion_valueList.add(0)
+            init_cushion_valueList.add(0.0)
+            recog_cushion_valueList.add(0.0)
+            cushion_now_valueList.add(0.0)
         }
 
         iNowAutoProgress = 0

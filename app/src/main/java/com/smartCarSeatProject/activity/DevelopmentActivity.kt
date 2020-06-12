@@ -49,9 +49,13 @@ import com.smartCarSeatProject.dao.RemoteSQLInfo
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import com.smartCarSeatProject.utl.DateUtil
 import com.smartCarSeatProject.view.AddMenuWindowDialog
+import com.yotlive.matx.MatXDataMessage
 import kotlinx.android.synthetic.main.layout_b_dmcm.*
 import kotlinx.android.synthetic.main.layout_develop.tvReCanConnect
 import kotlinx.android.synthetic.main.layout_em_info.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONArray
 import org.opencv.core.Point
 import java.util.*
@@ -98,6 +102,8 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         AnuLogUtil.setShowLog(BuildConfig.DEBUG)
         MNNMonitor.setMonitorEnable(false)
         initNuralogixInfo()
+
+        EventBus.getDefault().register(this)
 
     }
 
@@ -390,6 +396,14 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
                                 btnInitValue.isEnabled = false
                                 btnInitValue.setTextColor(resources.getColor(R.color.black1))
                                 SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+                                // 缓存当前座椅的6个压力值
+                                nowDevelopDataInfo.p_init_cushion_A1 =  includeCushionA1.tvValueA.text.toString()
+                                nowDevelopDataInfo.p_init_cushion_A2 =  includeCushionA2.tvValueA.text.toString()
+                                nowDevelopDataInfo.p_init_cushion_B1 =  includeCushionB1.tvValueA.text.toString()
+                                nowDevelopDataInfo.p_init_cushion_B2 =  includeCushionB2.tvValueA.text.toString()
+                                nowDevelopDataInfo.p_init_cushion_C1 =  includeCushionC1.tvValueA.text.toString()
+                                nowDevelopDataInfo.p_init_cushion_C2 =  includeCushionC2.tvValueA.text.toString()
+
                             }
                         }
                         // 控制某路气袋的返回
@@ -585,6 +599,10 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         includeA.tvInitValue.visibility = View.VISIBLE
         includeA.tvInitValue.setTextColor(resources.getColor(R.color.colorWhite))
 
+
+        nowDevelopDataInfo.initData()
+        iNowSelectNumber = -1
+
         // 保存体征按钮，不可用
         changCameraState(false)
 
@@ -616,8 +634,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         tvShouSuo.text = "0"
         tvHuXiLv.text = "0"
 
-        nowDevelopDataInfo.initData()
-        iNowSelectNumber = -1
+
 
     }
 
@@ -696,15 +713,13 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         // 初始化坐垫3组气压
         nowDevelopDataInfo.p_init_cushion = strVSeat
 
-        // 初始化的6个座垫压力值在广播中已经获取到！
-        //
         // 这里只保存识别后的6个座垫压力值
-        nowDevelopDataInfo.p_recog_cushion_A1 =  includeCushionA1.tvValueA.text.toString()
-        nowDevelopDataInfo.p_recog_cushion_A2 =  includeCushionA2.tvValueA.text.toString()
-        nowDevelopDataInfo.p_recog_cushion_B1 =  includeCushionB1.tvValueA.text.toString()
-        nowDevelopDataInfo.p_recog_cushion_B2 =  includeCushionB2.tvValueA.text.toString()
-        nowDevelopDataInfo.p_recog_cushion_C1 =  includeCushionC1.tvValueA.text.toString()
-        nowDevelopDataInfo.p_recog_cushion_C2 =  includeCushionC2.tvValueA.text.toString()
+        nowDevelopDataInfo.p_recog_cushion_A1 =  recogValueListByCushion[0].toString()
+        nowDevelopDataInfo.p_recog_cushion_A2 =  recogValueListByCushion[1].toString()
+        nowDevelopDataInfo.p_recog_cushion_B1 =  recogValueListByCushion[2].toString()
+        nowDevelopDataInfo.p_recog_cushion_B2 =  recogValueListByCushion[3].toString()
+        nowDevelopDataInfo.p_recog_cushion_C1 =  recogValueListByCushion[4].toString()
+        nowDevelopDataInfo.p_recog_cushion_C2 =  recogValueListByCushion[5].toString()
 
         // 识别后靠背A面8组
         nowDevelopDataInfo.p_recog_back_A =  recogBackPressABufferListByProbe[3].toString()
@@ -844,9 +859,25 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
             val iValue = it/iSize
             iMeanList.add(iValue)
         }
-
         recogBackPressABufferListByProbe.clear()
         recogBackPressABufferListByProbe.addAll(iMeanList)
+
+        // 2,计算座垫压力平均值
+        val iCushionSize = statCushionValueListBySeat.size
+        var iCushionSumList = arrayListOf<Double>(0.0,0.0,0.0,0.0,0.0,0.0)
+        statCushionValueListBySeat.forEach { it0 ->
+            for (iNumber in 0 .. 5) {
+                iCushionSumList[iNumber] += (it0[iNumber].toDouble())
+            }
+        }
+        // 再将每个字段总和算平均值
+        var iCushionMeanList = arrayListOf<Double>()
+        iCushionSumList.forEach {
+            val iValue = it/iCushionSize
+            iCushionMeanList.add(iValue)
+        }
+        recogValueListByCushion.clear()
+        recogValueListByCushion.addAll(iCushionSumList)
 
     }
 
@@ -1028,6 +1059,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         if (btnSaveA.isEnabled) {
                             // 同时收集A面气袋的数据 fixme
                             statPressABufferListByProbe.clear()
+                            statCushionValueListBySeat.clear()
                         }
                         startMeasurement()
                     }
@@ -1402,6 +1434,44 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
         destoryCamera()
 
+        EventBus.getDefault().unregister(this)
+
+    }
+
+    // 座垫相关压力值
+    // 检测人体的同时缓存座垫压力值
+    var statCushionValueListBySeat = arrayListOf<ArrayList<Double>>()
+    // 30秒检测后的A面的平均气压值
+    var recogValueListByCushion = arrayListOf<Double>()
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun showData(msg: MatXDataMessage) {
+        val code = msg.deviceCode
+        if (MenuSelectActivity.CuShionSnum == code) {
+            val areaAnalysis = AreaAnalysis(msg.data,0)
+
+            mHandler.post {
+                includeCushionA1.tvValueA.text =  areaAnalysis.a1.toString()
+                includeCushionA2.tvValueA.text =  areaAnalysis.a2.toString()
+                includeCushionB1.tvValueA.text =  areaAnalysis.b1.toString()
+                includeCushionB2.tvValueA.text =  areaAnalysis.b2.toString()
+                includeCushionC1.tvValueA.text =  areaAnalysis.c1.toString()
+                includeCushionC2.tvValueA.text =  areaAnalysis.c2.toString()
+            }
+
+            if (btnSaveA.isEnabled) {
+                var valueList = arrayListOf<Double>()
+                valueList.add(areaAnalysis.a1)
+                valueList.add(areaAnalysis.a2)
+                valueList.add(areaAnalysis.b1)
+                valueList.add(areaAnalysis.b2)
+                valueList.add(areaAnalysis.c1)
+                valueList.add(areaAnalysis.c2)
+                statCushionValueListBySeat.add(valueList)
+            }
+
+
+
+        }
     }
 
 

@@ -31,17 +31,28 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.ValueCallback
+import android.webkit.WebSettings
+import android.webkit.WebViewClient
 import android.widget.RelativeLayout
 import android.widget.Toast
 import com.ai.nuralogix.anura.sample.face.MNNFaceDetectorAdapter
 import com.ai.nuralogix.anura.sample.utils.BundleUtils
 import com.alibaba.android.mnnkit.monitor.MNNMonitor
+import com.alibaba.fastjson.JSON
 import com.smartCarSeatProject.BuildConfig
 import com.smartCarSeatProject.R
-import com.smartCarSeatProject.data.*
+import com.smartCarSeatProject.data.BaseVolume
+import com.smartCarSeatProject.data.DataAnalysisHelper
+import com.smartCarSeatProject.data.DeviceWorkInfo
+import com.smartCarSeatProject.data.SeatStatus
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import com.smartCarSeatProject.view.AreaAddWindowHint
+import com.yotlive.matx.MatXDataMessage
 import kotlinx.android.synthetic.main.layout_control.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONArray
 import org.opencv.core.Point
 import java.util.*
@@ -94,6 +105,9 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
         AnuLogUtil.setShowLog(BuildConfig.DEBUG)
         MNNMonitor.setMonitorEnable(false)
         initNuralogixInfo()
+
+        EventBus.getDefault().register(this)
+        initWebView()
 
     }
 
@@ -222,6 +236,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
 //                rlCamera.y = rlCamera.y - 300
                 DataAnalysisHelper.deviceState.iNowAutoProgress = 0
                 changeSeatState(SeatStatus.develop.iValue)
+
                 startActivity(Intent(this,DevelopmentActivity::class.java))
                 finish()
             }
@@ -1184,8 +1199,49 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
             mactivityManager?.destroyActivity(strActivity, true)
         }
 
+        EventBus.getDefault().unregister(this)
+
     }
 
+    /** 初始化webview，用于显示座垫图 */
+    private fun initWebView() {
+        mWebView.setWebViewClient(WebViewClient())
+        val webSettings: WebSettings = mWebView.getSettings()
+        webSettings.javaScriptEnabled = true
+        mWebView.loadUrl("file:///android_asset/web/html/mat_89.html")
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun showData(msg: MatXDataMessage) {
+        val code = msg.deviceCode
+        if (MenuSelectActivity.CuShionSnum == code) {
+            val jsonArray = com.alibaba.fastjson.JSONArray()
+            //   Random rand =new Random(25);
+            //  int i = 0;
+            //   Random rand =new Random(25);
+            //  int i = 0;
+
+            val data = msg.data
+
+            for (param1Int in data.indices) {
+                val jSONArray1 = com.alibaba.fastjson.JSONArray()
+                for (b in data[param1Int].indices) {
+                    jSONArray1.add(Integer.valueOf(data.get(param1Int).get(b)))
+                    //   i = rand.nextInt(45);
+                    //   jSONArray1.add(i);
+                }
+                jsonArray.add(jSONArray1)
+            }
+
+            mHandler.post {
+                val stringBuilder = StringBuilder()
+                stringBuilder.append("getData('")
+                stringBuilder.append(JSON.toJSONString(jsonArray))
+                stringBuilder.append("')")
+                mWebView.evaluateJavascript(stringBuilder.toString(), ValueCallback<String?> { })
+            }
+        }
+    }
 
 
 

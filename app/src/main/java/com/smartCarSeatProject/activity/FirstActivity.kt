@@ -4,7 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import com.yotlive.android_demo.YotliveMainActivity
+import com.yotlive.android_demo.MainActivity
 
 
 class FirstActivity : BaseActivity() {
@@ -26,7 +26,7 @@ class FirstActivity : BaseActivity() {
             startPermissionsActivity()
         } else {
             startActivity(Intent(this, WelcomeActivity::class.java))
-//            startActivity(Intent(this, YotliveMainActivity::class.java))
+//            startActivity(Intent(this, MainActivity::class.java))
 //            startActivity(Intent(this, TestActivity::class.java))
 //            startActivity(Intent(this, MenuSelectActivity::class.java))
             finish()
@@ -45,7 +45,7 @@ class FirstActivity : BaseActivity() {
             finish()
         } else {
             startActivity(Intent(this, WelcomeActivity::class.java))
-//            startActivity(Intent(this, YotliveMainActivity::class.java))
+//            startActivity(Intent(this, MainActivity::class.java))
 //            startActivity(Intent(this, TestActivity::class.java))
 //            startActivity(Intent(this, MenuSelectActivity::class.java))
             finish()

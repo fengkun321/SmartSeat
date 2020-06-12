@@ -284,14 +284,20 @@
                     android:text="座垫体压分布"
                     android:textColor="@color/colorGreen"/>
 
-                <RelativeLayout
-                    android:layout_width="210dp"
-                    android:layout_height="180dp"
-                    android:background="@color/colorHui"
-                    android:layout_marginTop="20dp">
+                <android.support.design.widget.CoordinatorLayout
+                    android:layout_width="720px"
+                    android:layout_height="640px"
+                    android:orientation="vertical"
+                    android:id="@+id/layout2">
 
+                    <WebView
+                        android:id="@+id/mWebView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:rotation="-90"/>
 
-                </RelativeLayout>
+                </android.support.design.widget.CoordinatorLayout>
 
 
             </LinearLayout>

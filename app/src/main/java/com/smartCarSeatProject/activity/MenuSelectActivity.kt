@@ -17,17 +17,15 @@ import ai.nuralogix.anurasdk.views.TrackerView
 import ai.nuralogix.dfx.ChunkPayload
 import ai.nuralogix.dfx.Collector
 import ai.nuralogix.dfx.ConstraintResult
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.content.res.AssetFileDescriptor
+import android.content.*
 import android.media.MediaPlayer
 import android.net.ConnectivityManager
 import android.opengl.GLSurfaceView
 import android.os.Bundle
+import android.os.IBinder
 import android.os.SystemClock
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.ai.nuralogix.anura.sample.face.MNNFaceDetectorAdapter
@@ -41,12 +39,17 @@ import com.smartCarSeatProject.data.*
 import com.smartCarSeatProject.tcpInfo.SocketThreadManager
 import com.smartCarSeatProject.view.AreaAddWindowHint
 import com.smartCarSeatProject.wifiInfo.WIFIConnectionManager
+import com.yotlive.matx.MatXDataMessage
+import com.yotlive.matx.MatXService
+import com.yotlive.matx.MatXService.MatXServiceBinder
+import com.yotlive.matx.MatXStateMessage
 import kotlinx.android.synthetic.main.layout_menu.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONArray
 import org.opencv.core.Point
 import java.io.*
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, VideoSignalAnalysisListener, TrackerView.OnSizeChangedListener{
@@ -105,6 +108,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 //        mediaPlayer.isLooping = true // 循环播放
 //        mediaPlayer.prepare()
 //        mediaPlayer.start()
+
+        initYotlive()
 
     }
 
@@ -177,7 +182,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                                 }
                                 else {
                                     finish()
-                                    System.exit(0)
+//                                    System.exit(0)
                                 }
                             }
 
@@ -348,7 +353,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 }
                 else {
                     finish()
-                    System.exit(0)
+//                    System.exit(0)
                 }
             }
             else if (action == BaseVolume.BROADCAST_RESET_ACTION) {
@@ -507,7 +512,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_ALL_STOP_A_B)
                         loadingDialog.dismiss()
                         finish()
-                        System.exit(0)
+//                        System.exit(0)
                         return
                     }
 
@@ -535,7 +540,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 if (isControlShow) {
                     return
                 }
-                isGatherPressDataBuffer = false
+
                 val areaAddWindowHint = AreaAddWindowHint(mContext,R.style.Dialogstyle,"System",
                         object : AreaAddWindowHint.PeriodListener {
                             override fun refreshListener(string: String) {
@@ -616,6 +621,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             loadingDialog?.dismiss()
             progressBarWindowHint?.onSelfDismiss()
             ToastMsg("Initialized！")
+            // 座椅刚初始化完，同时保存座垫压力值
+            DataAnalysisHelper.deviceState.init_cushion_valueList = DataAnalysisHelper.deviceState.cushion_now_valueList
             // 提醒用户调整坐姿
             showKeepPosition()
         }
@@ -729,7 +736,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
         isGatherPressDataBuffer = false
         changeSeatState(SeatStatus.press_normal.iValue)
-        // 计算身高体重
+
         // 1,将收集的A面气压集合取平均值
         val iSize = statPressABufferListByProbe.size
         var iSumList = arrayListOf<Int>(0,0,0,0,0,0,0,0,0,0,0)
@@ -748,10 +755,26 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         // 用拿到的平均值，计算身高体重,同时记录缓存
         DataAnalysisHelper.deviceState.measureHeightWeight(iMeanList)
         isCheckedPersonInfo = true
-
         // 释放A面气压，B面保持不动
         releaseAPress()
 
+        // 2,计算座垫压力平均值
+        val iCushionSize = statCushionValueListBySeat.size
+        var iCushionSumList = arrayListOf<Double>(0.0,0.0,0.0,0.0,0.0,0.0)
+        statCushionValueListBySeat.forEach { it0 ->
+            for (iNumber in 0 .. 5) {
+                iCushionSumList[iNumber] += (it0[iNumber].toDouble())
+            }
+        }
+        // 再将每个字段总和算平均值
+        var iCushionMeanList = arrayListOf<Double>()
+        iCushionSumList.forEach {
+            val iValue = it/iCushionSize
+            iCushionMeanList.add(iValue)
+        }
+        // 缓存座垫压力平均值
+        DataAnalysisHelper.deviceState.recog_cushion_valueList.clear()
+        DataAnalysisHelper.deviceState.recog_cushion_valueList.addAll(iCushionMeanList)
 
     }
 
@@ -811,7 +834,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         }
                         else {
                             finish()
-                            System.exit(0)
+//                            System.exit(0)
                         }
                     }
 
@@ -873,6 +896,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
 
     override fun onDestroy() {
+        mBinder.stopSampling(CuShionSnum)
+        unbindService(conn)
         super.onDestroy()
 
         RemoteSQLInfo().cloaseRemoteSQL()
@@ -886,6 +911,13 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 //            return
 
         destoryCamera()
+
+
+        EventBus.getDefault().unregister(this)
+
+        System.exit(0)
+
+
     }
 
     /** 释放和终止摄像头控件 */
@@ -1147,8 +1179,14 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         // 处于正在检测
                         if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue) {
                             isGatherPressDataBuffer = true
+                            cancelled_tv.visibility = View.VISIBLE
                             // 同时收集A面气袋的数据 fixme
                             statPressABufferListByProbe.clear()
+                            // 座垫压力数据
+                            statCushionValueListBySeat.clear()
+                        }
+                        else {
+                            cancelled_tv.visibility = View.INVISIBLE
                         }
                         startMeasurement()
                     }
@@ -1186,7 +1224,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         cameraAdapter.lockFocus(true)
         firstFrameTimestamp = 0L
         trackerView.showMask(false)
-        trackerView.showMeasurementProgress(true)
+        trackerView.showMeasurementProgress(isGatherPressDataBuffer)
         trackerView.setMeasurementProgress(0.0f)
 
         state = STATE.MEASURING
@@ -1485,6 +1523,103 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         dfxPipe.updateStartUpConfig()
         trackerView.setFaceTargetBox(targetBox)
     }
+
+
+
+    /** ***********************座垫传感器相关************************* */
+
+    companion object{
+        // 座垫ID
+        var CuShionSnum: Int = 0
+    }
+
+    // 是否已经开始检测
+    var isStartSampling = false
+    // 检测人体的同时缓存座垫压力值，用于后面的体重，身高计算
+    var statCushionValueListBySeat = arrayListOf<ArrayList<Double>>()
+    private fun initYotlive() {
+        CuShionSnum = -1
+        EventBus.getDefault().register(this)
+        // Bind service and register event bus.
+        val intent = Intent(this, MatXService::class.java)
+        bindService(intent, conn, Context.BIND_AUTO_CREATE)
+
+
+    }
+
+    // MatX service properties.
+    private lateinit var mBinder: MatXServiceBinder
+    private val conn: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            mBinder = service as MatXServiceBinder
+            Log.e("MenuSelectActivity", "MenuSelectActivity --- onServiceConnected.")
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            Log.e("MenuSelectActivity", "MenuSelectActivity --- onServiceDisconnected.")
+        }
+    }
+
+    // Eventbus showing event notifications.
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun showMessageDialog(msg: MatXStateMessage) {
+        Log.e("MenuSelectActivity", "msg.state.code:${msg.state.code}")
+        val code = msg.state.code
+        when (code) {
+            10001 -> {
+                dialog.setMessage("已接入AP")
+                dialog.show()
+            }
+            10002 -> {
+                dialog.setMessage("正在配网")
+                dialog.show()
+            }
+            10003 -> {
+                dialog.setMessage("配网完成")
+                dialog.show()
+            }
+            10004 -> {
+            }
+            11000 ->                 // You can move this connection step to another place if you want to avoid auto connection.
+                mBinder.connect(msg.deviceCode)
+            11001 -> {
+                CuShionSnum = msg.deviceCode
+                // 连接成功，则开始通讯
+                if (!isStartSampling) {
+                    isStartSampling = true
+                    mBinder.startSampling(CuShionSnum)
+                    tvCushionState.text = "Cushion:$CuShionSnum connected"
+                }
+
+                Log.e("MenuSelectActivity", "device connected")
+            }
+            11006 -> {
+            }
+            else -> {
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun showData(msg: MatXDataMessage) {
+        val code = msg.deviceCode
+        if (CuShionSnum == code) {
+            val areaAnalysis = AreaAnalysis(msg.data,0)
+            DataAnalysisHelper.deviceState.cushion_now_valueList[0] = areaAnalysis.a1
+            DataAnalysisHelper.deviceState.cushion_now_valueList[1] = areaAnalysis.a2
+            DataAnalysisHelper.deviceState.cushion_now_valueList[2] = areaAnalysis.b1
+            DataAnalysisHelper.deviceState.cushion_now_valueList[3] = areaAnalysis.b2
+            DataAnalysisHelper.deviceState.cushion_now_valueList[4] = areaAnalysis.c1
+            DataAnalysisHelper.deviceState.cushion_now_valueList[5] = areaAnalysis.c2
+            // 当前正在检测压力值，则记录缓存
+            if (isGatherPressDataBuffer) {
+                statCushionValueListBySeat.add(DataAnalysisHelper.deviceState.cushion_now_valueList)
+            }
+
+
+        }
+    }
+
 
 
 }
