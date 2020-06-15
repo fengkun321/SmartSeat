@@ -21,6 +21,8 @@ class AreaAddWindowHint : Dialog, View.OnClickListener {
     private var listener: PeriodListener? = null
     private var defaultName = ""
     private var title: String? = null
+    private var strConfrim = ""
+    private var strCancel = ""
 
     private var mContext:Context? = null
 
@@ -68,6 +70,11 @@ class AreaAddWindowHint : Dialog, View.OnClickListener {
             cancelBtn!!.visibility = View.GONE
         }
 
+        if (!strCancel.equals(""))
+            cancelBtn?.text = strCancel
+        if (!strConfrim.equals(""))
+            confirmBtn?.text = strConfrim
+
 
         confirmBtn!!.setOnClickListener(this)
         cancelBtn!!.setOnClickListener(this)
@@ -96,6 +103,17 @@ class AreaAddWindowHint : Dialog, View.OnClickListener {
         if (tvContent != null) {
             tvContent!!.text = defaultName
         }
+    }
+
+    fun udpateBtnName(strConfrim:String,strCancel:String) {
+        this.strConfrim = strConfrim
+        this.strCancel = strCancel
+
+        if (confirmBtn != null)
+            confirmBtn?.text = strConfrim
+        if (cancelBtn != null)
+            cancelBtn?.text = strCancel
+
     }
 
     override fun onClick(v: View) {

@@ -125,7 +125,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
 
     fun initData() {
 //        val isMan = getBooleanBySharedPreferences(SEX_MAN)
-        val isMan = DataAnalysisHelper.deviceState.m_gender
+        val isMan = DataAnalysisHelper.deviceState.m_gender == 1
         val isCN = getBooleanBySharedPreferences(COUNTRY_CN)
         btnNan.tag = isMan
         btnNv.tag = !isMan
@@ -136,7 +136,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
         btnNv.setTextColor(getColor(R.color.black1))
         btnDongF.setTextColor(getColor(R.color.black1))
         btnXiF.setTextColor(getColor(R.color.black1))
-        DataAnalysisHelper.deviceState.m_gender = isMan
+        DataAnalysisHelper.deviceState.m_gender = 1
         DataAnalysisHelper.deviceState.m_national = isCN
         // 男
         if (isMan) {
@@ -186,7 +186,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
         if (cbAutoTiYa.isChecked) {
             // 根据男女，身高体重，获取气压表
             DataAnalysisHelper.deviceState.iNowAutoProgress = 3
-            val isMan = DataAnalysisHelper.deviceState.m_gender
+            val isMan = DataAnalysisHelper.deviceState.m_gender==1
             val isCN = DataAnalysisHelper.deviceState.m_national
             // 设置气压，并提示用户，正在自动调整
             val willCtrPressValue = DataAnalysisHelper.getInstance(mContext)?.getAutoCtrPressByPersonStyle(isMan,isCN)
@@ -351,6 +351,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
             3 -> {
                 cbAutoWeiZhi.setTextColor(mContext.getColor(R.color.colorWhite))
                 cbAutoTiYa.setTextColor(mContext.getColor(R.color.colorWhite))
+                imgBack.isEnabled = true
                 cbAutoWeiZhi.isEnabled = true
                 MainControlActivity.getInstance()?.changeLeftBtnTounch(true)
             }
@@ -358,19 +359,20 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                 cbAutoWeiZhi.setTextColor(mContext.getColor(R.color.colorWhite))
                 cbAutoTiYa.setTextColor(mContext.getColor(R.color.colorWhite))
                 cbJianKang.setTextColor(mContext.getColor(R.color.colorWhite))
+                imgBack.isEnabled = true
                 cbAutoTiYa.isEnabled = true
                 cbAutoWeiZhi.isEnabled = true
+                MainControlActivity.getInstance()?.changeLeftBtnTounch(true)
             }
             5 -> {
                 imgBack.isEnabled = true
-
                 cbAutoTiYa.setTextColor(mContext.getColor(R.color.colorWhite))
                 cbAutoWeiZhi.setTextColor(mContext.getColor(R.color.colorWhite))
                 cbJianKang.setTextColor(mContext.getColor(R.color.colorWhite))
                 cbAutoTiYa.isEnabled = true
                 cbAutoWeiZhi.isEnabled = true
                 cbJianKang.isEnabled = true
-
+                MainControlActivity.getInstance()?.changeLeftBtnTounch(true)
             }
         }
 
@@ -414,7 +416,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                 }
                 btnNan.tag = true
                 btnNv.tag = false
-                DataAnalysisHelper.deviceState.m_gender = true
+                DataAnalysisHelper.deviceState.m_gender = 1
                 btnNan.setTextColor(getColor(R.color.colorWhite))
                 btnNv.setTextColor(getColor(R.color.black1))
 //                saveBooleanBySharedPreferences(SEX_MAN,true)
@@ -425,7 +427,7 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                 }
                 btnNan.tag = false
                 btnNv.tag = true
-                DataAnalysisHelper.deviceState.m_gender = false
+                DataAnalysisHelper.deviceState.m_gender = 2
                 btnNan.setTextColor(getColor(R.color.black1))
                 btnNv.setTextColor(getColor(R.color.colorWhite))
 //                saveBooleanBySharedPreferences(SEX_MAN,false)

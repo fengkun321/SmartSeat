@@ -45,8 +45,8 @@ class DeviceWorkInfo : Serializable{
 
     // 位置调节
     var l_location = "1"
-    // 人员-性别 男
-    var m_gender = true
+    // 人员-性别 0:未知，1：男，2：女
+    var m_gender = 0
     // 人员-国别 东方
     var m_national = true
 

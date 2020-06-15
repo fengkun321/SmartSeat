@@ -677,7 +677,7 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                 "Please enter the name", object : SureSaveValueWindow.PeriodListener {
             override fun confirmListener(deviceWorkInfo : DeviceWorkInfo,strName: String) {
 
-                val isMan = deviceWorkInfo.m_gender
+                val isMan = deviceWorkInfo.m_gender == 1
                 val isCN = deviceWorkInfo.m_national
 
                 nowMemoryInfo = DevelopDataInfo()

@@ -21,9 +21,9 @@ class BaseVolume {
         const val WIFI_SIGN = "NoboSmartSeat"
 //        const val WIFI_SIGN = "TP-LINK_FK"
         // 拖拽进度条最小值
-        const val ProgressValueMin = 255
+        const val ProgressValueMin = 300
         // 拖拽进度条最大值
-        const val ProgressValueMax = 3600
+        const val ProgressValueMax = 3500
         // 气压最小值
         const val pressValueMin = 25
         // 气压最大值

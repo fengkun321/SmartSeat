@@ -67,6 +67,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
     var isGatherPressDataBuffer = false
     // 检测人体的同时缓存A面气压值，用于后面的体重，身高计算
     var statPressABufferListByProbe = arrayListOf<ArrayList<String>>()
+    lateinit var keepSeatWindowHint:AreaAddWindowHint
     // 流程：连接Can→ 调压模式，初始化 → 初始化完成后normal → 开始检测人体参数并缓存压力值 → 识别结束，计算身高体重 → 各个模式按钮亮起来！
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,7 +130,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         tvTitle.setOnLongClickListener {
             // 根据当前身高体重，得到16个通道的数据，并发送
             // 根据男女，身高体重，获取气压表
-            val isMan = DataAnalysisHelper.deviceState.m_gender
+            val isMan = DataAnalysisHelper.deviceState.m_gender == 1
             val isCN = getBooleanBySharedPreferences(COUNTRY_CN)
             val willCtrPressValue = DataAnalysisHelper.getInstance(mContext).getAutoCtrPressByPersonStyle(isMan,isCN)
             // 设置气压，并提示用户，正在自动调整
@@ -425,8 +426,12 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                             imgWIFI.visibility = View.GONE
                             tvReCanConnect.visibility = View.VISIBLE
                         }
-                        // 电源ON
-                        SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_ON)
+                        // 座椅状态属于初始化完成之前，则需要先on
+                        if(DataAnalysisHelper.deviceState.seatStatus < SeatStatus.press_reserve.iValue) {
+                            // 电源ON
+                            SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_ON)
+                        }
+
 //                        ToastMsg("Loc Connection successful！")
                     }
                 }
@@ -541,22 +546,28 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     return
                 }
 
-                val areaAddWindowHint = AreaAddWindowHint(mContext,R.style.Dialogstyle,"System",
-                        object : AreaAddWindowHint.PeriodListener {
-                            override fun refreshListener(string: String) {
-                                // 继续保持
-                                startTimerHoldSeat(true)
-                            }
-                            override fun cancelListener() {
-                                // 将座椅恢复到最初
-                                changeSeatState(SeatStatus.press_wait_reserve.iValue)
-                                defaultSeatState()
-                            }
-                        },"The seat is empty. Do you want to keep it?",false)
-                areaAddWindowHint?.show()
+                if (!this@MenuSelectActivity::keepSeatWindowHint.isInitialized) {
+                    keepSeatWindowHint = AreaAddWindowHint(mContext,R.style.Dialogstyle,"System",
+                            object : AreaAddWindowHint.PeriodListener {
+                                override fun refreshListener(string: String) {
+                                    // 继续保持
+                                    startTimerHoldSeat(true)
+                                }
+                                override fun cancelListener() {
+                                    // 将座椅恢复到最初
+                                    changeSeatState(SeatStatus.press_wait_reserve.iValue)
+                                    defaultSeatState()
+                                }
+                            },"The seat is empty. Do you want to keep it?",false)
+                }
+                if (!keepSeatWindowHint.isShowing)
+                    keepSeatWindowHint.show()
+
             }
         }
     }
+
+
 
     /**
      * 将座椅恢复到正在初始化状态，并重新调压，检测
@@ -734,7 +745,6 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
     /** 根据当前气压值，计算身高体重 */
     private fun checkHeightWeightByPress() {
 
-        isGatherPressDataBuffer = false
         changeSeatState(SeatStatus.press_normal.iValue)
 
         // 1,将收集的A面气压集合取平均值
@@ -1071,13 +1081,13 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     if (result.bpSystolic != 0)
                         DataAnalysisHelper.deviceState.Sys_BP = "${result.bpSystolic}"
                     if (result.gender != 0)
-                        DataAnalysisHelper.deviceState.m_gender = (result.heartRate == 1)
+                        DataAnalysisHelper.deviceState.m_gender = result.gender
                     if (result.brBp != 0.0f)
                         DataAnalysisHelper.deviceState.BreathRate = "${result.brBp}"
 
-                    if(result.gender == 1)
+                    if(DataAnalysisHelper.deviceState.m_gender == 1)
                         strGender = "男"
-                    else if(result.gender == 2)
+                    else if(DataAnalysisHelper.deviceState.m_gender == 2)
                         strGender = "女"
 
                     measureReuslt.text = "信噪比:${DataAnalysisHelper.deviceState.snr} & " +
@@ -1090,29 +1100,41 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
                     if (result.resultIndex + 1 >= MeasurementActivity.TOTAL_NUMBER_CHUNKS) {
 
-                        stopMeasurement(true)
 
                         Loge("MenuSelectActivity","人体数据：测量结束！开始计算身高体重")
                         if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue) {
                             // 人体数据，只要有一个值为0，就提示用户是否重新检测！
-                            if ((result.msi == 0.0f) || (result.bpDiastolic == 0) || (result.bpSystolic == 0) || (result.gender == 0) || (result.brBp == 0.0f)) {
+                            if (((DataAnalysisHelper.deviceState.E_Index).toFloat() <= 0.0f) || ((DataAnalysisHelper.deviceState.Dia_BP).toFloat() <= 0) || ((DataAnalysisHelper.deviceState.Sys_BP).toFloat() <= 0) ||
+                                    (result.gender == 0) || ((DataAnalysisHelper.deviceState.BreathRate).toFloat() <= 0.0f)) {
                                 val errorDialog = AreaAddWindowHint(mContext,R.style.Dialogstyle,"System",
                                         object : AreaAddWindowHint.PeriodListener {
                                             override fun refreshListener(string: String) {
+                                                isGatherPressDataBuffer = false
+                                                stopMeasurement(true)
+                                                cancelled_tv.visibility = View.INVISIBLE
+                                                checkHeightWeightByPress()
                                             }
                                             override fun cancelListener() {
-                                                checkHeightWeightByPress()
-                                                // 提醒用户检测完成
-//                                                showComplete()
+                                                cancelled_tv.visibility = View.VISIBLE
+                                                stopMeasurement(true)
                                             }
-                                        },"Data acquisition failure, whether to rebuild the detection?",false)
+                                        },"Data acquisition failed. Do you want to continue?",false)
+                                errorDialog.udpateBtnName("Next","Detection")
                                 errorDialog?.show()
                             }
                             else {
+                                isGatherPressDataBuffer = false
+                                cancelled_tv.visibility = View.INVISIBLE
+                                stopMeasurement(true)
                                 checkHeightWeightByPress()
                                 // 提醒用户检测完成
                                 showComplete()
                             }
+                        }
+                        else {
+                            isGatherPressDataBuffer = false
+                            stopMeasurement(true)
+                            cancelled_tv.visibility = View.INVISIBLE
                         }
                     }
 
@@ -1224,7 +1246,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         cameraAdapter.lockWhiteBalance(true)
         cameraAdapter.lockFocus(true)
         firstFrameTimestamp = 0L
-        trackerView.showMask(false)
+        trackerView.showMask(isGatherPressDataBuffer)
         trackerView.showMeasurementProgress(isGatherPressDataBuffer)
         trackerView.setMeasurementProgress(0.0f)
 
@@ -1251,8 +1273,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
         render.showHistograms(false)
         render.showFeatureRegion(false)
-        trackerView.showMask(true)
-        trackerView.showMeasurementProgress(false)
+        trackerView.showMask(isGatherPressDataBuffer)
+        trackerView.showMeasurementProgress(isGatherPressDataBuffer)
         trackerView.setMeasurementProgress(0.0f)
 
         if (stopResult) {

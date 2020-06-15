@@ -113,44 +113,49 @@ open class BaseActivity : AppCompatActivity(){
     }
 
 
-    var timer = Timer()
+    var timer:Timer? = Timer()
 
     /**
      * 启动/暂停 60秒检测是否有人
      */
     fun startTimerHoldSeat(isRun: Boolean) {
-        timer.cancel()
         if (!isRun) {
-            return
+            timer?.cancel()
+            timer = null
         }
-        timer = Timer()
-        timer.schedule(object : TimerTask() {
-            override fun run() {
-                // 座椅处于正在检测，此时需要判断A面气压
-                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue) {
-                    // 同时检测到人，则重新倒计时
-                    if (DataAnalysisHelper.deviceState.isCheckHavePerson() && isCheckHaveFace ) {
-                        startTimerHoldSeat(true)
-                    }
-                    else {
-                        // 座椅和人脸只要有一个没有检测到人，则提示用户，并重置座椅
-                        sendBroadcast(Intent(BaseVolume.BROADCAST_NO_HAVE_PERSON))
-                    }
-                }
-                // 座椅处于某种工作模式，只需要判断人脸
-                else {
-                    // 检测到人，则重新倒计时
-                    if (isCheckHaveFace ) {
-                        startTimerHoldSeat(true)
-                    }
-                    else {
-                        // 人脸没有检测到人，则提示用户，并重置座椅
-                        sendBroadcast(Intent(BaseVolume.BROADCAST_NO_HAVE_PERSON))
-                    }
-                }
+        else {
+            if (timer == null) {
+                timer = Timer()
+                timer?.schedule(object : TimerTask() {
+                    override fun run() {
+                        // 座椅处于正在检测，此时需要判断A面气压
+                        if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue) {
+                            // 同时检测到人，则重新倒计时
+                            if (DataAnalysisHelper.deviceState.isCheckHavePerson() && isCheckHaveFace ) {
+                                startTimerHoldSeat(true)
+                            }
+                            else {
+                                // 座椅和人脸只要有一个没有检测到人，则提示用户，并重置座椅
+                                sendBroadcast(Intent(BaseVolume.BROADCAST_NO_HAVE_PERSON))
+                            }
+                        }
+                        // 座椅处于某种工作模式，只需要判断人脸
+                        else {
+                            // 检测到人，则重新倒计时
+                            if (isCheckHaveFace ) {
+                                startTimerHoldSeat(true)
+                            }
+                            else {
+                                // 人脸没有检测到人，则提示用户，并重置座椅
+                                sendBroadcast(Intent(BaseVolume.BROADCAST_NO_HAVE_PERSON))
+                            }
+                        }
 
+                    }
+                }, 1000 * 5,30*1000) // 5s后执行第一次，之后按照30s一个周期运行
             }
-        }, 1000 * 30) // 设定指定的时间time,此处为60秒
+        }
+
     }
 
     protected var isCheckHaveFace = false

@@ -66,6 +66,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
     var NowShowViewNumber = 1
     var hashMapViews = HashMap<String, View>()
     var oldKeyList: MutableList<String> = ArrayList()
+    private lateinit var keepSeatWindowHint:AreaAddWindowHint
 
     // 设置过的通道的值
     var setValueBufferByChannel = HashMap<Int,String>()
@@ -228,7 +229,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                 switchActivityByNumber(3)
                 playOrPauseMedia("",false,0)
                 // 释放A面气压，B面保持不动
-                releaseAPress()
+//                releaseAPress()
             }
 
             R.id.imgLeft4 -> {
@@ -607,23 +608,27 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
             else if (action == BaseVolume.BROADCAST_RESULT_DATA_INFO) {
                 val strType = intent.getStringExtra(BaseVolume.BROADCAST_TYPE)
                 val deviceWorkInfo = intent.getSerializableExtra(BaseVolume.BROADCAST_MSG) as DeviceWorkInfo
+
             }
             // 检测到无人
             else if (action == BaseVolume.BROADCAST_NO_HAVE_PERSON) {
-                val areaAddWindowHint = AreaAddWindowHint(mContext,R.style.Dialogstyle,"System",
-                        object : AreaAddWindowHint.PeriodListener {
-                            override fun refreshListener(string: String) {
-                                // 继续保持
-                                startTimerHoldSeat(true)
-                            }
+                if (!this@MainControlActivity::keepSeatWindowHint.isInitialized) {
+                    keepSeatWindowHint = AreaAddWindowHint(mContext,R.style.Dialogstyle,"System",
+                            object : AreaAddWindowHint.PeriodListener {
+                                override fun refreshListener(string: String) {
+                                    // 继续保持
+                                    startTimerHoldSeat(true)
+                                }
 
-                            override fun cancelListener() {
-                                // 座椅恢复默认状态
-                                finish()
-                                sendBroadcast(Intent(BaseVolume.BROADCAST_RESET_ACTION))
-                            }
-                        },"The seat is empty. Do you want to keep it?",false)
-                areaAddWindowHint?.show()
+                                override fun cancelListener() {
+                                    // 座椅恢复默认状态
+                                    finish()
+                                    sendBroadcast(Intent(BaseVolume.BROADCAST_RESET_ACTION))
+                                }
+                            },"The seat is empty. Do you want to keep it?",false)
+                }
+                if (!keepSeatWindowHint.isShowing())
+                    keepSeatWindowHint?.show()
             }
             else if (action == BaseVolume.BROADCAST_PERSON_INFO) {
 
@@ -718,8 +723,6 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                     // 人体数据： id & 信噪比 & 心跳 & 情绪值 & 低压 & 高压
                     Loge("MenuSelectActivity","人体数据：id:${result.measurementID}&信噪比:${result.snr}&心跳:${result.heartRate}&情绪值:${result.msi}&低压:${result.bpDiastolic}&高压:${result.bpSystolic}")
                     DataAnalysisHelper.deviceState.snr = "${result.snr}"
-
-                    DataAnalysisHelper.deviceState.snr = "${result.snr}"
                     if (result.heartRate > 0)
                         DataAnalysisHelper.deviceState.HeartRate = "${result.heartRate}"
                     if (result.msi > 0.0f)
@@ -729,7 +732,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                     if (result.bpSystolic > 0)
                         DataAnalysisHelper.deviceState.Sys_BP = "${result.bpSystolic}"
                     if (result.gender > 0)
-                        DataAnalysisHelper.deviceState.m_gender = (result.heartRate == 1)
+                        DataAnalysisHelper.deviceState.m_gender = result.gender
                     if (result.brBp > 0.0f)
                         DataAnalysisHelper.deviceState.BreathRate = "${result.brBp}"
 

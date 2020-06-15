@@ -65,8 +65,14 @@ class SureSaveValueWindow : Dialog, View.OnClickListener {
     }
 
     private fun updateData() {
-        rbNan.isChecked = deviceWorkInfo.m_gender
-        rbNv.isChecked = !deviceWorkInfo.m_gender
+
+        rbNan.isChecked = deviceWorkInfo.m_gender == 1
+        rbNv.isChecked = deviceWorkInfo.m_gender == 2
+
+        if (deviceWorkInfo.m_gender == 0) {
+            rbNan.isChecked = true
+        }
+
         rbDongFang.isChecked = deviceWorkInfo.m_national
         rbXiFang.isChecked = !deviceWorkInfo.m_national
         edHeight.setText("${deviceWorkInfo.nowHeight}")
@@ -105,7 +111,7 @@ class SureSaveValueWindow : Dialog, View.OnClickListener {
                     return
                 }
 
-                deviceWorkInfo.m_gender = rbNan.isChecked
+                deviceWorkInfo.m_gender = if (rbNan.isChecked) 1 else 2
                 deviceWorkInfo.m_national = rbDongFang.isChecked
 
                 deviceWorkInfo.nowHeight = strHeight.toDouble()
