@@ -4,6 +4,8 @@ import ai.nuralogix.dfx.Face
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.AssetFileDescriptor
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
@@ -33,10 +35,18 @@ open class BaseActivity : AppCompatActivity(){
     // 是否已经检测过人体数据
     protected var isCheckedPersonInfo = false
     protected lateinit var mHandler:Handler
-
+    // 音频资源
+    lateinit var fd: AssetFileDescriptor
+    val mediaPlayer = MediaPlayer()
+    var timerPlayer:Timer? = Timer()
+    var nowPlayName = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        fd = assets.openFd("Alohal.mp3")
+        mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
+        mediaPlayer.isLooping = true // 循环播放
 
         mHandler = Handler()
 
@@ -186,6 +196,8 @@ open class BaseActivity : AppCompatActivity(){
             }
         }, (1 * 1000))
     }
+
+
 
 
 }

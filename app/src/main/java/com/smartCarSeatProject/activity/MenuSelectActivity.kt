@@ -18,6 +18,7 @@ import ai.nuralogix.dfx.ChunkPayload
 import ai.nuralogix.dfx.Collector
 import ai.nuralogix.dfx.ConstraintResult
 import android.content.*
+import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
 import android.net.ConnectivityManager
 import android.opengl.GLSurfaceView
@@ -50,6 +51,8 @@ import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONArray
 import org.opencv.core.Point
 import java.io.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, VideoSignalAnalysisListener, TrackerView.OnSizeChangedListener{
@@ -62,16 +65,19 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
     var isControlShow = false
     // 是否在退出应用
     var isExitApplication = false
-    val mediaPlayer = MediaPlayer()
     // 是否开始采集数据，用于计算身高体重
     var isGatherPressDataBuffer = false
     // 检测人体的同时缓存A面气压值，用于后面的体重，身高计算
     var statPressABufferListByProbe = arrayListOf<ArrayList<String>>()
     lateinit var keepSeatWindowHint:AreaAddWindowHint
+    // 座椅恢复初始化，先massage，massageoff，实现全部泄气
+    var isInitSeatOnMassageOff = false
     // 流程：连接Can→ 调压模式，初始化 → 初始化完成后normal → 开始检测人体参数并缓存压力值 → 识别结束，计算身高体重 → 各个模式按钮亮起来！
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_menu)
+
+        menuSelectActivity = this
 
         Tag = this.localClassName
 
@@ -103,12 +109,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         // 将座椅恢复到最初
         changeSeatState(SeatStatus.press_wait_reserve.iValue)
 
-        // 音频资源
-//        var fd = assets.openFd("Alohal.mp3")
-//        mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
-//        mediaPlayer.isLooping = true // 循环播放
-//        mediaPlayer.prepare()
-//        mediaPlayer.start()
+
 
         initYotlive()
 
@@ -214,16 +215,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             }
             R.id.btn3 -> {
                 gotoMainControlActivity(3)
-//                if (mediaPlayer.isPlaying)
-//                    mediaPlayer.stop()
-//                else {
-//                    mediaPlayer.reset()
-//                    var fd = assets.openFd("Alohal_release.mp3")
-//                    mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
-//                    mediaPlayer.isLooping = true // 循环播放
-//                    mediaPlayer.prepare()
-//                    mediaPlayer.start()
-//                }
+
 
 
             }
@@ -232,18 +224,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             }
             R.id.tvReCanConnect -> {
                 SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
-//                renderingVideoSink.start()
 
-//                if (mediaPlayer.isPlaying)
-//                    mediaPlayer.stop()
-//                else {
-//                    mediaPlayer.reset()
-//                    var fd = assets.openFd("Alohal.mp3")
-//                    mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
-//                    mediaPlayer.isLooping = true // 循环播放
-//                    mediaPlayer.prepare()
-//                    mediaPlayer.start()
-//                }
 
             }
             R.id.tvReLocConnect -> {
@@ -290,9 +271,24 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 //                changeSeatState(SeatStatus.press_automatic.iValue)
             }
             2 -> {
+                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue) {
+                    playOrPauseMedia("",false,0)
+                    // 释放A面气压，B面保持不动
+                    releaseAPress()
+                }
+
+
 //                changeSeatState(SeatStatus.press_manual.iValue)
             }
             3 -> {
+//                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue) {
+//                    DataAnalysisHelper.deviceState.iNowAutoProgress = 0
+//                    playOrPauseMedia("",false,0)
+//                    // 释放A面气压，B面保持不动
+//                    releaseAPress()
+//                }
+
+
 //                if (isCheckedPersonInfo)
 //                    changeSeatState(SeatStatus.press_normal.iValue)
 //                else {
@@ -308,6 +304,11 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 
             }
             4 -> {
+                if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue) {
+                    playOrPauseMedia("",false,0)
+                    // 释放A面气压，B面保持不动
+                    releaseAPress()
+                }
                 changeSeatState(SeatStatus.develop.iValue)
                 startActivity(Intent(this@MenuSelectActivity,DevelopmentActivity::class.java))
                 return
@@ -333,7 +334,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 if (netInfo != null && netInfo.isAvailable) {
                     // wifi网络
                     if (netInfo.type == ConnectivityManager.TYPE_WIFI) {
-//                        checkStartConnect()
+                        checkStartConnect()
                     } else if (netInfo.type == ConnectivityManager.TYPE_ETHERNET) {
                     } else if (netInfo.type == ConnectivityManager.TYPE_MOBILE) {
                     }// 3G网络
@@ -347,6 +348,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 startTimerHoldSeat(false)
                 // 如果连接已存在，则需要先泄气，再停止，最后断开连接，退出
                 if (SocketThreadManager.sharedInstance(mContext).isCanConnected()) {
+                    playOrPauseMedia("",false,0)
                     loadingDialog.showAndMsg("请稍后...")
                     isExitApplication = true
                     // 全部泄气1
@@ -360,6 +362,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             else if (action == BaseVolume.BROADCAST_RESET_ACTION) {
                 // 将座椅恢复到最初
                 changeSeatState(SeatStatus.press_wait_reserve.iValue)
+                playOrPauseMedia("",false,0)
                 defaultSeatState()
             }
             else if (action == BaseVolume.BROADCAST_TCP_INFO_CAN) {
@@ -464,52 +467,99 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 if (strType == BaseVolume.COMMAND_TYPE_CHANNEL_STATUS) {
                     // 正在初始化
                     if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_resume_reserve.iValue && SocketThreadManager.isCheckChannelState) {
-                        // 初始化控制A面所有，B面座垫678，通道充气，所以只需要判断678，abcdefgh这几个气袋
-                        var isAllNormal = true
-                        // A面所有气袋 abcdefgh
-                        for (iState in DataAnalysisHelper.deviceState.sensePressStatusList) {
-                            // 正在充气，说明还没完成
-                            if (iState == DeviceWorkInfo.STATUS_SETTING)
-                                return
-                            if (iState == DeviceWorkInfo.STATUS_SETTED)
-                                isAllNormal = false
-                        }
-                        for (iNumber in 5 .. 7) {
-                            val iState = DataAnalysisHelper.deviceState.controlPressStatusList[iNumber]
-                            // 正在充气，说明还没完成
-                            if (iState == DeviceWorkInfo.STATUS_SETTING)
-                                return
-                            if (iState == DeviceWorkInfo.STATUS_SETTED)
-                                isAllNormal = false
-                        }
+                        // massage off 泄气，虽然气袋全部恢复到了normall，但气袋其实还在泄气，所以将状态判断放到了气压值检测的事件里。
+                        if (isInitSeatOnMassageOff) {
+                            // 初始化控制A面所有，B面座垫12345678，通道充气，所以只需要判断12345678，abcdefgh这几个气袋
+                            var isAllNormal = true
+                            // A面所有气袋 abcdefgh
+                            for (iState in DataAnalysisHelper.deviceState.sensePressStatusList) {
+                                if (iState != DeviceWorkInfo.STATUS_NORMAL) {
+                                    isAllNormal = false
+                                    break
+                                }
+                            }
+                            for (iState in DataAnalysisHelper.deviceState.controlPressStatusList) {
+                                if (iState != DeviceWorkInfo.STATUS_NORMAL) {
+                                    isAllNormal = false
+                                    break
+                                }
+                            }
+                            // 当前处于massage off，且都已经变为normall，说明所有气袋都已经泄气完毕，则开始充气
+                            if (isAllNormal) {
 
-                        // 全部恢复到Normal
-                        if (!isAllNormal) {
-                            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
+                                // 虽然气袋全部恢复到了normall，但气袋其实还在泄气，所以延时10秒后执行充气
+//                                val timer = Timer()
+//                                timer?.schedule(object : TimerTask() {
+//                                    override fun run() {
+//                                        Log.e("default press","massage off 已全部完成，则开始充气")
+//                                        SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+//                                        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_ADJUST_A_B)
+//                                        // 座椅AB面气压恢复初始化！
+//                                        val sendDataList = CreateCtrDataHelper.getAllPressValueBy16("1000","1000","0")
+//                                        sendDataList.forEach {
+//                                            SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(it)
+//                                        }
+//                                        isInitSeatOnMassageOff = false
+//                                    }
+//                                }, (1 * 10000))
+
+                            }
+                            else {
+                                Log.e("default press","massage off 还未全部完成！！！")
+                            }
                         }
-                        // 已经全部恢复到Normal，则将座椅切到恢复成功状态
+                        // 正在恢复气压值
                         else {
-                            changeSeatState(SeatStatus.press_reserve.iValue)
-                            // 恢复Normal
-                            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
-                            SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+                            // 初始化控制A面所有，B面座垫12345678，通道充气，所以只需要判断12345678，abcdefgh这几个气袋
+                            var isAllNormal = true
+                            // A面所有气袋 abcdefgh
+                            for (iState in DataAnalysisHelper.deviceState.sensePressStatusList) {
+                                // 正在充气，说明还没完成
+                                if (iState == DeviceWorkInfo.STATUS_SETTING)
+                                    return
+                                if (iState == DeviceWorkInfo.STATUS_SETTED)
+                                    isAllNormal = false
+                            }
+                            for (iNumber in 0 .. 7) {
+                                val iState = DataAnalysisHelper.deviceState.controlPressStatusList[iNumber]
+                                // 正在充气，说明还没完成
+                                if (iState == DeviceWorkInfo.STATUS_SETTING)
+                                    return
+                                if (iState == DeviceWorkInfo.STATUS_SETTED)
+                                    isAllNormal = false
+                            }
 
+                            // 全部到了SETTED，则全部恢复到Normall
+                            if (!isAllNormal) {
+                                Log.e("default press","全部到了SETTED，则全部恢复到Normall！！！")
+                                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
+                            }
+                            // 已经全部恢复到Normal，则将座椅切到恢复成功状态
+                            else {
+                                Log.e("default press","已全部恢复到Normall，座椅恢复成功！！！")
+                                changeSeatState(SeatStatus.press_reserve.iValue)
+                                SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+                            }
                         }
+
+
+
                     }
                 }
                 // 气压值
                 else if (strType == BaseVolume.COMMAND_TYPE_PRESS) {
+                    var isLowPress = true
+                    DataAnalysisHelper.deviceState.sensePressValueListl.forEach {
+                        if (it.toInt() > 255)
+                            isLowPress = false
+                    }
+                    DataAnalysisHelper.deviceState.controlPressValueList.forEach {
+                        if (it.toInt() > 255)
+                            isLowPress = false
+                    }
+
                     // 正在退出
                     if (isExitApplication) {
-                        var isLowPress = true
-                        DataAnalysisHelper.deviceState.sensePressValueListl.forEach {
-                            if (it.toInt() > 255)
-                                isLowPress = false
-                        }
-                        DataAnalysisHelper.deviceState.controlPressValueList.forEach {
-                            if (it.toInt() > 255)
-                                isLowPress = false
-                        }
                         if (!isLowPress) {
                             return
                         }
@@ -520,6 +570,22 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
 //                        System.exit(0)
                         return
                     }
+                    // 正在massageoff且座椅处于正在恢复初始化阶段，则判断各个气袋是否已经泄气完成
+                    if (isLowPress && isInitSeatOnMassageOff && SocketThreadManager.isCheckChannelState) {
+                        if (isLowPress && DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_resume_reserve.iValue) {
+                            Log.e("default press","massage off 已全部完成，则开始充气")
+                            SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+                            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_ADJUST_A_B)
+                            // 座椅AB面气压恢复初始化！
+                            val sendDataList = CreateCtrDataHelper.getAllPressValueBy16("1000","1000","0")
+                            sendDataList.forEach {
+                                SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(it)
+                            }
+                            isInitSeatOnMassageOff = false
+                            massageoffTimeOut(false)
+                        }
+                    }
+
 
                     // 座椅正在检测人体，则收集A面气压值
                     if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_auto_probe.iValue && isGatherPressDataBuffer) {
@@ -574,15 +640,58 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
      */
     private fun defaultSeatState() {
         startTimerHoldSeat(false)
-        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_ADJUST_A_B)
-        // 座椅AB面气压恢复初始化！
-        val sendDataList = CreateCtrDataHelper.getAllPressValueBy16("1000","1000","255")
-        sendDataList.forEach {
-            SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(it)
-        }
+        // 先发massage,massage off 实现全部泄气，之后再充气
+
+        val strSendData0 = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_MASG_1)
+        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData0)
+        val strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_OFF,BaseVolume.COMMAND_CAN_MODEL_MASG_OFF)
+        // 然后延时1秒后执行off
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+            }
+        }, (1 * 1000))
+        // 延时n秒后，判断状态
+        SocketThreadManager.sharedInstance(mContext).startCheckState(true)
+        isInitSeatOnMassageOff = true
+        massageoffTimeOut(true)
+//        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_ADJUST_A_B)
+//        // 座椅AB面气压恢复初始化！
+//        val sendDataList = CreateCtrDataHelper.getAllPressValueBy16("1000","1000","0")
+//        sendDataList.forEach {
+//            SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(it)
+//        }
         // 切换到正在初始化模式
         changeSeatState(SeatStatus.press_resume_reserve.iValue)
         isCheckedPersonInfo = false
+
+    }
+
+    var massageTimer : Timer? = Timer()
+    /**
+     * massageoff 的超时
+     */
+    private fun massageoffTimeOut(isRun:Boolean) {
+        massageTimer?.cancel()
+        massageTimer = null
+        if (isRun) {
+            massageTimer = Timer()
+            massageTimer?.schedule(object : TimerTask() {
+                override fun run() {
+                    // massageoff 超时，直接进入初始化充气状态
+                    isInitSeatOnMassageOff = false
+                    SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+                    SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_ADJUST_A_B)
+                    // 座椅AB面气压恢复初始化！
+                    val sendDataList = CreateCtrDataHelper.getAllPressValueBy16("1000","1000","0")
+                    sendDataList.forEach {
+                        SocketThreadManager.sharedInstance(mContext).StartSendDataByCan(it)
+                    }
+                }
+            }, (1 * 20000))
+        }
 
     }
 
@@ -803,8 +912,8 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         }
         // 先断开连接
         SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.clearAllTCPClient()
-//        SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createLocSocket()
-//        SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
+        SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createLocSocket()
+        SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
 
 
     }
@@ -1554,6 +1663,10 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
     companion object{
         // 座垫ID
         var CuShionSnum: Int = 405
+        lateinit var menuSelectActivity: MenuSelectActivity
+        fun getInstance():MenuSelectActivity{
+            return menuSelectActivity
+        }
     }
 
     // 是否已经开始检测
@@ -1640,6 +1753,59 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
             }
 
 
+        }
+    }
+
+
+    /**
+     * 播放音乐
+     * 播放/停止
+     * 持续时间
+     */
+    fun playOrPauseMedia(playName:String,isPlay:Boolean,iTime:Long) {
+
+        if (isPlay) {
+            if (!mediaPlayer.isPlaying) {
+                nowPlayName = playName
+                mediaPlayer.reset()
+                var fd = assets.openFd(nowPlayName)
+                mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
+                mediaPlayer.isLooping = true // 循环播放
+                mediaPlayer.prepare()
+                mediaPlayer.start()
+            }
+            else {
+                // 当前播放的和要播放的歌曲不同，则停止重新播放
+                if (!nowPlayName.equals(playName)) {
+                    nowPlayName = playName
+                    mediaPlayer.stop()
+                    mediaPlayer.reset()
+                    var fd = assets.openFd(nowPlayName)
+                    mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
+                    mediaPlayer.isLooping = true // 循环播放
+                    mediaPlayer.prepare()
+                    mediaPlayer.start()
+                }
+            }
+
+            timerPlayer = Timer()
+            timerPlayer?.schedule(object : TimerTask() {
+                override fun run() {
+                    Log.e("AutomaticActivity", "时间到,停止播放！")
+                    mediaPlayer.stop()
+                    DataAnalysisHelper.deviceState.iNowAutoProgress = 5
+                    mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_AUTO_MODEL))
+                    releaseAPress()
+                }
+            }, iTime)
+        }
+        // 停止播放
+        else {
+            if (mediaPlayer.isPlaying) {
+                mediaPlayer.stop()
+            }
+            timerPlayer?.cancel()
+            timerPlayer = null
         }
     }
 

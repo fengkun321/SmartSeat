@@ -153,17 +153,29 @@ class CreateCtrDataHelper {
             var strSendData1 = BaseVolume.COMMAND_HEAD + BaseVolume.COMMAND_CTR_1_4
             var strSendData2 = BaseVolume.COMMAND_HEAD + BaseVolume.COMMAND_CTR_5_8
 
+            // 旧表，需要将座垫部位放到678位置上
             strSendData1 = strSendData1 +
                     String.format("%04x",controlPressInfo.press4)+
                     String.format("%04x",controlPressInfo.press5)+
                     String.format("%04x",controlPressInfo.press6)+
                     String.format("%04x",controlPressInfo.press7)
-
             strSendData2 = strSendData2 +
                     String.format("%04x",controlPressInfo.press8)+
                     String.format("%04x",controlPressInfo.press1)+
                     String.format("%04x",controlPressInfo.press2)+
                     String.format("%04x",controlPressInfo.press3)
+
+            // 新表
+//            strSendData1 = strSendData1 +
+//                    String.format("%04x",controlPressInfo.press1)+
+//                    String.format("%04x",controlPressInfo.press2)+
+//                    String.format("%04x",controlPressInfo.press3)+
+//                    String.format("%04x",controlPressInfo.press4)
+//            strSendData2 = strSendData2 +
+//                    String.format("%04x",controlPressInfo.press5)+
+//                    String.format("%04x",controlPressInfo.press6)+
+//                    String.format("%04x",controlPressInfo.press7)+
+//                    String.format("%04x",controlPressInfo.press8)
 
             dataList.add(strSendData1)
             dataList.add(strSendData2)

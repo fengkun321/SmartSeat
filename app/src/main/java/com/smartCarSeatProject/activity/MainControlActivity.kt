@@ -71,16 +71,12 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
     // 设置过的通道的值
     var setValueBufferByChannel = HashMap<Int,String>()
     var cameraIsStart = false
-    // 音频资源
-    lateinit var fd:AssetFileDescriptor
-    val mediaPlayer = MediaPlayer()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_control)
 
-        fd = assets.openFd("Alohal.mp3")
-        mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
-        mediaPlayer.isLooping = true // 循环播放
+
 
         NowShowViewNumber = intent.getIntExtra("iNumber",1)
         Tag = this.localClassName
@@ -207,7 +203,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                 finish()
             R.id.imgLeft1 -> {
                 if (NowShowViewNumber != 1) {
-                    SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
+//                    SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
                     switchActivityByNumber(1)
                 }
                 if (!cameraIsStart) {
@@ -217,7 +213,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
             R.id.imgLeft2 -> {
                 if (NowShowViewNumber != 2) {
                     switchActivityByNumber(2)
-                    playOrPauseMedia("",false,0)
+                    MenuSelectActivity.getInstance().playOrPauseMedia("",false,0)
                     // 释放A面气压，B面保持不动
                     releaseAPress()
                 }
@@ -226,8 +222,10 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
             R.id.imgLeft3 -> {
 //                rlCamera.x = rlCamera.x + 300
 //                rlCamera.y = rlCamera.y + 300
+
+//                DataAnalysisHelper.deviceState.iNowAutoProgress = 0
                 switchActivityByNumber(3)
-                playOrPauseMedia("",false,0)
+//                MenuSelectActivity.getInstance().playOrPauseMedia("",false,0)
                 // 释放A面气压，B面保持不动
 //                releaseAPress()
             }
@@ -237,7 +235,8 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
 //                rlCamera.y = rlCamera.y - 300
                 DataAnalysisHelper.deviceState.iNowAutoProgress = 0
                 changeSeatState(SeatStatus.develop.iValue)
-
+                MenuSelectActivity.getInstance().playOrPauseMedia("",false,0)
+                releaseAPress()
                 startActivity(Intent(this,DevelopmentActivity::class.java))
                 finish()
             }
@@ -288,7 +287,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
     }
 
     private fun switchActivityByNumber(number: Int) {
-        mediaPlayer.stop()
+
         NowShowViewNumber = number
         imgLeft1.setImageResource(R.drawable.img_left_1_false)
         imgLeft2.setImageResource(R.drawable.img_left_2_false)
@@ -314,7 +313,6 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
                 keyActivity = "SetWifiActivity"
                 intent1.setClass(this, SetWifiActivity::class.java!!)
                 changeSeatState(-1)
-                DataAnalysisHelper.deviceState.iNowAutoProgress = 0
             }
 
         }
@@ -482,50 +480,7 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
 
 
 
-    var timerPlayer:Timer? = Timer()
-    var nowPlayName = ""
-    /**
-     * 播放音乐
-     * 播放/停止
-     * 持续时间
-     */
-    fun playOrPauseMedia(playName:String,isPlay:Boolean,iTime:Long) {
 
-        timerPlayer?.cancel()
-        timerPlayer = null
-        if (isPlay) {
-            // 当前播放的和要播放的歌曲不同，则停止重新播放
-            if (!nowPlayName.equals(playName)) {
-                nowPlayName = playName
-                mediaPlayer.stop()
-                mediaPlayer.reset()
-                var fd = assets.openFd(nowPlayName)
-                mediaPlayer.setDataSource(fd.fileDescriptor, fd.startOffset, fd.length)
-                mediaPlayer.isLooping = true // 循环播放
-            }
-            if (!mediaPlayer.isPlaying) {
-                mediaPlayer.prepare()
-                mediaPlayer.start()
-            }
-
-            timerPlayer = Timer()
-            timerPlayer?.schedule(object : TimerTask() {
-                override fun run() {
-                    Log.e("AutomaticActivity", "时间到,停止播放！")
-                    mediaPlayer.stop()
-                    DataAnalysisHelper.deviceState.iNowAutoProgress = 5
-                    mContext.sendBroadcast(Intent(BaseVolume.BROADCAST_AUTO_MODEL))
-                    releaseAPress()
-                }
-            }, iTime)
-        }
-        // 停止播放
-        else {
-            if (mediaPlayer.isPlaying) {
-                mediaPlayer.stop()
-            }
-        }
-    }
 
     /****
      * 广播监听
@@ -1182,10 +1137,6 @@ class MainControlActivity : BaseActivity(),View.OnClickListener,DfxPipeListener,
     }
 
     override fun onDestroy() {
-
-
-        playOrPauseMedia("",false,0)
-        mediaPlayer. release()
 
         destoryCamera()
 

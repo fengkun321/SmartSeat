@@ -895,57 +895,25 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
                 if (strType == BaseVolume.COMMAND_TYPE_CHANNEL_STATUS) {
                     // 手动模式
                     if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_manual.iValue && SocketThreadManager.isCheckChannelState) {
-                        // 这是按摩结束后，自动调整所有气压时判断所有气袋状态
-                        if (SocketThreadManager.isStopMassageAutoCtrPress) {
-                            var isAllNormal = true
-                            // A面所有气袋 abcdefgh
-                            for (iState in DataAnalysisHelper.deviceState.sensePressStatusList) {
-                                // 正在充气，说明还没完成
-                                if (iState == DeviceWorkInfo.STATUS_SETTING)
-                                    return
-                                if (iState == DeviceWorkInfo.STATUS_SETTED)
-                                    isAllNormal = false
-                            }
-                            for (iNumber in 5 .. 7) {
-                                val iState = DataAnalysisHelper.deviceState.controlPressStatusList[iNumber]
-                                // 正在充气，说明还没完成
-                                if (iState == DeviceWorkInfo.STATUS_SETTING)
-                                    return
-                                if (iState == DeviceWorkInfo.STATUS_SETTED)
-                                    isAllNormal = false
-                            }
-                            // 全部恢复到Normal
-                            if (!isAllNormal) {
-                                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
-                            }
-                            // 已经全部恢复到Normal，则将座椅切到恢复成功状态
-                            else {
-                                // 恢复Normal
-                                SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
-                            }
-                        }
+
                         // 单独控制某个气袋后的状态判断
-                        else {
-                            // 判断当前控制的气袋状态
-                            if (iNowSelectNumber == -1) {
-                                return
-                            }
-                            val iCtrState = DataAnalysisHelper.deviceState.controlPressStatusList[iNowSelectNumber]
-                            if (iCtrState == DeviceWorkInfo.STATUS_SETTING) {
-                                return
-                            }
-                            else if (iCtrState == DeviceWorkInfo.STATUS_SETTED) {
-                                // 恢复Normal
-                                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
-                            }
-                            else if (iCtrState == DeviceWorkInfo.STATUS_NORMAL) {
-                                SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
-                                // 控制结束，将所有高亮按钮灰掉
-                                changeSelectBtn(-1)
-                            }
+                        // 判断当前控制的气袋状态
+                        if (iNowSelectNumber == -1) {
+                            return
                         }
-
-
+                        val iCtrState = DataAnalysisHelper.deviceState.controlPressStatusList[iNowSelectNumber]
+                        if (iCtrState == DeviceWorkInfo.STATUS_SETTING) {
+                            return
+                        }
+                        else if (iCtrState == DeviceWorkInfo.STATUS_SETTED) {
+                            // 恢复Normal
+                            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
+                        }
+                        else if (iCtrState == DeviceWorkInfo.STATUS_NORMAL) {
+                            SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+                            // 控制结束，将所有高亮按钮灰掉
+                            changeSelectBtn(-1)
+                        }
 
                     }
                 }

@@ -26,6 +26,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.os.SystemClock
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -56,6 +57,8 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONArray
 import org.opencv.core.Point
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, VideoSignalAnalysisListener, TrackerView.OnSizeChangedListener{
@@ -75,6 +78,8 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
     var statPressABufferListByProbe = arrayListOf<ArrayList<String>>()
     // 30秒检测后的A面的平均气压值
     var recogBackPressABufferListByProbe = arrayListOf<Int>()
+    // 座椅恢复初始化，先massage，massageoff，实现全部泄气
+    var isInitSeatOnMassageOff = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -359,48 +364,55 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
                     if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.develop.iValue && SocketThreadManager.isCheckChannelState) {
                         // 正在恢复，则不能重复触发
                         if (includeA.tvInitValue.text.toString().equals("Restoring initial value...",true)) {
-                            // 初始化控制A面所有，B面座垫678，通道充气，所以只需要判断678，abcdefgh这几个气袋
-                            var isAllNormal = true
-                            // A面所有气袋 abcdefgh
-                            for (iState in DataAnalysisHelper.deviceState.sensePressStatusList) {
-                                // 正在充气，说明还没完成
-                                if (iState == DeviceWorkInfo.STATUS_SETTING)
-                                    return
-                                if (iState == DeviceWorkInfo.STATUS_SETTED)
-                                    isAllNormal = false
-                            }
-                            for (iNumber in 5 .. 7) {
-                                val iState = DataAnalysisHelper.deviceState.controlPressStatusList[iNumber]
-                                // 正在充气，说明还没完成
-                                if (iState == DeviceWorkInfo.STATUS_SETTING)
-                                    return
-                                if (iState == DeviceWorkInfo.STATUS_SETTED)
-                                    isAllNormal = false
-                            }
+                            // 正在massage off，则先不判断状态
+                            if (isInitSeatOnMassageOff) {
 
-                            // 全部恢复到Normal
-                            if (!isAllNormal) {
-                                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
                             }
-                            // 已经全部恢复到Normal，则将显示初始化完成
                             else {
-                                // 保存体征按钮，亮起来
-                                changCameraState(true)
-                                includeA.tvInitValue.text = "Initialization completed!"
-                                includeA.tvInitValue.setTextColor(resources.getColor(R.color.colorGreen))
-                                // 把前一个按钮灰掉
-                                btnInitValue.isEnabled = false
-                                btnInitValue.setTextColor(resources.getColor(R.color.black1))
-                                SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
-                                // 缓存当前座椅的6个压力值
-                                nowDevelopDataInfo.p_init_cushion_A1 =  includeCushionA1.tvValueA.text.toString()
-                                nowDevelopDataInfo.p_init_cushion_A2 =  includeCushionA2.tvValueA.text.toString()
-                                nowDevelopDataInfo.p_init_cushion_B1 =  includeCushionB1.tvValueA.text.toString()
-                                nowDevelopDataInfo.p_init_cushion_B2 =  includeCushionB2.tvValueA.text.toString()
-                                nowDevelopDataInfo.p_init_cushion_C1 =  includeCushionC1.tvValueA.text.toString()
-                                nowDevelopDataInfo.p_init_cushion_C2 =  includeCushionC2.tvValueA.text.toString()
+                                // 初始化控制A面所有，B面座垫678，通道充气，所以只需要判断678，abcdefgh这几个气袋
+                                var isAllNormal = true
+                                // A面所有气袋 abcdefgh
+                                for (iState in DataAnalysisHelper.deviceState.sensePressStatusList) {
+                                    // 正在充气，说明还没完成
+                                    if (iState == DeviceWorkInfo.STATUS_SETTING)
+                                        return
+                                    if (iState == DeviceWorkInfo.STATUS_SETTED)
+                                        isAllNormal = false
+                                }
+                                for (iNumber in 5 .. 7) {
+                                    val iState = DataAnalysisHelper.deviceState.controlPressStatusList[iNumber]
+                                    // 正在充气，说明还没完成
+                                    if (iState == DeviceWorkInfo.STATUS_SETTING)
+                                        return
+                                    if (iState == DeviceWorkInfo.STATUS_SETTED)
+                                        isAllNormal = false
+                                }
 
+                                // 全部恢复到Normal
+                                if (!isAllNormal) {
+                                    SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
+                                }
+                                // 已经全部恢复到Normal，则将显示初始化完成
+                                else {
+                                    // 保存体征按钮，亮起来
+                                    changCameraState(true)
+                                    includeA.tvInitValue.text = "Initialization completed!"
+                                    includeA.tvInitValue.setTextColor(resources.getColor(R.color.colorGreen))
+                                    // 把前一个按钮灰掉
+                                    btnInitValue.isEnabled = false
+                                    btnInitValue.setTextColor(resources.getColor(R.color.black1))
+                                    SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+                                    // 缓存当前座椅的6个压力值
+                                    nowDevelopDataInfo.p_init_cushion_A1 =  includeCushionA1.tvValueA.text.toString()
+                                    nowDevelopDataInfo.p_init_cushion_A2 =  includeCushionA2.tvValueA.text.toString()
+                                    nowDevelopDataInfo.p_init_cushion_B1 =  includeCushionB1.tvValueA.text.toString()
+                                    nowDevelopDataInfo.p_init_cushion_B2 =  includeCushionB2.tvValueA.text.toString()
+                                    nowDevelopDataInfo.p_init_cushion_C1 =  includeCushionC1.tvValueA.text.toString()
+                                    nowDevelopDataInfo.p_init_cushion_C2 =  includeCushionC2.tvValueA.text.toString()
+
+                                }
                             }
+
                         }
                         // 控制某路气袋的返回
                         else {
@@ -427,6 +439,35 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
                 }
                 // 气压
                 else if (strType.equals(BaseVolume.COMMAND_TYPE_PRESS,true)) {
+
+                    var isLowPress = true
+                    DataAnalysisHelper.deviceState.sensePressValueListl.forEach {
+                        if (it.toInt() > 255)
+                            isLowPress = false
+                    }
+                    DataAnalysisHelper.deviceState.controlPressValueList.forEach {
+                        if (it.toInt() > 255)
+                            isLowPress = false
+                    }
+
+                    // 正在massageoff且座椅处于正在恢复初始化阶段，则判断各个气袋是否已经泄气完成
+                    if (isInitSeatOnMassageOff) {
+                        if (isLowPress) {
+                            Log.e("default press","massage off 已全部完成，则开始充气")
+                            SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+                            SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_ADJUST_A_B)
+                            // 座椅AB面气压恢复初始化！
+                            val strVA = edAInitValue.text.toString()
+                            val strVB = edBInitValue.text.toString()
+                            val strVSeat = edSeatInitValue.text.toString()
+                            val NowSendDataList = CreateCtrDataHelper.getAllPressValueBy16(strVA,strVSeat,strVB)
+                            NowSendDataList.forEach {
+                                SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.StartSendDataByCan(it)
+                            }
+                            isInitSeatOnMassageOff = false
+                        }
+                    }
+
                     // 控制气压8个
                     val controlPressList = deviceWorkInfo?.controlPressValueList
                     // 传感气压11个
@@ -606,13 +647,7 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
         initUIFromB()
 
         ToastMsg("Restoring initial value...")
-        // 将A面,B面设为adjust
-        SocketThreadManager.sharedInstance(mContext)?.StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_ADJUST_A_B)
-        // 发指令，设置16个气压
-        val NowSendDataList = CreateCtrDataHelper.getAllPressValueBy16(strVA,strVSeat,strVB)
-        NowSendDataList.forEach {
-            SocketThreadManager.sharedInstance(this@DevelopmentActivity)?.StartSendDataByCan(it)
-        }
+
 
         // 电机恢复默认位置
         if (SocketThreadManager.sharedInstance(mContext).isCan2Connected()) {
@@ -621,6 +656,23 @@ class DevelopmentActivity: BaseActivity(),View.OnClickListener,DfxPipeListener, 
             // 00 结束
             SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_0)
         }
+
+        // 先发massage,massage off 实现全部泄气，之后再充气
+        isInitSeatOnMassageOff = true
+        val strSendData0 = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_MASG_1)
+        SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData0)
+        val strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_OFF,BaseVolume.COMMAND_CAN_MODEL_MASG_OFF)
+        // 然后延时1秒后执行off
+        val timer = Timer()
+        timer?.schedule(object : TimerTask() {
+            override fun run() {
+                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
+            }
+        }, (1 * 1000))
+        // 延时n秒后，判断状态
+        SocketThreadManager.sharedInstance(mContext).startCheckState(true)
 
         tvLocation.text = locationList[0]
         tvXinZao.text = "0"

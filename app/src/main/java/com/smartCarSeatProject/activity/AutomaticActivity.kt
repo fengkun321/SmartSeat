@@ -95,7 +95,19 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
             }
             else if (buttonView?.tag.toString().equals("massage")) {
                 DataAnalysisHelper.deviceState.isAutoJianKang = isChecked
-//                onAutoSetMassageByStatus()
+                // 按摩开启
+                if (isChecked) {
+
+                }
+                // 关闭按摩
+                else {
+                    onAutoSetMassageByStatus()
+                    MenuSelectActivity.getInstance().playOrPauseMedia("",false,0)
+                    // 释放A面气压，B面保持不动
+                    releaseAPress()
+                }
+
+
             }
         }
 
@@ -269,10 +281,10 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                 && (DataAnalysisHelper.deviceState.Sys_BP.toFloat()>90 && DataAnalysisHelper.deviceState.Sys_BP.toFloat()<139)
                 && (DataAnalysisHelper.deviceState.Dia_BP.toFloat()>60 && DataAnalysisHelper.deviceState.Dia_BP.toFloat()<89)
                 && DataAnalysisHelper.deviceState.E_Index.toFloat()<4) {
-            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_ADJUST)
             MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.colorGreen)
             // 播放音乐
-            MainControlActivity.getInstance()?.playOrPauseMedia("Alohal_release.mp3",true,1000*60)
+            MenuSelectActivity.getInstance().playOrPauseMedia("Alohal_release.mp3",true,1000*60)
         }
         // 2.心率/血压/情绪值 轻度超标 （40<心率<60 or 100<心率<160 or 140<收缩压<159 or 90<舒张压<99 or 4<心理压力值<5 )
         // 字体黄色显示，同时启动座椅A面及B面中度按摩，播放音乐
@@ -281,10 +293,10 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                 || (DataAnalysisHelper.deviceState.Sys_BP.toFloat()>140 && DataAnalysisHelper.deviceState.Sys_BP.toFloat()<159)
                 || (DataAnalysisHelper.deviceState.Dia_BP.toFloat()>90 && DataAnalysisHelper.deviceState.Dia_BP.toFloat()<99)
                 || (DataAnalysisHelper.deviceState.E_Index.toFloat()>4 && DataAnalysisHelper.deviceState.E_Index.toFloat()<5)) {
-            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_2,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_2,BaseVolume.COMMAND_CAN_MODEL_ADJUST)
             MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.colorYellow)
             // 播放音乐
-            MainControlActivity.getInstance()?.playOrPauseMedia("Alohal_release.mp3",true,1000*60*3)
+            MenuSelectActivity.getInstance().playOrPauseMedia("Alohal_release.mp3",true,1000*60*3)
 
         }
         // 3.心率/血压/情绪值 中度超标（心率<40 or 心率>160 or 160<收缩压 or 100<舒张压 or 心理压力值>5 )
@@ -295,23 +307,23 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                 || DataAnalysisHelper.deviceState.Dia_BP.toFloat()>100
                 || DataAnalysisHelper.deviceState.E_Index.toFloat()>5) {
             // AB面同时按摩3
-            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_3,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_3,BaseVolume.COMMAND_CAN_MODEL_ADJUST)
             // 座椅恢复到出厂设置
             SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_DEFAULT)
             // 字显示红色
             MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.device_red)
             // 播放音乐
-            MainControlActivity.getInstance()?.playOrPauseMedia("Alohal.mp3",true,1000*60*3)
+            MenuSelectActivity.getInstance().playOrPauseMedia("Alohal.mp3",true,1000*60*3)
             showDangerDialog()
 
         }
         // 其他范围，就按摩一下吧，
         else {
             ToastMsg("不在健康诊断范围内，也放个音乐，按摩一下吧！")
-            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_ADJUST)
             MainControlActivity.getInstance()?.changePersonInfoTextColor(R.color.colorGreen)
             // 播放音乐
-            MainControlActivity.getInstance()?.playOrPauseMedia("Alohal_release.mp3",true,1000*60)
+            MenuSelectActivity.getInstance().playOrPauseMedia("Alohal_release.mp3",true,1000*60)
         }
         Log.e("ManualActivity", "当前按摩指令：$strSendData")
         SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData)
@@ -353,15 +365,15 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                 cbAutoTiYa.setTextColor(mContext.getColor(R.color.colorWhite))
                 imgBack.isEnabled = true
                 cbAutoWeiZhi.isEnabled = true
-                MainControlActivity.getInstance()?.changeLeftBtnTounch(true)
             }
             4 -> {
+                imgBack.isEnabled = true
                 cbAutoWeiZhi.setTextColor(mContext.getColor(R.color.colorWhite))
                 cbAutoTiYa.setTextColor(mContext.getColor(R.color.colorWhite))
                 cbJianKang.setTextColor(mContext.getColor(R.color.colorWhite))
-                imgBack.isEnabled = true
                 cbAutoTiYa.isEnabled = true
                 cbAutoWeiZhi.isEnabled = true
+                cbJianKang.isEnabled = true
                 MainControlActivity.getInstance()?.changeLeftBtnTounch(true)
             }
             5 -> {
@@ -474,62 +486,26 @@ class AutomaticActivity: BaseActivity(), View.OnClickListener{
                 if (strType == BaseVolume.COMMAND_TYPE_CHANNEL_STATUS) {
                     // 自动模式控制B面所有气袋气压
                     if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue && SocketThreadManager.isCheckChannelState) {
-                        // 这是按摩结束后，自动调整所有气压时判断所有气袋状态
-                        if (SocketThreadManager.isStopMassageAutoCtrPress) {
-                            var isAllNormal = true
-                            // A面所有气袋 abcdefgh
-                            for (iState in DataAnalysisHelper.deviceState.sensePressStatusList) {
-                                // 正在充气，说明还没完成
-                                if (iState == DeviceWorkInfo.STATUS_SETTING)
-                                    return
-                                if (iState == DeviceWorkInfo.STATUS_SETTED)
-                                    isAllNormal = false
-                            }
-                            for (iNumber in 5 .. 7) {
-                                val iState = DataAnalysisHelper.deviceState.controlPressStatusList[iNumber]
-                                // 正在充气，说明还没完成
-                                if (iState == DeviceWorkInfo.STATUS_SETTING)
-                                    return
-                                if (iState == DeviceWorkInfo.STATUS_SETTED)
-                                    isAllNormal = false
-                            }
-                            // 全部恢复到Normal
-                            if (!isAllNormal) {
-                                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
-                            }
-                            // 已经全部恢复到Normal，则将座椅切到恢复成功状态
-                            else {
-                                // 恢复Normal
-                                SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
-                            }
-                        }
                         // 体压自适应的调压状态
-                        else {
-                            var isBNormal = true
-                            // B面所有气袋 12345678
-                            for (iState in DataAnalysisHelper.deviceState.controlPressStatusList) {
-                                // 正在充气，说明还没完成
-                                if (iState == DeviceWorkInfo.STATUS_SETTING)
-                                    return
-                                if (iState == DeviceWorkInfo.STATUS_SETTED)
-                                    isBNormal = false
-                            }
-
-                            // 全部恢复到Normal
-                            if (!isBNormal) {
-                                SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(BaseVolume.COMMAND_CAN_MODEL_NORMAL_A_B)
-                            }
-                            // 已经全部恢复到Normal，则将座椅切到恢复成功状态
-                            else {
-                                loadingDialog.dismiss()
-                                SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
-                                if (DataAnalysisHelper.deviceState.iNowAutoProgress == 3) {
-                                    // 气压调节完成，开始按摩调节
-                                    onAutoSetMassageByStatus()
-                                }
-                            }
+                        var isBNormal = true
+                        // B面所有气袋 12345678
+                        for (iState in DataAnalysisHelper.deviceState.controlPressStatusList) {
+                            // 正在充气，说明还没完成
+                            if (iState == DeviceWorkInfo.STATUS_SETTING)
+                                return
+                            if (iState == DeviceWorkInfo.STATUS_SETTED)
+                                isBNormal = false
                         }
 
+                        // 全部B面气压调节完毕
+                        if (!isBNormal) {
+                            loadingDialog.dismiss()
+                            SocketThreadManager.sharedInstance(mContext).startTimeOut(false)
+                            if (DataAnalysisHelper.deviceState.iNowAutoProgress == 3) {
+                                // 气压调节完成，开始按摩调节
+                                onAutoSetMassageByStatus()
+                            }
+                        }
                     }
                 }
                 // 气压值

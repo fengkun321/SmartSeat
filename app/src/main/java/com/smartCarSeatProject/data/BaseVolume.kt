@@ -11,15 +11,15 @@ class BaseVolume {
         const val StartTime = "2019-10-15 00:00:00"
 
         // IP
-        const val CanHostIp = "192.168.1.10"
+        const val CanHostIp = "10.10.10.155"
         const val HostIp = "10.10.10.254"
         // Port
         const val CanHostListenningPort = 4001
         const val LocHostListenningPort = 4002
         const val HostListenningPort = 9999
         // WIFI标志
-        const val WIFI_SIGN = "NoboSmartSeat"
-//        const val WIFI_SIGN = "TP-LINK_FK"
+//        const val WIFI_SIGN = "NoboSmartSeat"
+        const val WIFI_SIGN = "TP-LINK_FK"
         // 拖拽进度条最小值
         const val ProgressValueMin = 300
         // 拖拽进度条最大值
