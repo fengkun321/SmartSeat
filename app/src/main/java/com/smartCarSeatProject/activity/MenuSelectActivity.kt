@@ -425,14 +425,15 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
                         imgWIFI.visibility = View.VISIBLE
                         tvReLocConnect.visibility = View.GONE
                         tvReCanConnect.visibility = View.GONE
-                        if (!SocketThreadManager.sharedInstance(this@MenuSelectActivity).isCanConnected()) {
-                            imgWIFI.visibility = View.GONE
-                            tvReCanConnect.visibility = View.VISIBLE
-                        }
                         // 座椅状态属于初始化完成之前，则需要先on
                         if(DataAnalysisHelper.deviceState.seatStatus < SeatStatus.press_reserve.iValue) {
                             // 电源ON
                             SocketThreadManager.sharedInstance(mContext).StartSendDataByCan2(BaseVolume.COMMAND_CAN_LOCATION_ON)
+                        }
+                        if (!SocketThreadManager.sharedInstance(this@MenuSelectActivity).isCanConnected()) {
+                            imgWIFI.visibility = View.GONE
+                            tvReCanConnect.visibility = View.VISIBLE
+                            SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
                         }
 
 //                        ToastMsg("Loc Connection successful！")
@@ -913,7 +914,7 @@ class MenuSelectActivity : BaseActivity(),View.OnClickListener,DfxPipeListener, 
         // 先断开连接
         SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.clearAllTCPClient()
         SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createLocSocket()
-        SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
+//        SocketThreadManager.sharedInstance(this@MenuSelectActivity)?.createCanSocket()
 
 
     }

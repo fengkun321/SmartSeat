@@ -181,11 +181,20 @@ open class BaseActivity : AppCompatActivity(){
 
     /** 释放A面气压，B面保持不动 */
     protected fun releaseAPress() {
+        var strSendData0 = ""
+        var strSendData = ""
+        // 当前在自动模式，则B面保持Adjust
+        if (DataAnalysisHelper.deviceState.seatStatus == SeatStatus.press_automatic.iValue) {
+            strSendData0 = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_ADJUST)
+            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_OFF,BaseVolume.COMMAND_CAN_MODEL_ADJUST)
+        }
+        else {
+            strSendData0 = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+            strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_OFF,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
+        }
 
         // 需要将A面的气袋全部泄气，要先发按摩，然后发off
-        val strSendData0 = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_1,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
         SocketThreadManager.sharedInstance(mContext).StartChangeModelByCan(strSendData0)
-        val strSendData = CreateCtrDataHelper.getCtrModelAB(BaseVolume.COMMAND_CAN_MODEL_MASG_OFF,BaseVolume.COMMAND_CAN_MODEL_NORMAL)
         // 然后延时1秒后执行off
         val timer = Timer()
         timer?.schedule(object : TimerTask() {

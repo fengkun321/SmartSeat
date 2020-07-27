@@ -79,8 +79,8 @@ class ManualActivity: BaseActivity(), View.OnClickListener{
     // 当前页面 1：支撑 2：位置 3：通风加热按摩
     var iNowShowPageNumber = 1
     var iNowPressValue = -1
-    var ProgressValueMin = 255
-    var ProgressValueMax = 3600
+    var ProgressValueMin = BaseVolume.ProgressValueMin
+    var ProgressValueMax = BaseVolume.ProgressValueMax
     // 减按钮集合
     var dimBtnArray = arrayListOf<TextView>()
     // 加按钮集合
